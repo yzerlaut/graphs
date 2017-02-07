@@ -5,20 +5,6 @@ import os, string
 import numpy as np
 mpl.rcParams.update({'font.size': 14})
 
-def plot_with_bars_only(ax, x, y, xunit='s', yunit='mV', xscale=None, yscale=None, color='k'):
-    ax.plot(x, y, '-', color=color)
-    if xscale is None:
-        xscale = int((x.max()-x.min())/10)
-    if yscale is None:
-        yscale = int((y.max()-y.min())/10)
-    x1, x2 = ax.get_xlim()
-    y1, y2 = ax.get_ylim()
-    ax.plot([x1, x1+xscale], y1*np.ones(2),  '-', lw=5, color='gray')
-    ax.annotate(str(xscale)+xunit, (x1+1.1*xscale,y1))
-    ax.plot([x1,x1], y1+np.array([0,yscale]), '-', lw=5, color='gray')
-    ax.annotate(str(yscale)+yunit, (x1,y1+1.1*yscale))
-    set_plot(ax, [], xticks=[], yticks=[])
-        
 def set_plot(ax, spines=['left', 'bottom'],\
                 num_xticks=5, num_yticks=5,\
                 xlabel='', ylabel='', tck_outward=5,\

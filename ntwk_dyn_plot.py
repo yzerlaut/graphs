@@ -1,9 +1,10 @@
 import sys
-from . import my_graph
+import my_graph
 import matplotlib.pylab as plt
 import numpy as np
 
-def RASTER_PLOT(SPK_LIST, ID_LIST, tlim=None, ID_ZOOM_LIST=None, COLORS=None, with_fig=None, MS=1):
+def RASTER_PLOT(SPK_LIST, ID_LIST, tlim=None, ID_ZOOM_LIST=None,
+                COLORS=None, with_fig=None, MS=1):
     
     if with_fig is not None:
         fig, ax = plt.gcf(), plt.gca()
@@ -27,7 +28,8 @@ def RASTER_PLOT(SPK_LIST, ID_LIST, tlim=None, ID_ZOOM_LIST=None, COLORS=None, wi
 
     ii=0 # index for plotting
     for spks, ids, id_zoom, col in zip(SPK_LIST, ID_LIST, ID_ZOOM_LIST, COLORS):
-        spks2, ids2 = spks[(spks>=tlim[0]) & (spks<=tlim[1]) & (ids>=id_zoom[0]) & (ids<=id_zoom[1])], ids[(spks>=tlim[0]) & (spks<=tlim[1]) & (ids>=id_zoom[0]) & (ids<=id_zoom[1])]
+        cond = (spks>=tlim[0]) & (spks<=tlim[1]) & (ids>=id_zoom[0]) & (ids<=id_zoom[1])
+        spks2, ids2 = spks[cond], ids[cond]
         plt.plot(spks2, ii+ids2, '.', color=col, ms=MS)
         ii+=id_zoom[1]-id_zoom[0]
     tot_neurons_num = int(round(np.sum([(I[1]-I[0]) for I in ID_ZOOM_LIST])/100.,0)*100)
@@ -35,7 +37,8 @@ def RASTER_PLOT(SPK_LIST, ID_LIST, tlim=None, ID_ZOOM_LIST=None, COLORS=None, wi
     my_graph.set_plot(ax, xlabel='time (ms)', yticks=[], ylabel='neuron index')
     return fig, ax
 
-def POP_ACT_PLOT(t, POP_ACT_LIST, tlim=None, pop_act_zoom=None, COLORS=None, with_fig=None):
+def POP_ACT_PLOT(t, POP_ACT_LIST, tlim=None, pop_act_zoom=None,
+                 COLORS=None, with_fig=None):
     
     if with_fig is not None:
         fig, ax = plt.gcf(), plt.gca()
@@ -57,8 +60,10 @@ def POP_ACT_PLOT(t, POP_ACT_LIST, tlim=None, pop_act_zoom=None, COLORS=None, wit
         COLORS = ['g']+['r']+['k' for i in range(len(POP_ACT_LIST)-2)]
 
     for act, col in zip(POP_ACT_LIST[::-1], COLORS[::-1]):
-        plt.plot(t[(t>=tlim[0]) & (t<=tlim[1])], act[(t>=tlim[0]) & (t<=tlim[1])], '-', color=col)
-    my_graph.set_plot(ax, xlabel='time (ms)', ylabel='pop. act. (Hz)', ylim=pop_act_zoom)
+        plt.plot(t[(t>=tlim[0]) & (t<=tlim[1])],
+                 act[(t>=tlim[0]) & (t<=tlim[1])], '-', color=col)
+    my_graph.set_plot(ax, xlabel='time (ms)', ylabel='pop. act. (Hz)',\
+                      ylim=pop_act_zoom)
     return fig, ax
 
 if __name__=='__main__':
