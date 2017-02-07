@@ -19,16 +19,22 @@ def cross_correl_plot(data, FIGSIZE=(7,7), wspace=.5, hspace=.5, right=0.98, lef
         for j in range(i+1, len(data)):
             AX[j-1,i].plot(data[i]['vec'], data[j]['vec'], 'ko')
             if not many_data:
-                set_plot(AX[j-1,i], xlabel=data[i]['label'], ylabel=data[j]['label'])
+                set_plot(AX[j-1,i], xlabel=data[i]['label'], ylabel=data[j]['label'],
+                                    num_xticks=4, num_yticks=3)
             else:
                 if ((i==0) and (j==len(data)-1)):
-                    set_plot(AX[j-1,i], xlabel=data[i]['label'], ylabel=data[j]['label'])
+                    set_plot(AX[j-1,i], xlabel=data[i]['label'], ylabel=data[j]['label'],
+                                    num_xticks=4, num_yticks=3)
+
                 elif (j==len(data)-1):
-                    set_plot(AX[j-1,i], xlabel=data[i]['label'], yticks_labels=[])
+                    set_plot(AX[j-1,i], xlabel=data[i]['label'], yticks_labels=[],
+                                    num_xticks=4, num_yticks=3)
                 elif (i==0):
-                    set_plot(AX[j-1,i], ylabel=data[j]['label'], xticks_labels=[])
+                    set_plot(AX[j-1,i], ylabel=data[j]['label'], xticks_labels=[],
+                                    num_xticks=4, num_yticks=3)
                 else:
-                    set_plot(AX[j-1,i], xticks_labels=[], yticks_labels=[])
+                    set_plot(AX[j-1,i], xticks_labels=[], yticks_labels=[],
+                                    num_xticks=4, num_yticks=3)
 
             cc, pp = pearsonr(data[i]['vec'], data[j]['vec'])
             
