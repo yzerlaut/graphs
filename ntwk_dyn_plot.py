@@ -1,5 +1,5 @@
 import sys
-import my_graph
+from my_graph import set_plot
 import matplotlib.pylab as plt
 import numpy as np
 
@@ -34,7 +34,7 @@ def RASTER_PLOT(SPK_LIST, ID_LIST, tlim=None, ID_ZOOM_LIST=None,
         ii+=id_zoom[1]-id_zoom[0]
     tot_neurons_num = int(round(np.sum([(I[1]-I[0]) for I in ID_ZOOM_LIST])/100.,0)*100)
     ax.set_title(str(tot_neurons_num)+' neurons sample', fontsize=14)
-    my_graph.set_plot(ax, xlabel='time (ms)', yticks=[], ylabel='neuron index')
+    set_plot(ax, xlabel='time (ms)', yticks=[], ylabel='neuron index')
     return fig, ax
 
 def POP_ACT_PLOT(t, POP_ACT_LIST, tlim=None, pop_act_zoom=None,
@@ -62,7 +62,7 @@ def POP_ACT_PLOT(t, POP_ACT_LIST, tlim=None, pop_act_zoom=None,
     for act, col in zip(POP_ACT_LIST[::-1], COLORS[::-1]):
         plt.plot(t[(t>=tlim[0]) & (t<=tlim[1])],
                  act[(t>=tlim[0]) & (t<=tlim[1])], '-', color=col)
-    my_graph.set_plot(ax, xlabel='time (ms)', ylabel='pop. act. (Hz)',\
+    set_plot(ax, xlabel='time (ms)', ylabel='pop. act. (Hz)',\
                       ylim=pop_act_zoom)
     return fig, ax
 
