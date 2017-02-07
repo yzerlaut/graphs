@@ -9,9 +9,9 @@ def set_scale_and_annotation(ax,
         xscale = int((x2-x1)/10)
     if yscale is None:
         yscale = int((y2-y1)/10)
-    ax.plot([x1, x1+xscale], y1*np.ones(2),  '-', lw=5, color='gray')
+    ax.plot([x1, x1+xscale], [y1, y1],  '-', lw=5, color='gray')
     ax.annotate(str(xscale)+xunit, (x1+1.1*xscale,y1))
-    ax.plot([x1,x1], y1+np.array([0,yscale]), '-', lw=5, color='gray')
+    ax.plot([x1,x1], [y1,y1+yscale], '-', lw=5, color='gray')
     ax.annotate(str(yscale)+yunit, (x1,y1+1.1*yscale))
     set_plot(ax, [], xticks=[], yticks=[])
     
