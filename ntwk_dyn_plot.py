@@ -1,5 +1,9 @@
 import sys
-from my_graph import set_plot
+import sys, os
+sys.path.append(os.path.join( os.path.dirname(__file__), os.path.pardir))
+print(os.path.join(os.path.dirname(__file__), os.path.pardir))
+print(os.path.dirname(__file__))
+from graphs.my_graph import set_plot
 import matplotlib.pylab as plt
 import numpy as np
 
