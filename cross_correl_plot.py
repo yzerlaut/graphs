@@ -1,4 +1,6 @@
-from my_graph import *
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+from graphs.my_graph import *
 import matplotlib.pylab as plt
 from scipy.stats.stats import pearsonr
 

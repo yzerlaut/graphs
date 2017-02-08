@@ -22,9 +22,9 @@ from matplotlib.lines import Line2D
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import time
 import threading
-sys.path.append('/Users/yzerlaut/work/common_libraries/')
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.my_graph import set_plot
-
 
 
 def setCustomSize(x, width, height):
