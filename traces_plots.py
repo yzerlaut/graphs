@@ -1,4 +1,6 @@
-from my_graph import set_plot
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+from graphs.my_graph import set_plot
 
 def set_scale_and_annotation(ax,
                              xunit='s', yunit='mV',
