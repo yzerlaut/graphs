@@ -18,14 +18,21 @@ def RASTER_PLOT(SPK_LIST, ID_LIST, tlim=None, ID_ZOOM_LIST=None,
         
     # time limit
     if tlim is None:
-        tlim = np.ones(2)
-        tlim[0] = np.min([np.min(spk) for spk in SPK_LIST])
-        tlim[1] = np.max([np.max(spk) for spk in SPK_LIST])
+        tlim = np.array([0,1])
+        try:
+            tlim[0] = np.min([np.min(spk) for spk in SPK_LIST])
+            tlim[1] = np.max([np.max(spk) for spk in SPK_LIST])
+        except ValueError:
+            pass
     # neurons limit
     if ID_ZOOM_LIST is None:
         ID_ZOOM_LIST = []
-        for ids in ID_LIST:
-            ID_ZOOM_LIST.append([np.min(ids), np.max(ids)])
+        try:
+            for ids in ID_LIST:
+                ID_ZOOM_LIST.append([np.min(ids), np.max(ids)])
+        except ValueError:
+            pass
+                
     # colors
     if COLORS is None:
         COLORS = ['g']+['r']+['k' for i in range(len(ID_LIST)-2)]
