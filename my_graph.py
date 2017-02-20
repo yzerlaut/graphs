@@ -175,10 +175,10 @@ def put_list_of_figs_to_svg_fig(FIGS, CAP_SIZE=14,\
     if visualize:
         _ = True
 
-def show():
-    plt.show(block=False)
+def show(module):
+    module.show(block=False)
     input('Hit Enter To Close')
-    plt.close()
+    module.close()
         
 if __name__=='__main__':
 
@@ -186,6 +186,6 @@ if __name__=='__main__':
     plt.subplots()
     add_errorbar(plt.gca(), [0], [1], [.2])
     set_plot(plt.gca())
-    plt.show()
+    show(plt)
 
     
