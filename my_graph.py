@@ -175,7 +175,11 @@ def put_list_of_figs_to_svg_fig(FIGS, CAP_SIZE=14,\
     if visualize:
         _ = True
 
-
+def show():
+    plt.show(block=False)
+    input('Hit Enter To Close')
+    plt.close()
+        
 if __name__=='__main__':
 
     import matplotlib.pylab as plt
