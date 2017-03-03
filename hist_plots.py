@@ -1,6 +1,6 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from graphs.my_graph import set_plot
+from graphs.my_graph import set_plot, show
 import matplotlib.pylab as plt
 
 def hist(x, bins=20, ax=None,
@@ -44,4 +44,4 @@ if __name__=='__main__':
     ax = multiple_gghists([np.random.randn(100), np.random.randn(100)],\
                      LABELS=['Data 1', 'Data 2'])
     ax.legend()
-    plt.show()
+    show(plt)
