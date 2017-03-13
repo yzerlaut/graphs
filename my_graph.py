@@ -96,6 +96,11 @@ def set_subplot_safe_for_labels(fig, FIGSIZE=None, FONTSIZE=16,
                 top=max([1.-0.02*FONTSIZE/FIGSIZE[1],y0*1.1]),
                 hspace=hspace)
 
+def replace_axis_by_legend(ax, text, x0=0.1, y0=0.1):
+    ax.axis('off')
+    ax.annotate(text, (x0, y0))
+
+    
 def cm2inch(*tupl):
     inch = 2.54
     if isinstance(tupl[0], tuple):
