@@ -1,9 +1,10 @@
 from matplotlib.ticker import MaxNLocator
 import matplotlib as mpl
-import svgutils.compose as sg
-import os, string
+import matplotlib.pylab as plt
 import numpy as np
 mpl.rcParams.update({'font.size': 14})
+# to be removed
+from plot_export import put_list_of_figs_to_svg_fig
 
 def set_plot(ax, spines=['left', 'bottom'],\
                 num_xticks=5, num_yticks=5,\
@@ -145,45 +146,10 @@ def get_linear_colormap(color1='blue', color2='red'):
     return mpl.colors.LinearSegmentedColormap.from_list(\
                         'mycolors',[color1, color2])
 
-def put_list_of_figs_to_svg_fig(FIGS, CAP_SIZE=14,\
-                                fig_name="fig.svg", visualize=True,\
-                                transparent=True, correc_factor=70.):
-    """ take a list of figures and make a multi panel plot"""
-    
-    label = list(string.ascii_uppercase)[:len(FIGS)]
-
-    SIZE = []
-    for fig in FIGS:
-        SIZE.append(fig.get_size_inches())
-    width = np.max([s[0] for s in SIZE])
-    height = np.max([s[1] for s in SIZE])
-
-    LABELS, XCOORD, YCOORD = [], [], []
-    # saving as svg
-    for i in range(len(FIGS)):
-        ff = 'f.svg'
-        FIGS[i].savefig('/tmp/'+str(i)+'.svg', format='svg', transparent=transparent)
-        LABELS.append(label[i])
-        XCOORD.append((i%3)*width*correc_factor)
-        YCOORD.append(int(i/3)*height*correc_factor)
-
-    PANELS = []
-    for i in range(len(FIGS)):
-        PANELS.append(sg.Panel(\
-            sg.SVG('/tmp/'+str(i)+'.svg').move(XCOORD[i],YCOORD[i]),\
-            sg.Text(LABELS[i], 25, 20, size=12, weight='bold').move(\
-                                                XCOORD[i],YCOORD[i]))\
-        )
-    sg.Figure(str(.3*3.*width)+"cm", str(.3*height*int(len(FIGS)/3))+"cm",\
-              *PANELS).save(fig_name)
-
-    if visualize:
-        _ = True
-
-def show(module):
-    module.show(block=False)
+def show(module=None):
+    plt.show(block=False)
     input('Hit Enter To Close')
-    module.close()
+    plt.close()
         
 if __name__=='__main__':
 
@@ -191,6 +157,6 @@ if __name__=='__main__':
     plt.subplots()
     add_errorbar(plt.gca(), [0], [1], [.2])
     set_plot(plt.gca())
-    show(plt)
+    show()
 
     
