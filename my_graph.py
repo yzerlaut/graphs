@@ -3,8 +3,6 @@ import matplotlib as mpl
 import matplotlib.pylab as plt
 import numpy as np
 mpl.rcParams.update({'font.size': 14})
-# to be removed
-from plot_export import put_list_of_figs_to_svg_fig
 
 def set_plot(ax, spines=['left', 'bottom'],\
                 num_xticks=5, num_yticks=5,\
