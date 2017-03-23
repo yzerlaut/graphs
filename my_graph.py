@@ -2,7 +2,7 @@ from matplotlib.ticker import MaxNLocator
 import matplotlib as mpl
 import matplotlib.pylab as plt
 import numpy as np
-mpl.rcParams.update({'font.size': 14})
+mpl.rcParams.update({'axes.labelsize': 15, 'xtick.labelsize': 14, 'ytick.labelsize': 14})
 
 def set_plot(ax, spines=['left', 'bottom'],\
                 num_xticks=5, num_yticks=5,\
