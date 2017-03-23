@@ -97,9 +97,12 @@ def set_subplot_safe_for_labels(fig, FIGSIZE=None, FONTSIZE=16,
                 top=max([1.-0.02*FONTSIZE/FIGSIZE[1],y0*1.1]),
                 hspace=hspace)
 
-def replace_axis_by_legend(ax, text, x0=0.1, y0=0.1):
+def replace_axis_by_legend(ax, text, x0=0.1, y0=0.1, on_fig=False):
     ax.axis('off')
-    ax.annotate(text, (x0, y0))
+    if on_fig:
+        ax.annotate(text, (x0, y0), xycoords='figure fraction')
+    else:
+        ax.annotate(text, (x0, y0), xycoords='axes fraction')
 
     
 def cm2inch(*tupl):
