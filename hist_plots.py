@@ -2,6 +2,7 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.my_graph import set_plot, show
 import matplotlib.pylab as plt
+import numpy as np
 
 def hist(x, bins=20, ax=None,
          edgecolor='k', facecolor='b'):
@@ -21,7 +22,7 @@ def gghist(x, bins=20, ax=None, label=''):
     
     with plt.style.context(('ggplot')):
         if ax is None:
-            fig, ax = plt.subplots(figsize=(5,3))
+            fig, ax = plt.subplots(figsize=(4,3))
             plt.subplots_adjust(bottom=.2, left=.2)
         ax.bar(.5*(be[1:]+be[:-1]), hist, width=be[1]-be[0], label=label)
         
@@ -45,3 +46,4 @@ if __name__=='__main__':
                      LABELS=['Data 1', 'Data 2'])
     ax.legend()
     show(plt)
+
