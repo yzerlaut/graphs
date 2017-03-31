@@ -6,7 +6,7 @@ import string, datetime
 # SPECIAL PYTHON PACKAGES FOR:
 import svgutils.compose as sg # SVG
 import fpdf # PDF
-import PIL # BITMAP (png, jpg, ...)
+from PIL import Image # BITMAP (png, jpg, ...)
 
 def put_list_of_figs_to_svg_fig(FIGS, CAP_SIZE=14,\
                                 fig_name="fig.svg", visualize=True,\
@@ -67,6 +67,25 @@ def put_list_of_figs_to_multipage_pdf(FIGS,
         # d['Keywords'] = 'PdfPages multipage keywords author title subject'
         d['CreationDate'] = datetime.datetime(2009, 11, 13)
         d['ModDate'] = datetime.datetime.today()
+
+
+def concatenate_pngs(PNG_LIST, ordering='vertically', figname='fig.png'):
+    
+    images = map(Image.open, PNG_LIST)
+    widths, heights = zip(*(i.size for i in images))
+
+    if ordering=='vertically':
+        total_height = sum(heights)
+        max_width = max(widths)
+        new_im = Image.new('RGB', (max_width, total_height))
+        y_offset = 0
+        for fig in PNG_LIST:
+            im = Image.open(fig)
+            new_im.paste(im, (0, y_offset))
+            y_offset += im.size[1]
+
+    new_im.save(figname)
+
 
 if __name__=='__main__':
 
