@@ -1,4 +1,4 @@
-from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import MaxNLocator, NullFormatter
 import matplotlib as mpl
 import matplotlib.pylab as plt
 import numpy as np
@@ -33,6 +33,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
     if (xticks is None) and ('bottom' or 'top' in spines):
         ax.xaxis.set_major_locator( MaxNLocator(nbins = num_xticks) )
     else:
+        ax.xaxis.set_minor_formatter(NullFormatter())
         ax.set_xticks(xticks)
         
     if xticks_labels is not None:
@@ -41,6 +42,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
     if (yticks is None) and ('left' or 'right' in spines):
         ax.yaxis.set_major_locator( MaxNLocator(nbins = num_yticks) )
     else:
+        ax.yaxis.set_minor_formatter(NullFormatter())
         ax.set_yticks(yticks)
         
     if yticks_labels is not None:
@@ -112,7 +114,7 @@ def cm2inch(*tupl):
 
 
 def build_bar_legend(X, ax, mymap, label='$\\nu$ (Hz)',\
-                     bounds=None,ticks_labels=None,
+                     bounds=None, ticks_labels=None,
                      orientation='vertical', scale='linear',\
                      color_discretization=None):
     """ X -> ticks """
