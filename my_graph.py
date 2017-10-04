@@ -16,7 +16,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
                 xticks_labels=None, yticks_labels=None,\
                 xticks_rotation=0, yticks_rotation=0,\
                 xlim_enhancment=2, ylim_enhancment=2,\
-                xlim=None, ylim=None):
+                xlim=None, ylim=None, fontsize=15):
     
     # drawing spines
     adjust_spines(ax, spines, tck_outward=tck_outward)
@@ -53,8 +53,8 @@ def set_plot(ax, spines=['left', 'bottom'],\
     if yticks_labels is not None:
         ax.set_yticklabels(yticks_labels, rotation=yticks_rotation)
 
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
+    ax.set_xlabel(xlabel, fontsize=fontsize)
+    ax.set_ylabel(ylabel, fontsize=fontsize)
 
         
 def ticks_number(ax, xticks=3, yticks=3):
@@ -159,6 +159,24 @@ def show(module=None):
     input('Hit Enter To Close')
     plt.close()
         
+def from_pval_to_star(p,
+                      threshold1=1e-3,
+                      threshold2=1e-2,
+                      threshold3=5e-2):
+    if p<threshold1:
+        return '***'
+    elif p<threshold2:
+        return '**'
+    elif p<threshold3:
+        return '*'
+    else:
+        return 'n.s.'
+    
+def sci_str(x, rounding=0, remove_0_in_exp=True):
+    y = ('{:.' + str(int(rounding))+'e}').format(x)
+    if remove_0_in_exp: y = y.replace('-0', '-')
+    return y
+    
 if __name__=='__main__':
 
     import matplotlib.pylab as plt
