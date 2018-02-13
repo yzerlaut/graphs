@@ -3,12 +3,17 @@ import matplotlib as mpl
 import matplotlib.pylab as plt
 import numpy as np
 mpl.rcParams.update({'axes.labelsize': 15, 'xtick.labelsize': 14, 'ytick.labelsize': 14})
+import os
+desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 
 # custom colors
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
 
+def save_on_desktop(fig, figname='temp.svg'):
+    fig.savefig(desktop+figname)
+    
 def set_plot(ax, spines=['left', 'bottom'],\
                 num_xticks=5, num_yticks=5,\
                 xlabel='', ylabel='', tck_outward=5,\
@@ -176,7 +181,7 @@ def sci_str(x, rounding=0, remove_0_in_exp=True):
     y = ('{:.' + str(int(rounding))+'e}').format(x)
     if remove_0_in_exp: y = y.replace('-0', '-')
     return y
-    
+
 if __name__=='__main__':
 
     import matplotlib.pylab as plt
