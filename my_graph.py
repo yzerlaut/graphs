@@ -5,6 +5,7 @@ import numpy as np
 mpl.rcParams.update({'axes.labelsize': 15, 'xtick.labelsize': 14, 'ytick.labelsize': 14})
 import os
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
+from matplotlib.cm import viridis, copper
 
 # custom colors
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
