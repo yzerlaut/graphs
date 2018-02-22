@@ -5,6 +5,7 @@ import numpy as np
 import os
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 from scaling import *
+from matplotlib.cm import viridis, copper
 
 # custom colors
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
@@ -184,6 +185,7 @@ def sci_str(x, rounding=0, remove_0_in_exp=True):
 
 if __name__=='__main__':
 
+    
     import matplotlib.pylab as plt
     plt.subplots()
     add_errorbar(plt.gca(), [0], [1], [.2])
