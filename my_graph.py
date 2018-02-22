@@ -2,9 +2,9 @@ from matplotlib.ticker import MaxNLocator, NullFormatter
 import matplotlib as mpl
 import matplotlib.pylab as plt
 import numpy as np
-mpl.rcParams.update({'axes.labelsize': 15, 'xtick.labelsize': 14, 'ytick.labelsize': 14})
 import os
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
+from scaling import *
 
 # custom colors
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
@@ -21,7 +21,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
                 xticks_labels=None, yticks_labels=None,\
                 xticks_rotation=0, yticks_rotation=0,\
                 xlim_enhancment=2, ylim_enhancment=2,\
-                xlim=None, ylim=None, fontsize=15):
+                xlim=None, ylim=None, fontsize=FONTSIZE):
     
     # drawing spines
     adjust_spines(ax, spines, tck_outward=tck_outward)
