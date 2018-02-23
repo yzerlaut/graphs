@@ -13,27 +13,6 @@ mpl.rcParams.update({'axes.labelsize': FONTSIZE,
 A0_format = {'width':8.3, 'height':11.7}
 
 
-def figure(width_to_height=1.2,
-           A0_ratio=0.2,
-           wspace=0.2, hspace=0.1,
-           left=0.3, right=0.9,
-           bottom=0.3, top=0.9,
-           with_top_left_letter='',
-           fontsize=10, fontweight='bold'):
-    """
-    scales figures with respect to the A0 format !
-    """
-
-    fig = plt.figure(\
-                     figsize=(A0_format['width']*A0_ratio*width_to_height,
-                              A0_format['height']*A0_ratio))
-    plt.subplots_adjust(wspace=wspace, hspace=hspace,
-                        left=left, right=right,
-                        bottom=bottom, top=top)
-    plt.annotate(with_top_left_letter, (0.01,.99), xycoords='figure fraction',
-                 fontsize=fontsize, fontweight='bold')
-    return fig
-
 
 def subplots(width_to_height=1.2,
              AX_dim = [1,0],
