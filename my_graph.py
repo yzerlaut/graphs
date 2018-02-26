@@ -10,6 +10,7 @@ home = os.path.expanduser('~')+os.path.sep
 from graphs.scaling import *
 from graphs.adjust_plots import *
 from graphs.annotations import *
+import graphs.line_plots as line_plots
 
 # custom colors
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
@@ -28,9 +29,12 @@ def figure(A0_ratio=[0.25, 0.14],
            axes_extents=None,
            with_top_left_letter='',
            fontsize=FONTSIZE, fontweight='bold'):
+    
     """
     scales figures with respect to the A0 format !
 
+    the wspace, hspace, ... values are factor that modulates the wspace0, hspace0
+    -> then use >1 to make bigger, and <1 to make smaller...
 
     Subplots are build with this convention for the geometry:
     (X,Y)
@@ -127,32 +131,14 @@ def plot(x=None, y=None, sy=None, color='k',
         x = np.arange(len(y))
 
     if (Y is not None):
-        # meaning we have to plot several curves
-        if COLORS is None:
-            COLORS = [colormap(i/(len(Y)-1)) for i in range(len(Y))]
         if (X is None) and (x is not None):
             X = [x for i in range(len(Y))]
         elif (X is None):
             X = [np.arange(len(y)) for y in Y]
-        if (LABELS is None):
-            LABELS = ['Y'+str(i+1) for i in range(len(Y))]
-        for x, y, l, c in zip(X, Y, LABELS, COLORS):
-            ax.plot(x, y, color=c, lw=lw, label=l)
 
-        # then errorbars if needed:
-        if (sY is not None):
-            for x, y, sy, c in zip(X, Y, sY, COLORS):
-                ax.fill_between(x, y-sy, y+sy,
-                                color=c, lw=0, alpha=alpha_std)
-        
+        line_plots.multiple_curves(ax, X, Y, sY, COLORS, LABELS, alpha_std=alpha_std, lw=lw)
     else:
-        # we print a single curve
-        ax.plot(x, y, color=color, lw=lw)
-        # then errorbars if needed:
-        if (sy is not None):
-            ax.fill_between(x, y-sy, y+sy,
-                            color=color, lw=0, alpha=alpha_std)
-        
+        line_plots.single_curve(ax, x, y, sy, color, alpha_std=alpha_std, lw=lw)
 
     # if legend_args is not
     if legend_args is not None:
@@ -297,7 +283,8 @@ if __name__=='__main__':
              np.ones(20),
              np.random.randn(20),
              np.random.randn(20)],
-         ax=AX[0][0], COLORS=[Red, Purple, Blue, Green],
+         ax=AX[0][0],
+         COLORS=[Red, Purple, Blue, Green],
          xlabel='time', ylabel='value',
                      legend_args={})
     
