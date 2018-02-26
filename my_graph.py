@@ -9,50 +9,87 @@ desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path
 home = os.path.expanduser('~')+os.path.sep
 from graphs.scaling import FONTSIZE, A0_format
 from graphs.adjust_plots import *
+from graphs.annotations import *
 
 # custom colors
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
 
-def figure(width_to_height=1.4,
-           A0_ratio=0.2,
-           wspace=0.2, hspace=0.1,
-           left=0.3, right=0.9,
-           bottom=0.3, top=0.9,
-           axes = (2,),
+
+def figure(width_to_height=1.6,
+           A0_ratio=0.18,
+           wspace=0.4, hspace=0.4,
+           left=0.3, right=0.97,
+           bottom=0.3, top=0.97,
+           axes = (1,1),
+           axes_extents=None,
            with_top_left_letter='',
            fontsize=10, fontweight='bold'):
     """
     scales figures with respect to the A0 format !
+
+
+    Subplots are build with this convention for the geometry:
+    (X,Y)
+    ------ X -------------->
+    |                 |     |
+    |      (3,1)      |(1,1)|
+    |                 |     |
+    |-------------------
+    Y     |           |     |
+    |(1,1)|   (2,1)   |(1,1)|
+    |     |           |     |
+    |------------------------     
+    v
+
+    TO PRODUCE THIS, RUN:
+    figure(axes_extents=[\
+                         [[3,1], [1,1] ],
+                         [[1,1], [2,1], [1,1] ] ] )
+    show()
+
     """
 
-    fig = plt.figure(\
-                     figsize=(A0_format['width']*A0_ratio*width_to_height,
-                              A0_format['height']*A0_ratio))
-    plt.subplots_adjust(wspace=wspace, hspace=hspace,
-                        left=left, right=right,
-                        bottom=bottom, top=top)
-    plt.annotate(with_top_left_letter, (0.01,.99), xycoords='figure fraction',
+    if axes_extents is None:
+        if (len(axes)==1) and (axes[0]==1):
+            axes_extents = [1]
+        elif (axes[1]==0):
+            axes_extents = np.ones(axes[0])
+        elif (axes[0]==0):
+            axes_extents = np.ones(axes[1])
+        else:
+            axes_extents = [[[1,1] for j in range(axes[1])]\
+                            for i in range(axes[0])]
+    
+    x_plots = np.sum([axes_extents[0][j][0] \
+                      for j in range(len(axes_extents[0]))])
+    y_plots = np.sum([axes_extents[i][0][1] \
+                      for i in range(len(axes_extents))])
+    
+    print(x_plots, y_plots)
+    fig = plt.figure(**scale_figure(width_to_height, A0_ratio,
+                                            x_plots, y_plots))
+    plt.subplots_adjust(**scale_graphs_boudaries(x_plots, y_plots))
+    plt.annotate(with_top_left_letter, (0.01,.99),
+                 xycoords='figure fraction',
                  fontsize=fontsize, fontweight='bold')
 
-
-    if (len(axes)==1) and (axes[0]==1):
-        AX = plt.subplot2grid((1,1), (0,0))
-        set_plot(AX)
-
-    elif (len(axes)==1) and (axes[0]>1):
-        AX = []
-        for i in range(int(axes[0])):
-            AX.append(plt.subplot2grid((axes[0],1), (i,0)))
-            set_plot(AX[-1])
-
-    elif (len(axes)==1) and (axes[0]>1):
-        AX = []
-        for i in range(int(axes[0])):
-            AX.append(plt.subplot2grid((axes[0],1), (i,0)))
-            set_plot(AX[-1])
-            
+    AX = []
+    j0_row = 0
+    for j in range(len(axes_extents)):
+        AX_line = []
+        i0_line = 0
+        for i in range(len(axes_extents[j])):
+            AX_line.append(plt.subplot2grid(\
+                                            (y_plots, x_plots),
+                                            (j0_row, i0_line),\
+                                            colspan=axes_extents[j][i][0],
+                                            rowspan=axes_extents[j][i][1]))
+            i0_line += axes_extents[j][i][0]
+        j0_row += axes_extents[j][i][1]
+        AX.append(AX_line)
+        
     return fig, AX
 
 def save_on_desktop(fig, figname='temp.svg'):
@@ -131,23 +168,6 @@ def show(module=None):
     input('Hit Enter To Close')
     plt.close()
         
-def from_pval_to_star(p,
-                      threshold1=1e-3,
-                      threshold2=1e-2,
-                      threshold3=5e-2):
-    if p<threshold1:
-        return '***'
-    elif p<threshold2:
-        return '**'
-    elif p<threshold3:
-        return '*'
-    else:
-        return 'n.s.'
-    
-def sci_str(x, rounding=0, remove_0_in_exp=True):
-    y = ('{:.' + str(int(rounding))+'e}').format(x)
-    if remove_0_in_exp: y = y.replace('-0', '-')
-    return y
 
 if __name__=='__main__':
 
@@ -155,7 +175,13 @@ if __name__=='__main__':
     # plt.subplots()
     # add_errorbar(plt.gca(), [0], [1], [.2])
     # set_plot(plt.gca())
-    figure()
+    # figure(axes_extents=[\
+    #                      [[3,2], [1,2] ],
+    #                      [[1,1], [2,1], [1,1] ] ] )
+    fig, _ = figure(axes=(3,3))
+    # save_on_desktop(fig, figname='1.svg')
+    show()
+    fig, _ = figure()
+    # save_on_desktop(fig, figname='2.svg')
     show()
 
-    
