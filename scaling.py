@@ -13,7 +13,9 @@ mpl.rcParams.update({'axes.labelsize': FONTSIZE,
 A0_format = {'width':8.3, 'height':11.7}
 
 
-def annotate(s, stuff, x=0.5, y=0.8, fontsize=FONTSIZE, fontweight='normal'):
+def annotate(s, stuff, x=0.5, y=0.8,
+             fontsize=FONTSIZE,
+             fontweight='normal'):
     print(type(stuff))
     if type(stuff)==mpl.figure.Figure:
         plt.annotate(s, (x,y), xycoords='figure fraction',
