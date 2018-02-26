@@ -11,6 +11,7 @@ from graphs.scaling import *
 from graphs.adjust_plots import *
 from graphs.annotations import *
 import graphs.line_plots as line_plots
+import graphs.scatter_plots as scatter_plots
 
 # custom colors
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
@@ -108,16 +109,18 @@ def save_on_desktop(fig, figname='temp.svg'):
 
 
 ###########################################################
-###### Line plot
+###### a versatile line plot function
 ###########################################################
 
 def plot(x=None, y=None, sy=None, color='k',
          X=None, Y=None, sY=None, COLORS=None, colormap=viridis,
          ax=None,
-         lw=2, alpha_std=0.3,
+         lw=2, alpha_std=0.3, ms=3,
          xlabel='', ylabel='occurence',
          LABELS=None,
-         figure_args={}, legend_args=None):
+         figure_args={},
+         axes_args={},
+         legend_args=None):
 
     # getting or creating the axis
     if ax is None:
@@ -136,43 +139,70 @@ def plot(x=None, y=None, sy=None, color='k',
         elif (X is None):
             X = [np.arange(len(y)) for y in Y]
 
-        line_plots.multiple_curves(ax, X, Y, sY, COLORS, LABELS, alpha_std=alpha_std, lw=lw)
+        line_plots.multiple_curves(ax, X, Y, sY, COLORS, LABELS,
+                                   alpha_std=alpha_std, lw=lw)
     else:
-        line_plots.single_curve(ax, x, y, sy, color, alpha_std=alpha_std, lw=lw)
+        line_plots.single_curve(ax, x, y, sy, color,
+                                alpha_std=alpha_std, lw=lw)
 
     # if legend_args is not
     if legend_args is not None:
-        ax.legend()
+        ax.legend(**legend_args)
+
     
-    set_plot(ax, xlabel=xlabel, ylabel=ylabel)
-    
+    set_plot(ax, **axes_args)
+
     return fig, ax
 
 ###########################################################
-######  Scatter plot
+###### a versatile scatter plot function
 ###########################################################
 
-def scatter(x, y=None,
+def scatter(x=None, y=None, sx=None, sy=None,
+            color='k',
+            X=None, Y=None, sX=None, sY=None,
+            COLORS=None, colormap=viridis,
             ax=None,
-            color='k', marker='o',
-            lw=0., ms=3.,
+            lw=0, elw=1, ms=3, marker='o',
             xlabel='', ylabel='occurence',
-            figure_args={}):
+            LABELS=None,
+            figure_args={},
+            axes_args={},
+            legend_args=None):
 
-    if y is None:
-        y = x
-        x = np.arange(len(y))
-        
+    # getting or creating the axis
     if ax is None:
         fig, AX = figure(**figure_args)
         ax = AX[0][0]
     else:
         fig = plt.gcf()
+
+    if (y is None) and (Y is None):
+        y = x
+        x = np.arange(len(y))
+
+    if (Y is not None):
+        if (X is None) and (x is not None):
+            X = [x for i in range(len(Y))]
+        elif (X is None):
+            X = [np.arange(len(y)) for y in Y]
+        scatter_plots.multiple_curves(ax, X, Y, sX, sY, COLORS, LABELS,\
+                                      marker=marker, lw=lw, ms=ms,
+                                      elw=elw)
+    else:
+        scatter_plots.single_curve(ax, x, y, sx, sy,
+                                   color=color,
+                                   marker=marker, lw=lw, ms=ms,
+                                   elw=elw)
+
+    # if legend_args is not
+    if legend_args is not None:
+        ax.legend(**legend_args)
     
-    ax.plot(x, y, color=color, marker=marker, lw=lw, ms=ms)
-    set_plot(ax, xlabel=xlabel, ylabel=ylabel)
+    set_plot(ax, **axes_args)
     
     return fig, ax
+
 
 ###########################################################
 ######  Histogram
@@ -270,7 +300,7 @@ if __name__=='__main__':
                                    [[1,1], [2,1], [1,1] ] ],
                      left=.3, bottom=.4, hspace=1.4, wspace=1.2,
                      with_top_left_letter='A',\
-                     A0_ratio=[.7, .3])
+                     A0_ratio=[.8, .35])
 
     
     plot(Y=[
@@ -285,25 +315,30 @@ if __name__=='__main__':
              np.random.randn(20)],
          ax=AX[0][0],
          COLORS=[Red, Purple, Blue, Green],
-         xlabel='time', ylabel='value',
-                     legend_args={})
+         legend_args={'frameon':False,
+                      'prop':{'size':'small'}})
     
-    scatter(np.random.randn(200), np.random.randn(200),
-            ax=AX[1][0], xlabel='value', color='r')
+    scatter(X=np.random.randn(4,5), Y=np.random.randn(4,5),
+            sX=np.random.randn(4,5),sY=np.random.randn(4,5),
+            ax=AX[1][0], color='r')
     
     plot(np.random.randn(20), sy=np.random.randn(20),
          ax=AX[1][1])
+    scatter(np.random.randn(20), sy=np.random.randn(20),
+            ax=AX[1][1])
 
     plot(np.sin(np.linspace(0,1)*6*np.pi), np.linspace(0,1),
          ax=AX[0][1], color=Purple)
+    plot(np.cos(np.linspace(0,1)*6*np.pi), np.linspace(0,1),
+         ax=AX[0][1], color=Green)
     
-    hist(np.random.randn(200), ax=AX[1][2], xlabel='some value')
+    hist(np.random.randn(200), ax=AX[1][2])
     
-    save_on_desktop(fig, figname='1.svg')
+    save_on_desktop(fig, figname='fig.svg')
     show()
     # fig, _ = figure()
-    fig, _ = hist(np.random.randn(200),
-                  xlabel='some value')
-    save_on_desktop(fig, figname='2.svg')
-    show()
+    # fig, _ = hist(np.random.randn(200),
+    #               xlabel='some value')
+    # save_on_desktop(fig, figname='2.svg')
+    # show()
 
