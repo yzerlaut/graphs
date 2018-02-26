@@ -3,9 +3,9 @@ from matplotlib.ticker import MaxNLocator, NullFormatter
 from graphs.scaling import FONTSIZE, A0_format
 
 def set_plot(ax, spines=['left', 'bottom'],\
-                num_xticks=4, num_yticks=4,\
-                xlabel='', ylabel='', tck_outward=5,\
-                xticks=None, yticks=None,\
+             num_xticks=4, num_yticks=4,\
+             xlabel='', ylabel='', tck_outward=5,\
+             xticks=None, yticks=None,\
                 xticks_labels=None, yticks_labels=None,\
                 xticks_rotation=0, yticks_rotation=0,\
                 xlim_enhancment=2, ylim_enhancment=2,\
@@ -91,7 +91,7 @@ def scale_graphs_boudaries(x_plots, y_plots,
             'hspace':hspace*y_plots,
             'wspace':wspace*x_plots}
 
-def scale_figure(width_to_height, A0_ratio, x_plots, y_plots,
+def scale_figure(height_to_width, A0_ratio, x_plots, y_plots,
                  wspace=0.5, hspace=0.5,
                  left=0.3, right=0.9,
                  bottom=0.3, top=0.9):
@@ -106,18 +106,14 @@ def scale_figure(width_to_height, A0_ratio, x_plots, y_plots,
                                    left=left, right=right,
                                    bottom=bottom, top=top)
     
-    print(SCALE)
-    print(SCALE0)
     a = (1-SCALE['left']-SCALE['right'])/x_plots-SCALE['wspace']
     a0 = (1-SCALE0['left']-SCALE0['right'])/x_plots-SCALE0['wspace']
     b = (1-SCALE['top']-SCALE['bottom'])/y_plots-SCALE['hspace']
     b0 = (1-SCALE0['top']-SCALE0['bottom'])/y_plots-SCALE0['hspace']
-    print('x', a/a0)
-    print('y', b/b0)
     return {
         'figsize':(\
-            A0_format['width']*A0_ratio*width_to_height*x_plots,
-                   A0_format['height']*A0_ratio*y_plots)}
+            A0_format['width']*A0_ratio*x_plots,
+                   A0_format['height']*A0_ratio*y_plots*height_to_width)}
 
 
 

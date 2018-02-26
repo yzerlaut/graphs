@@ -7,7 +7,7 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 home = os.path.expanduser('~')+os.path.sep
-from graphs.scaling import FONTSIZE, A0_format
+from graphs.scaling import *
 from graphs.adjust_plots import *
 from graphs.annotations import *
 
@@ -17,15 +17,17 @@ Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
 
 
-def figure(width_to_height=1.6,
-           A0_ratio=0.18,
-           wspace=0.4, hspace=0.4,
-           left=0.3, right=0.97,
-           bottom=0.3, top=0.97,
+def figure(A0_ratio=[0.25, 0.14],
+           wspace=1., hspace=1.,
+           left=1., right=1.,
+           bottom=1., top=1.,
+           wspace0=0.4, hspace0=0.4,
+           left0=0.32, right0=0.97,
+           bottom0=0.32, top0=0.97,
            axes = (1,1),
            axes_extents=None,
            with_top_left_letter='',
-           fontsize=10, fontweight='bold'):
+           fontsize=FONTSIZE, fontweight='bold'):
     """
     scales figures with respect to the A0 format !
 
@@ -67,10 +69,15 @@ def figure(width_to_height=1.6,
     y_plots = np.sum([axes_extents[i][0][1] \
                       for i in range(len(axes_extents))])
     
-    print(x_plots, y_plots)
-    fig = plt.figure(**scale_figure(width_to_height, A0_ratio,
-                                            x_plots, y_plots))
-    plt.subplots_adjust(**scale_graphs_boudaries(x_plots, y_plots))
+    fig = plt.figure(figsize=(A0_format['width']*A0_ratio[0],
+                              A0_format['height']*A0_ratio[1]))
+
+    plt.subplots_adjust(wspace=wspace0*wspace,
+                        hspace=hspace0*hspace,
+                        left=left0*left,
+                        right=right0*right,
+                        bottom=bottom0*bottom,
+                        top=top0*top)
     plt.annotate(with_top_left_letter, (0.01,.99),
                  xycoords='figure fraction',
                  fontsize=fontsize, fontweight='bold')
@@ -94,11 +101,116 @@ def figure(width_to_height=1.6,
 
 def save_on_desktop(fig, figname='temp.svg'):
     fig.savefig(desktop+figname)
+
+
+###########################################################
+###### Line plot
+###########################################################
+
+def plot(x=None, y=None, sy=None, color='k',
+         X=None, Y=None, sY=None, COLORS=None, colormap=viridis,
+         ax=None,
+         lw=2, alpha_std=0.3,
+         xlabel='', ylabel='occurence',
+         LABELS=None,
+         figure_args={}, legend_args=None):
+
+    # getting or creating the axis
+    if ax is None:
+        fig, AX = figure(**figure_args)
+        ax = AX[0][0]
+    else:
+        fig = plt.gcf()
+
+    if (y is None) and (Y is None):
+        y = x
+        x = np.arange(len(y))
+
+    if (Y is not None):
+        # meaning we have to plot several curves
+        if COLORS is None:
+            COLORS = [colormap(i/(len(Y)-1)) for i in range(len(Y))]
+        if (X is None) and (x is not None):
+            X = [x for i in range(len(Y))]
+        elif (X is None):
+            X = [np.arange(len(y)) for y in Y]
+        if (LABELS is None):
+            LABELS = ['Y'+str(i+1) for i in range(len(Y))]
+        for x, y, l, c in zip(X, Y, LABELS, COLORS):
+            ax.plot(x, y, color=c, lw=lw, label=l)
+
+        # then errorbars if needed:
+        if (sY is not None):
+            for x, y, sy, c in zip(X, Y, sY, COLORS):
+                ax.fill_between(x, y-sy, y+sy,
+                                color=c, lw=0, alpha=alpha_std)
+        
+    else:
+        # we print a single curve
+        ax.plot(x, y, color=color, lw=lw)
+        # then errorbars if needed:
+        if (sy is not None):
+            ax.fill_between(x, y-sy, y+sy,
+                            color=color, lw=0, alpha=alpha_std)
+        
+
+    # if legend_args is not
+    if legend_args is not None:
+        ax.legend()
     
-def add_errorbar(ax, x, y, sy, width=.25, color='k', facecolor='lightgray', lw=4):
-    bar = ax.bar(x, y, width, edgecolor=color, yerr=sy,\
-                 error_kw={'ecolor':color,'linewidth':lw}, capsize=10, lw=lw, facecolor=facecolor)
-    return bar
+    set_plot(ax, xlabel=xlabel, ylabel=ylabel)
+    
+    return fig, ax
+
+###########################################################
+######  Scatter plot
+###########################################################
+
+def scatter(x, y=None,
+            ax=None,
+            color='k', marker='o',
+            lw=0., ms=3.,
+            xlabel='', ylabel='occurence',
+            figure_args={}):
+
+    if y is None:
+        y = x
+        x = np.arange(len(y))
+        
+    if ax is None:
+        fig, AX = figure(**figure_args)
+        ax = AX[0][0]
+    else:
+        fig = plt.gcf()
+    
+    ax.plot(x, y, color=color, marker=marker, lw=lw, ms=ms)
+    set_plot(ax, xlabel=xlabel, ylabel=ylabel)
+    
+    return fig, ax
+
+###########################################################
+######  Histogram
+###########################################################
+
+def hist(x, bins=20, ax=None,
+         edgecolor='k', facecolor='lightgray',
+         lw=0.3,
+         xlabel='', ylabel='occurence',
+         normed=True,
+         figure_args={}):
+    
+    hist, be = np.histogram(x, bins=bins, normed=normed)
+    
+    if ax is None:
+        fig, AX = figure(**figure_args)
+    fig, ax = plt.gcf(), plt.gca()
+        
+    ax.bar(.5*(be[1:]+be[:-1]), hist, width=be[1]-be[0], 
+           edgecolor=edgecolor, facecolor=facecolor, lw=lw)
+
+    set_plot(ax, xlabel=xlabel, ylabel=ylabel)
+    
+    return fig, ax
 
 def set_subplot_safe_for_labels(fig, FIGSIZE=None, FONTSIZE=16,
                                     hspace=0.1, vspace=0.1):
@@ -119,14 +231,6 @@ def replace_axis_by_legend(ax, text, x0=0.1, y0=0.1, on_fig=False):
         ax.annotate(text, (x0, y0), xycoords='axes fraction')
 
     
-def cm2inch(*tupl):
-    inch = 2.54
-    if isinstance(tupl[0], tuple):
-        return tuple(i/inch for i in tupl[0])
-    else:
-        return tuple(i/inch for i in tupl)    
-
-
 def build_bar_legend(X, ax, mymap, label='$\\nu$ (Hz)',\
                      bounds=None, ticks_labels=None,
                      orientation='vertical', scale='linear',\
@@ -175,13 +279,44 @@ if __name__=='__main__':
     # plt.subplots()
     # add_errorbar(plt.gca(), [0], [1], [.2])
     # set_plot(plt.gca())
-    # figure(axes_extents=[\
-    #                      [[3,2], [1,2] ],
-    #                      [[1,1], [2,1], [1,1] ] ] )
-    fig, _ = figure(axes=(3,3))
-    # save_on_desktop(fig, figname='1.svg')
+    fig, AX = figure(axes_extents=[\
+                                  [[3,2], [1,2] ],
+                                   [[1,1], [2,1], [1,1] ] ],
+                     left=.3, bottom=.4, hspace=1.4, wspace=1.2,
+                     with_top_left_letter='A',\
+                     A0_ratio=[.7, .3])
+
+    
+    plot(Y=[
+        np.random.randn(20),
+        np.random.randn(20),
+        np.random.randn(20),
+        np.random.randn(20)],
+         sY=[
+             np.ones(20),
+             np.ones(20),
+             np.random.randn(20),
+             np.random.randn(20)],
+         ax=AX[0][0], COLORS=[Red, Purple, Blue, Green],
+         xlabel='time', ylabel='value',
+                     legend_args={})
+    
+    scatter(np.random.randn(200), np.random.randn(200),
+            ax=AX[1][0], xlabel='value', color='r')
+    
+    plot(np.random.randn(20), sy=np.random.randn(20),
+         ax=AX[1][1])
+
+    plot(np.sin(np.linspace(0,1)*6*np.pi), np.linspace(0,1),
+         ax=AX[0][1], color=Purple)
+    
+    hist(np.random.randn(200), ax=AX[1][2], xlabel='some value')
+    
+    save_on_desktop(fig, figname='1.svg')
     show()
-    fig, _ = figure()
-    # save_on_desktop(fig, figname='2.svg')
+    # fig, _ = figure()
+    fig, _ = hist(np.random.randn(200),
+                  xlabel='some value')
+    save_on_desktop(fig, figname='2.svg')
     show()
 

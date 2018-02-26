@@ -7,10 +7,18 @@ import matplotlib.pylab as plt
 FONTSIZE= 9
 mpl.rcParams.update({'axes.labelsize': FONTSIZE,
                      'font.size': FONTSIZE,
+                     'legend.fontsize': FONTSIZE,
                      'xtick.labelsize': FONTSIZE,
                      'ytick.labelsize': FONTSIZE})
 
 A0_format = {'width':8.3, 'height':11.7}
+
+def cm2inch(*tupl):
+    inch = 2.54
+    if isinstance(tupl[0], tuple):
+        return tuple(i/inch for i in tupl[0])
+    else:
+        return tuple(i/inch for i in tupl)    
 
 
 def annotate(s, stuff, x=0.5, y=0.8,

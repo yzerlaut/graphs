@@ -1,6 +1,6 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from graphs.my_graph import set_plot
+from graphs.adjust_plots import set_plot
 
 def set_scale_and_annotation(ax,
                              xunit='s', yunit='mV',
@@ -46,9 +46,13 @@ def bars_only_multiple_traces(ax, X, Y,
 
 if __name__=='__main__':
 
-    import matplotlib.pylab as plt
-    import numpy as np
-    bars_only_multiple_traces(plt.gca(),\
-                              [np.arange(100) for i in range(10)],
-                              [np.random.randn(100)*10 for i in range(10)])
-    plt.show()
+    from graphs.my_graph import *
+    
+    fig, _ = figure(axes_extents=[\
+                                       [[3,2]],
+                                       [[3,1]]\
+                                       ],
+                    height_to_width=0.4, hspace=.01)
+    save_on_desktop(fig)
+    
+    show()
