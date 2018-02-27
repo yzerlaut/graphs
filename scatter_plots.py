@@ -10,7 +10,6 @@ def single_curve(ax, x, y, sx, sy,
     if (sx is None):
         sx = [0 for s in x]
         # then errorbars
-    print(sy)
     ax.errorbar(x, y, xerr=sx, yerr=sy, fmt='o-',
                 marker=marker, color=color,
                 lw=lw, ms=ms, elinewidth=elw)

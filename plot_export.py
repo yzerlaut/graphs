@@ -1,3 +1,7 @@
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+from graphs.scaling import FONTSIZE, A0_format, inch2cm, cm2inch
+
 import matplotlib.pylab as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
@@ -5,45 +9,66 @@ import string, datetime
 
 # SPECIAL PYTHON PACKAGES FOR:
 import svgutils.compose as sg # SVG
-import fpdf # PDF
+# import fpdf # PDF
 from PIL import Image # BITMAP (png, jpg, ...)
 
-def put_list_of_figs_to_svg_fig(FIGS, CAP_SIZE=14,\
-                                fig_name="fig.svg", visualize=True,\
-                                transparent=True, correc_factor=70.):
+def put_list_of_figs_to_svg_fig(FIGS,
+                                fig_name="fig.svg",
+                                visualize=True,\
+                                Props = None,
+                                with_top_left_letter=False,
+                                transparent=True):
     """ take a list of figures and make a multi panel plot"""
     
     label = list(string.ascii_uppercase)[:len(FIGS)]
 
-    SIZE = []
-    for fig in FIGS:
-        SIZE.append(fig.get_size_inches())
-    width = np.max([s[0] for s in SIZE])
-    height = np.max([s[1] for s in SIZE])
 
-    LABELS, XCOORD, YCOORD = [], [], []
-    # saving as svg
+    if Props is None:
+        LABELS, XCOORD, YCOORD = [], [], []
+
+        SIZE = []
+        for fig in FIGS:
+            SIZE.append(fig.get_size_inches())
+        width = np.max([s[0] for s in SIZE])
+        height = np.max([s[1] for s in SIZE])
+        
+        # saving as svg
+        for i in range(len(FIGS)):
+            LABELS.append(label[i])
+            XCOORD.append((i%3)*width*100)
+            YCOORD.append(int(i/3)*height*100)
+
+    else:
+        XCOORD, YCOORD = Props['XCOORD'],\
+                Props['YCOORD'], 
+        if 'LABELS' in Props:
+            LABELS = Props['LABELS']
+        else:
+            LABELS = ['' for x in XCOORD]
+            
     for i in range(len(FIGS)):
         ff = 'f.svg'
         FIGS[i].savefig('/tmp/'+str(i)+'.svg', format='svg',
                         transparent=transparent)
-        LABELS.append(label[i])
-        XCOORD.append((i%3)*width*correc_factor)
-        YCOORD.append(int(i/3)*height*correc_factor)
-
+        
     PANELS = []
     for i in range(len(FIGS)):
         PANELS.append(sg.Panel(\
             sg.SVG('/tmp/'+str(i)+'.svg').move(XCOORD[i],YCOORD[i]),\
-            sg.Text(LABELS[i], 25, 20, size=12, weight='bold').move(\
-                                                XCOORD[i],YCOORD[i]))\
+            sg.Text(LABELS[i], 15, 10,
+                    size=FONTSIZE, weight='bold').move(\
+                                                       XCOORD[i],YCOORD[i]))\
         )
-    sg.Figure(str(.3*3.*width)+"cm", str(.3*height*int(len(FIGS)/3))+"cm",\
-              *PANELS).save(fig_name)
+    sg.Figure("21cm", "29.7cm", *PANELS).save(fig_name)
 
     if visualize:
-        _ = True
-
+        os.system('convert '+fig_name+' '+fig_name.replace('.svg', '.png'))
+        plt.close('all')
+        z = plt.imread(fig_name.replace('.svg', '.png'))
+        plt.imshow(z)
+        show()
+        # os.system('open '+fig_name.replace('.svg', '.png'))
+        
 def put_list_of_figs_to_multipage_pdf(FIGS,
                                       pdf_name='figures.pdf',
                                       pdf_title=''):
@@ -90,11 +115,16 @@ def concatenate_pngs(PNG_LIST, ordering='vertically', figname='fig.png'):
 if __name__=='__main__':
 
     from my_graph import *
-    fig1, _ = plt.subplots(figsize=(2,2))
-    add_errorbar(plt.gca(), [0], [1], [.2])
-    set_plot(plt.gca())
-    fig2, _ = plt.subplots(figsize=(2,2))
-    add_errorbar(plt.gca(), [0], [1], [.2])
-    set_plot(plt.gca())
-    put_list_of_figs_to_multipage_pdf([fig1, fig2])
+
+    fig1, ax1 = plot(Y=np.random.randn(10,4),\
+                     sY=np.random.randn(10,4),
+                     fig_args={'with_top_left_letter':'A'})
+    fig2, ax2 = scatter(Y=np.random.randn(10,4),\
+                        sY=np.random.randn(10,4),
+                        fig_args={'with_top_left_letter':'B'})
+    
+    # put_list_of_figs_to_multipage_pdf([fig1, fig2])
+    put_list_of_figs_to_svg_fig([fig1, fig2, fig1],
+                                Props={'XCOORD':[100,250,400], 'YCOORD':[100,100,100]},
+                                visualize=True)
         

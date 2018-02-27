@@ -20,6 +20,13 @@ def cm2inch(*tupl):
     else:
         return tuple(i/inch for i in tupl)    
 
+def inch2cm(*tupl):
+    inch = 2.54
+    if isinstance(tupl[0], tuple):
+        return tuple(i*inch for i in tupl[0])
+    else:
+        return tuple(i*inch for i in tupl)    
+    
 
 def annotate(s, stuff, x=0.5, y=0.8,
              fontsize=FONTSIZE,

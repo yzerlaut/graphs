@@ -83,9 +83,7 @@ def figure(A0_ratio=[0.25, 0.14],
                         right=right0*right,
                         bottom=bottom0*bottom,
                         top=top0*top)
-    plt.annotate(with_top_left_letter, (0.01,.99),
-                 xycoords='figure fraction',
-                 fontsize=fontsize, fontweight='bold')
+
 
     AX = []
     j0_row = 0
@@ -102,6 +100,10 @@ def figure(A0_ratio=[0.25, 0.14],
         j0_row += axes_extents[j][i][1]
         AX.append(AX_line)
         
+    plt.annotate(with_top_left_letter, (0.01,.99),
+                 xycoords='figure fraction',
+                 fontsize=fontsize+1, fontweight='bold')
+    
     return fig, AX
 
 def save_on_desktop(fig, figname='temp.svg'):
@@ -118,13 +120,13 @@ def plot(x=None, y=None, sy=None, color='k',
          lw=2, alpha_std=0.3, ms=3,
          xlabel='', ylabel='occurence',
          LABELS=None,
-         figure_args={},
+         fig_args={},
          axes_args={},
          legend_args=None):
 
     # getting or creating the axis
     if ax is None:
-        fig, AX = figure(**figure_args)
+        fig, AX = figure(**fig_args)
         ax = AX[0][0]
     else:
         fig = plt.gcf()
@@ -149,7 +151,6 @@ def plot(x=None, y=None, sy=None, color='k',
     if legend_args is not None:
         ax.legend(**legend_args)
 
-    
     set_plot(ax, **axes_args)
 
     return fig, ax
@@ -166,13 +167,13 @@ def scatter(x=None, y=None, sx=None, sy=None,
             lw=0, elw=1, ms=3, marker='o',
             xlabel='', ylabel='occurence',
             LABELS=None,
-            figure_args={},
+            fig_args={},
             axes_args={},
             legend_args=None):
 
     # getting or creating the axis
     if ax is None:
-        fig, AX = figure(**figure_args)
+        fig, AX = figure(**fig_args)
         ax = AX[0][0]
     else:
         fig = plt.gcf()
@@ -213,12 +214,12 @@ def hist(x, bins=20, ax=None,
          lw=0.3,
          xlabel='', ylabel='occurence',
          normed=True,
-         figure_args={}):
+         fig_args={}):
     
     hist, be = np.histogram(x, bins=bins, normed=normed)
     
     if ax is None:
-        fig, AX = figure(**figure_args)
+        fig, AX = figure(**fig_args)
     fig, ax = plt.gcf(), plt.gca()
         
     ax.bar(.5*(be[1:]+be[:-1]), hist, width=be[1]-be[0], 
@@ -291,10 +292,6 @@ def show(module=None):
 
 if __name__=='__main__':
 
-    # import matplotlib.pylab as plt
-    # plt.subplots()
-    # add_errorbar(plt.gca(), [0], [1], [.2])
-    # set_plot(plt.gca())
     fig, AX = figure(axes_extents=[\
                                   [[3,2], [1,2] ],
                                    [[1,1], [2,1], [1,1] ] ],
@@ -316,7 +313,8 @@ if __name__=='__main__':
          ax=AX[0][0],
          COLORS=[Red, Purple, Blue, Green],
          legend_args={'frameon':False,
-                      'prop':{'size':'small'}})
+                      'prop':{'size':'small'}},
+         axes_args={'spines':['left']})
     
     scatter(X=np.random.randn(4,5), Y=np.random.randn(4,5),
             sX=np.random.randn(4,5),sY=np.random.randn(4,5),
@@ -326,6 +324,10 @@ if __name__=='__main__':
          ax=AX[1][1])
     scatter(np.random.randn(20), sy=np.random.randn(20),
             ax=AX[1][1])
+    plot(np.random.randn(20), sy=np.random.randn(20),
+            ax=AX[1][1], color=Red)
+    scatter(np.random.randn(20), sy=np.random.randn(20),
+            ax=AX[1][1], color=Red)
 
     plot(np.sin(np.linspace(0,1)*6*np.pi), np.linspace(0,1),
          ax=AX[0][1], color=Purple)
@@ -336,9 +338,10 @@ if __name__=='__main__':
     
     save_on_desktop(fig, figname='fig.svg')
     show()
+    
     # fig, _ = figure()
-    # fig, _ = hist(np.random.randn(200),
-    #               xlabel='some value')
+    # fig, _ = plot(Y=np.random.randn(10,4), sY=np.random.randn(10,4),
+    #               axes_args={'spines':['left'], 'xlabel':'my-x value'})
     # save_on_desktop(fig, figname='2.svg')
     # show()
 

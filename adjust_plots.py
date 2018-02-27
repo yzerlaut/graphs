@@ -1,16 +1,24 @@
-import matplotlib.pylab as plt
-from matplotlib.ticker import MaxNLocator, NullFormatter
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.scaling import FONTSIZE, A0_format
+from matplotlib.ticker import MaxNLocator, NullFormatter
 
 def set_plot(ax, spines=['left', 'bottom'],\
              num_xticks=4, num_yticks=4,\
              xlabel='', ylabel='', tck_outward=5,\
              xticks=None, yticks=None,\
-                xticks_labels=None, yticks_labels=None,\
-                xticks_rotation=0, yticks_rotation=0,\
-                xlim_enhancment=2, ylim_enhancment=2,\
-                xlim=None, ylim=None, fontsize=FONTSIZE):
-    
+             xticks_labels=None, yticks_labels=None,\
+             xticks_rotation=0, yticks_rotation=0,\
+             xlim_enhancment=2, ylim_enhancment=2,\
+             xlim=None, ylim=None, fontsize=FONTSIZE):
+
+
+    # no ticks if no axis bar
+    if not (('top' in spines) or ('bottom' in spines)):
+        xticks=[]
+    if not (('left' in spines) or ('right' in spines)):
+        yticks=[]
+        
     # drawing spines
     adjust_spines(ax, spines, tck_outward=tck_outward)
     
