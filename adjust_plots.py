@@ -5,11 +5,11 @@ from matplotlib.ticker import MaxNLocator, NullFormatter
 
 def set_plot(ax, spines=['left', 'bottom'],\
              num_xticks=4, num_yticks=4,\
-             xlabel='', ylabel='', tck_outward=5,\
+             xlabel='', ylabel='', tck_outward=3,\
              xticks=None, yticks=None,\
              xticks_labels=None, yticks_labels=None,\
              xticks_rotation=0, yticks_rotation=0,\
-             xlim_enhancment=2, ylim_enhancment=2,\
+             xlim_enhancment=1., ylim_enhancment=1.,\
              xlim=None, ylim=None, fontsize=FONTSIZE):
 
 

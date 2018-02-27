@@ -1,7 +1,6 @@
 import matplotlib.pylab as plt
 from matplotlib.ticker import MaxNLocator, NullFormatter
 from matplotlib.cm import viridis, copper
-import matplotlib as mpl
 import numpy as np
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
@@ -12,6 +11,8 @@ from graphs.adjust_plots import *
 from graphs.annotations import *
 import graphs.line_plots as line_plots
 import graphs.scatter_plots as scatter_plots
+from graphs.inset import add_inset
+from graphs.legend import *
 
 # custom colors
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
@@ -118,10 +119,11 @@ def plot(x=None, y=None, sy=None, color='k',
          X=None, Y=None, sY=None, COLORS=None, colormap=viridis,
          ax=None,
          lw=2, alpha_std=0.3, ms=3,
-         xlabel='', ylabel='occurence',
+         xlabel='', ylabel='occurence',bar_label='',
          LABELS=None,
          fig_args={},
          axes_args={},
+         bar_legend_args=None,
          legend_args=None):
 
     # getting or creating the axis
@@ -147,6 +149,14 @@ def plot(x=None, y=None, sy=None, color='k',
         line_plots.single_curve(ax, x, y, sy, color,
                                 alpha_std=alpha_std, lw=lw)
 
+    if bar_legend_args is not None:
+        cb = add_inset(cb, **bar_legend_args)
+        build_bar_legend(np.arange(len(LABELS)+1),
+                         cb,
+                         colormap,
+                         label=bar_label,
+                         ticks_labels=LABELS)
+        
     # if legend_args is not
     if legend_args is not None:
         ax.legend(**legend_args)
@@ -165,10 +175,11 @@ def scatter(x=None, y=None, sx=None, sy=None,
             COLORS=None, colormap=viridis,
             ax=None,
             lw=0, elw=1, ms=3, marker='o',
-            xlabel='', ylabel='occurence',
+            xlabel='', ylabel='occurence',bar_label='',
             LABELS=None,
             fig_args={},
             axes_args={},
+            bar_legend_args=None,
             legend_args=None):
 
     # getting or creating the axis
@@ -196,6 +207,14 @@ def scatter(x=None, y=None, sx=None, sy=None,
                                    marker=marker, lw=lw, ms=ms,
                                    elw=elw)
 
+    if bar_legend_args is not None:
+        cb = add_inset(ax, **bar_legend_args)
+        build_bar_legend(np.arange(len(Y)+1),
+                         cb,
+                         colormap,
+                         label=bar_label,
+                         ticks_labels=LABELS)
+        
     # if legend_args is not
     if legend_args is not None:
         ax.legend(**legend_args)
@@ -210,24 +229,32 @@ def scatter(x=None, y=None, sx=None, sy=None,
 ###########################################################
 
 def hist(x, bins=20, ax=None,
+         orientation='horizontal',
          edgecolor='k', facecolor='lightgray',
          lw=0.3,
          xlabel='', ylabel='occurence',
          normed=True,
-         fig_args={}):
+         fig_args={}, axes_args={}):
     
     hist, be = np.histogram(x, bins=bins, normed=normed)
     
     if ax is None:
         fig, AX = figure(**fig_args)
-    fig, ax = plt.gcf(), plt.gca()
-        
-    ax.bar(.5*(be[1:]+be[:-1]), hist, width=be[1]-be[0], 
-           edgecolor=edgecolor, facecolor=facecolor, lw=lw)
+        ax = AX[0][0]
+    else:
+        fig = plt.gcf()
 
-    set_plot(ax, xlabel=xlabel, ylabel=ylabel)
+    if orientation=='vertical':
+        ax.barh(.5*(be[1:]+be[:-1]), hist, height=be[1]-be[0], 
+                edgecolor=edgecolor, facecolor=facecolor, lw=lw)
+    elif orientation=='horizontal':
+        ax.bar(.5*(be[1:]+be[:-1]), hist, width=be[1]-be[0], 
+                edgecolor=edgecolor, facecolor=facecolor, lw=lw)
+        
+    set_plot(ax, **axes_args)
     
     return fig, ax
+
 
 def set_subplot_safe_for_labels(fig, FIGSIZE=None, FONTSIZE=16,
                                     hspace=0.1, vspace=0.1):
@@ -248,42 +275,6 @@ def replace_axis_by_legend(ax, text, x0=0.1, y0=0.1, on_fig=False):
         ax.annotate(text, (x0, y0), xycoords='axes fraction')
 
     
-def build_bar_legend(X, ax, mymap, label='$\\nu$ (Hz)',\
-                     bounds=None, ticks_labels=None,
-                     orientation='vertical', scale='linear',\
-                     color_discretization=None):
-    """ X -> ticks """
-    if color_discretization is None:
-        color_discretization = len(X)
-        
-    # scale : 'linear' / 'log' / 'custom'
-    if scale is 'linear':
-        if bounds is None:
-            bounds = [X[0]+(X[1]-X[0])/2., X[-1]+(X[1]-X[0])/2.]
-        bounds = np.linspace(bounds[0], bounds[1], color_discretization)
-    elif scale is 'log10':
-        if bounds is None:
-            bounds = [int(np.log(X[0])/np.log(10))-.1*int(np.log(X[0])/np.log(10)),\
-                      int(np.log(X[-1])/np.log(10))+1+.1*int(np.log(X[-1])/np.log(10))]
-        else:
-            bounds = [np.log(bounds[0])/np.log(10), np.log(bounds[1])/np.log(10)]
-        bounds = np.logspace(bounds[0], bounds[1], color_discretization)
-    elif scale is 'custom':
-        bounds = np.linspace(X[0]+(X[1]-X[0])/2., X[-1]+(X[1]-X[0])/2., color_discretization)
-        
-    norm = mpl.colors.BoundaryNorm(bounds, mymap.N)
-    cb = mpl.colorbar.ColorbarBase(ax, cmap=mymap, norm=norm,\
-                                   orientation=orientation)
-    cb.set_ticks(X)
-    if ticks_labels is not None:
-        cb.set_ticklabels(ticks_labels)
-    cb.set_label(label)
-    return cb
-
-def get_linear_colormap(color1='blue', color2='red'):
-    return mpl.colors.LinearSegmentedColormap.from_list(\
-                        'mycolors',[color1, color2])
-
 def show(module=None):
     plt.show(block=False)
     input('Hit Enter To Close')
@@ -318,7 +309,9 @@ if __name__=='__main__':
     
     scatter(X=np.random.randn(4,5), Y=np.random.randn(4,5),
             sX=np.random.randn(4,5),sY=np.random.randn(4,5),
-            ax=AX[1][0], color='r')
+            ax=AX[1][0],
+            bar_legend_args={},
+            bar_label='condition')
     
     plot(np.random.randn(20), sy=np.random.randn(20),
          ax=AX[1][1])
@@ -328,13 +321,16 @@ if __name__=='__main__':
             ax=AX[1][1], color=Red)
     scatter(np.random.randn(20), sy=np.random.randn(20),
             ax=AX[1][1], color=Red)
-
-    plot(np.sin(np.linspace(0,1)*6*np.pi), np.linspace(0,1),
-         ax=AX[0][1], color=Purple)
-    plot(np.cos(np.linspace(0,1)*6*np.pi), np.linspace(0,1),
-         ax=AX[0][1], color=Green)
+    plot(np.sin(np.linspace(0,1,30)*3*np.pi)*2,
+         ax=AX[1][1], color=Purple)
+    plot(np.cos(np.linspace(0,1,30)*3*np.pi)*2,
+         ax=AX[1][1], color=Green)
     
-    hist(np.random.randn(200), ax=AX[1][2])
+    hist(np.random.randn(200), ax=AX[0][1],\
+         orientation='vertical',
+         axes_args={'ylim':AX[0][0].get_ylim(), 'spines':['left']})
+    
+    AX[1][2].axis('off')
     
     save_on_desktop(fig, figname='fig.svg')
     show()
