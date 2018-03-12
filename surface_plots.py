@@ -23,7 +23,7 @@ def twoD_plot(ax, x, y, z, alpha=1., cmap=cm.viridis, interpolation='none',):
 if __name__=='__main__':
     from my_graph import *
     
-    x, y = np.meshgrid(np.arange(10), np.arange(10))
+    x, y = np.meshgrid(np.arange(1, 11), np.arange(1, 11))
     z = x*y
     x, y, z = np.array(x).flatten(),\
               np.array(y).flatten(),\
@@ -34,9 +34,9 @@ if __name__=='__main__':
     # x, y, z = x[z>20], y[z>20], z[z>20]
     fig, ax = figure(figsize=(.25,.1), right=.7)
     # ax = twoD_plot(plt.gca(), x[x<y], y[x<y], z[x<y]*0.+1, cmap=cm.Greys)
-    ac = twoD_plot(ax, x, y, z, interpolation='bilinear')
-    set_plot(ax)
     acb = plt.axes([.75,.3,.03,.55])
+    ac = twoD_plot(ax, x, y, np.log(z)/np.log(10), interpolation='bilinear')
     build_bar_legend(np.round(np.linspace(z.min(), z.max(), 6),1),\
                      acb, viridis)
+    set_plot(ax)
     show()
