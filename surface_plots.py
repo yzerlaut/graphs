@@ -36,7 +36,9 @@ if __name__=='__main__':
     # ax = twoD_plot(plt.gca(), x[x<y], y[x<y], z[x<y]*0.+1, cmap=cm.Greys)
     acb = plt.axes([.75,.3,.03,.55])
     ac = twoD_plot(ax, x, y, np.log(z)/np.log(10), interpolation='bilinear')
-    build_bar_legend(np.round(np.linspace(z.min(), z.max(), 6),1),\
-                     acb, viridis)
+    build_bar_legend(np.logspace(np.log(z.min())/np.log(10),
+                                 np.log(z.max())/np.log(10),
+                                 6),\
+                     acb, viridis, scale='log10')
     set_plot(ax)
     show()
