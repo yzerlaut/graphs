@@ -12,7 +12,6 @@ def set_plot(ax, spines=['left', 'bottom'],\
              xlim_enhancment=1., ylim_enhancment=1.,\
              xlim=None, ylim=None, fontsize=FONTSIZE):
 
-
     # no ticks if no axis bar
     if not (('top' in spines) or ('bottom' in spines)):
         xticks=[]

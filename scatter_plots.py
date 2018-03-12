@@ -37,4 +37,11 @@ def multiple_curves(ax, X, Y, sX, sY, COLORS, LABELS,
                     color=c, marker=marker,
                     lw=lw, ms=ms, elinewidth=elw)
 
-            
+
+if __name__=='__main__':
+    from my_graph import *
+    fig, ax = scatter(np.random.randn(10), np.random.randn(10),
+                      np.random.randn(10), np.random.randn(10))
+    ax.plot([-2,2], [-2,2], 'k:')
+    show()
+        

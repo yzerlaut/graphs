@@ -16,6 +16,7 @@ def put_list_of_figs_to_svg_fig(FIGS,
                                 fig_name="fig.svg",
                                 visualize=True,\
                                 Props = None,
+                                figsize = None,
                                 with_top_left_letter=False,
                                 transparent=True):
     """ take a list of figures and make a multi panel plot"""
@@ -23,20 +24,22 @@ def put_list_of_figs_to_svg_fig(FIGS,
     label = list(string.ascii_uppercase)[:len(FIGS)]
 
 
+    SIZE = []
+    for fig in FIGS:
+        SIZE.append(fig.get_size_inches())
+    width = np.max([s[0] for s in SIZE])
+    height = np.max([s[1] for s in SIZE])
+    
     if Props is None:
         LABELS, XCOORD, YCOORD = [], [], []
 
-        SIZE = []
-        for fig in FIGS:
-            SIZE.append(fig.get_size_inches())
-        width = np.max([s[0] for s in SIZE])
-        height = np.max([s[1] for s in SIZE])
-        
         # saving as svg
         for i in range(len(FIGS)):
             LABELS.append(label[i])
             XCOORD.append((i%3)*width*100)
             YCOORD.append(int(i/3)*height*100)
+        XCOORD_LABELS,\
+            YCOORD_LABELS = XCOORD, YCOORD
 
     else:
         XCOORD, YCOORD = Props['XCOORD'],\
@@ -45,9 +48,15 @@ def put_list_of_figs_to_svg_fig(FIGS,
             LABELS = Props['LABELS']
         else:
             LABELS = ['' for x in XCOORD]
+        if 'XCOORD_LABELS' in Props:
+            XCOORD_LABELS,\
+                YCOORD_LABELS = Props['XCOORD_LABELS'],\
+                                Props['YCOORD_LABELS']
+        else:
+            XCOORD_LABELS,\
+                YCOORD_LABELS = XCOORD, YCOORD
             
     for i in range(len(FIGS)):
-        ff = 'f.svg'
         FIGS[i].savefig('/tmp/'+str(i)+'.svg', format='svg',
                         transparent=transparent)
         
@@ -56,18 +65,31 @@ def put_list_of_figs_to_svg_fig(FIGS,
         PANELS.append(sg.Panel(\
             sg.SVG('/tmp/'+str(i)+'.svg').move(XCOORD[i],YCOORD[i]),\
             sg.Text(LABELS[i], 15, 10,
-                    size=FONTSIZE, weight='bold').move(\
-                                                       XCOORD[i],YCOORD[i]))\
+                    size=FONTSIZE+1, weight='bold').move(\
+                                                       XCOORD_LABELS[i],YCOORD_LABELS[i]))\
         )
-    sg.Figure("21cm", "29.7cm", *PANELS).save(fig_name)
+
+    if figsize is None:
+        sg.Figure("21cm", "29.7cm", *PANELS).save(fig_name)
+    else:
+        sg.Figure(str(inch2cm(figsize[0]*A0_format['width'])[0])+"cm",\
+                  str(inch2cm(figsize[1]*A0_format['height'])[0])+"cm", *PANELS).save(fig_name)
 
     if visualize:
-        os.system('convert '+fig_name+' '+fig_name.replace('.svg', '.png'))
-        plt.close('all')
-        z = plt.imread(fig_name.replace('.svg', '.png'))
-        plt.imshow(z)
-        show()
-        # os.system('open '+fig_name.replace('.svg', '.png'))
+        os.system('open '+fig_name) # works well with 'Gapplin' on OS-X
+        ## KEEP -> previous version
+        # os.system('convert '+fig_name+' '+fig_name.replace('.svg', '.png'))
+        # plt.close('all')
+        # z = plt.imread(fig_name.replace('.svg', '.png'))
+        # plt.imshow(z)
+        # fig = plt.gcf()
+        # # if figsize is not None:
+        # #     fig.set_size_inches(fig.get_size_inches()[0]*3,
+        # #                         fig.get_size_inches()[1]*3,
+        # #                         forward=True)
+        # if not no_show:
+        #     from graphs.my_graph import show
+        #     show()
         
 def put_list_of_figs_to_multipage_pdf(FIGS,
                                       pdf_name='figures.pdf',
@@ -117,14 +139,15 @@ if __name__=='__main__':
     from my_graph import *
 
     fig1, ax1 = plot(Y=np.random.randn(10,4),\
-                     sY=np.random.randn(10,4),
-                     fig_args={'with_top_left_letter':'A'})
+                     sY=np.random.randn(10,4))
     fig2, ax2 = scatter(Y=np.random.randn(10,4),\
-                        sY=np.random.randn(10,4),
-                        fig_args={'with_top_left_letter':'B'})
+                        sY=np.random.randn(10,4))
     
     # put_list_of_figs_to_multipage_pdf([fig1, fig2])
     put_list_of_figs_to_svg_fig([fig1, fig2, fig1],
-                                Props={'XCOORD':[100,250,400], 'YCOORD':[100,100,100]},
+                                Props={'XCOORD':[10,160,310],
+                                       'YCOORD':[10,10,10],
+                                       'LABELS':['a','b','c']},
+                                figsize=(.9,.2),
                                 visualize=True)
         

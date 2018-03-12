@@ -20,7 +20,7 @@ Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
 
 
-def figure(A0_ratio=[0.25, 0.14],
+def figure(figsize=[0.25, 0.14],
            wspace=1., hspace=1.,
            left=1., right=1.,
            bottom=1., top=1.,
@@ -75,8 +75,8 @@ def figure(A0_ratio=[0.25, 0.14],
     y_plots = np.sum([axes_extents[i][0][1] \
                       for i in range(len(axes_extents))])
     
-    fig = plt.figure(figsize=(A0_format['width']*A0_ratio[0],
-                              A0_format['height']*A0_ratio[1]))
+    fig = plt.figure(figsize=(A0_format['width']*figsize[0],
+                              A0_format['height']*figsize[1]))
 
     plt.subplots_adjust(wspace=wspace0*wspace,
                         hspace=hspace0*hspace,
@@ -104,22 +104,27 @@ def figure(A0_ratio=[0.25, 0.14],
     plt.annotate(with_top_left_letter, (0.01,.99),
                  xycoords='figure fraction',
                  fontsize=fontsize+1, fontweight='bold')
-    
-    return fig, AX
+
+    if axes_extents==[[[1, 1]]]:
+        return fig, AX[0][0]
+    else:
+        return fig, AX
 
 def save_on_desktop(fig, figname='temp.svg'):
     fig.savefig(desktop+figname)
-
 
 ###########################################################
 ###### a versatile line plot function
 ###########################################################
 
-def plot(x=None, y=None, sy=None, color='k',
-         X=None, Y=None, sY=None, COLORS=None, colormap=viridis,
+def plot(x=None, y=None, sy=None,
+         c='k',
+         X=None, Y=None, sY=None,
+         COLORS=None, colormap=viridis,
          ax=None,
-         lw=2, alpha_std=0.3, ms=3,
+         lw=2, alpha_std=0.3, ms=0, m='', ls='-',
          xlabel='', ylabel='occurence',bar_label='',
+         label=None,
          LABELS=None,
          fig_args={},
          axes_args={},
@@ -128,8 +133,7 @@ def plot(x=None, y=None, sy=None, color='k',
 
     # getting or creating the axis
     if ax is None:
-        fig, AX = figure(**fig_args)
-        ax = AX[0][0]
+        fig, ax = figure(**fig_args)
     else:
         fig = plt.gcf()
 
@@ -144,13 +148,16 @@ def plot(x=None, y=None, sy=None, color='k',
             X = [np.arange(len(y)) for y in Y]
 
         line_plots.multiple_curves(ax, X, Y, sY, COLORS, LABELS,
-                                   alpha_std=alpha_std, lw=lw)
+                                   alpha_std=alpha_std,
+                                   lw=lw, ls=ls, m=m, ms=ms)
     else:
-        line_plots.single_curve(ax, x, y, sy, color,
-                                alpha_std=alpha_std, lw=lw)
+        line_plots.single_curve(ax, x, y, sy,
+                                color=c,
+                                alpha_std=alpha_std,
+                                lw=lw, label=label, ls=ls, m=m, ms=ms)
 
     if bar_legend_args is not None:
-        cb = add_inset(cb, **bar_legend_args)
+        cb = add_inset(ax, **bar_legend_args)
         build_bar_legend(np.arange(len(LABELS)+1),
                          cb,
                          colormap,
@@ -184,8 +191,7 @@ def scatter(x=None, y=None, sx=None, sy=None,
 
     # getting or creating the axis
     if ax is None:
-        fig, AX = figure(**fig_args)
-        ax = AX[0][0]
+        fig, ax = figure(**fig_args)
     else:
         fig = plt.gcf()
 
@@ -267,6 +273,7 @@ def set_subplot_safe_for_labels(fig, FIGSIZE=None, FONTSIZE=16,
                 top=max([1.-0.02*FONTSIZE/FIGSIZE[1],y0*1.1]),
                 hspace=hspace)
 
+    
 def replace_axis_by_legend(ax, text, x0=0.1, y0=0.1, on_fig=False):
     ax.axis('off')
     if on_fig:
@@ -274,7 +281,7 @@ def replace_axis_by_legend(ax, text, x0=0.1, y0=0.1, on_fig=False):
     else:
         ax.annotate(text, (x0, y0), xycoords='axes fraction')
 
-    
+
 def show(module=None):
     plt.show(block=False)
     input('Hit Enter To Close')
@@ -288,7 +295,7 @@ if __name__=='__main__':
                                    [[1,1], [2,1], [1,1] ] ],
                      left=.3, bottom=.4, hspace=1.4, wspace=1.2,
                      with_top_left_letter='A',\
-                     A0_ratio=[.8, .35])
+                     figsize=[.8, .35])
 
     
     plot(Y=[

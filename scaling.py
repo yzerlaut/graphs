@@ -4,7 +4,7 @@ In this module we rewrite the matplotlib functions
 import matplotlib as mpl
 import matplotlib.pylab as plt
 
-FONTSIZE= 9
+FONTSIZE= 8
 mpl.rcParams.update({'axes.labelsize': FONTSIZE,
                      'font.size': FONTSIZE,
                      'legend.fontsize': FONTSIZE,
@@ -52,7 +52,7 @@ if __name__=='__main__':
                          'xtick.labelsize': FONTSIZE,
                          'ytick.labelsize': FONTSIZE})
     
-    fig, [ax] = subplots(width_to_height=1.5, with_top_left_letter='a')
+    fig, ax = figure(with_top_left_letter='a')
     annotate('The fontsize is \n now set to '+str(FONTSIZE), fig,
              fontsize=FONTSIZE)
     set_plot(ax, xlabel='my xlabel (Unit)', ylabel='my ylabel (Unit)',
