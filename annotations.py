@@ -5,7 +5,7 @@ from graphs.scaling import FONTSIZE
 def annotate(s, stuff, x=0.5, y=0.8,
              fontsize=FONTSIZE,
              fontweight='normal',
-             color'k-'):
+             color='k'):
     if type(stuff)==mpl.figure.Figure:
         plt.annotate(s, (x,y), xycoords='figure fraction',
                      fontweight=fontweight, fontsize=fontsize, color=color)
