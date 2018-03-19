@@ -28,18 +28,6 @@ def inch2cm(*tupl):
         return tuple(i*inch for i in tupl)    
     
 
-def annotate(s, stuff, x=0.5, y=0.8,
-             fontsize=FONTSIZE,
-             fontweight='normal'):
-    print(type(stuff))
-    if type(stuff)==mpl.figure.Figure:
-        plt.annotate(s, (x,y), xycoords='figure fraction',
-                     fontweight=fontweight, fontsize=fontsize)
-    else:
-        stuff.annotate(s, (x,y), xycoords='axes fraction',
-                     fontweight=fontweight, fontsize=fontsize)
-
-
 if __name__=='__main__':
 
     from my_graph import *

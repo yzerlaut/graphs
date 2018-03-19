@@ -2,6 +2,17 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.scaling import FONTSIZE
 
+def annotate(s, stuff, x=0.5, y=0.8,
+             fontsize=FONTSIZE,
+             fontweight='normal'):
+    if type(stuff)==mpl.figure.Figure:
+        plt.annotate(s, (x,y), xycoords='figure fraction',
+                     fontweight=fontweight, fontsize=fontsize)
+    else:
+        stuff.annotate(s, (x,y), xycoords='axes fraction',
+                     fontweight=fontweight, fontsize=fontsize)
+
+
 def from_pval_to_star(p,
                       threshold1=1e-3,
                       threshold2=1e-2,
