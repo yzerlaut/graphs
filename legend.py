@@ -37,11 +37,13 @@ def build_bar_legend(X, ax, mymap,
     norm = mpl.colors.BoundaryNorm(bounds, mymap.N)
     cb = mpl.colorbar.ColorbarBase(ax, cmap=mymap, norm=norm,\
                                    orientation=orientation)
-    if not no_ticks:
+    if no_ticks:
+        cb.set_ticks([])
+    else:
         cb.set_ticks(X)
         if ticks_labels is not None:
             cb.set_ticklabels(ticks_labels)
-            
+        
     cb.set_label(label)
     return cb
 
