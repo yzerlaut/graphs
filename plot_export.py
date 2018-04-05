@@ -95,7 +95,6 @@ def put_list_of_figs_to_svg_fig(FIGS,
 def export_as_png(fig_name, dpi=300):
     instruction = INKSCAPE_PATH+' '+fig_name+' --export-area-drawing --export-png='+\
                     fig_name.replace('.svg', '.png')+' --export-dpi='+str(dpi)
-    print(instruction)
     os.system(instruction)
         
 def put_list_of_figs_to_multipage_pdf(FIGS,
