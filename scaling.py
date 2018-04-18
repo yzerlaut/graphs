@@ -13,7 +13,6 @@ mpl.rcParams.update({'axes.labelsize': FONTSIZE,
                      'xtick.labelsize': FONTSIZE,
                      'ytick.labelsize': FONTSIZE,
                      'figure.facecolor': 'none',
-                     'patch.facecolor': 'none',
                      'legend.facecolor': 'none',
                      'axes.facecolor': 'none',
                      'savefig.facecolor': 'none'})
