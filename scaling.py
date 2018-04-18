@@ -6,6 +6,8 @@ import matplotlib.pylab as plt
 
 FONTSIZE= 8
 mpl.rcParams.update({'axes.labelsize': FONTSIZE,
+                     'axes.titlesize': FONTSIZE,
+                     'figure.titlesize': FONTSIZE,
                      'font.size': FONTSIZE,
                      'legend.fontsize': FONTSIZE,
                      'xtick.labelsize': FONTSIZE,
@@ -30,15 +32,19 @@ def inch2cm(*tupl):
 
 if __name__=='__main__':
 
+    # for key in mpl.rcParams.keys():
+    #     if 'size' in key:
+    #         print(key)
+
     from my_graph import *
     
     import sys
     FONTSIZE = int(sys.argv[-1])
     
-    mpl.rcParams.update({'axes.labelsize': FONTSIZE,
-                         'font.size': FONTSIZE,
-                         'xtick.labelsize': FONTSIZE,
-                         'ytick.labelsize': FONTSIZE})
+    # mpl.rcParams.update({'axes.labelsize': FONTSIZE,
+    #                      'font.size': FONTSIZE,
+    #                      'xtick.labelsize': FONTSIZE,
+    #                      'ytick.labelsize': FONTSIZE})
     
     fig, ax = figure(with_top_left_letter='a')
     annotate('The fontsize is \n now set to '+str(FONTSIZE), fig,
