@@ -64,7 +64,14 @@ def put_list_of_figs_to_svg_fig(FIGS,
     PANELS = []
     for i in range(len(FIGS)):
         PANELS.append(sg.Panel(\
-            sg.SVG('/tmp/'+str(i)+'.svg').move(XCOORD[i],YCOORD[i]),\
+            sg.SVG('/tmp/'+str(i)+'.svg').move(XCOORD[i],YCOORD[i])))
+            # sg.Text(LABELS[i], 15, 10,
+            #         size=FONTSIZE+1, weight='bold').move(\
+                               # XCOORD_LABELS[i],YCOORD_LABELS[i]))\
+        # ))
+                      
+    for i in range(len(LABELS)):
+        PANELS.append(sg.Panel(\
             sg.Text(LABELS[i], 15, 10,
                     size=FONTSIZE+1, weight='bold').move(\
                                                        XCOORD_LABELS[i],YCOORD_LABELS[i]))\
@@ -74,7 +81,7 @@ def put_list_of_figs_to_svg_fig(FIGS,
         sg.Figure("21cm", "29.7cm", *PANELS).save(fig_name)
     else:
         sg.Figure(str(inch2cm(figsize[0]*A0_format['width'])[0])+"cm",\
-                  str(inch2cm(figsize[1]*A0_format['height'])[0])+"cm", *PANELS).save(fig_name)
+                  str(inch2cm(figsize[1]*A0_format['height'])[0])+"cm", *PANELS).scale(1.25).save(fig_name)
 
     if visualize:
         os.system('open '+fig_name) # works well with 'Gapplin' on OS-X
@@ -146,17 +153,19 @@ if __name__=='__main__':
 
     fig1, ax1 = plot(Y=np.random.randn(10,4),\
                      sY=np.random.randn(10,4))
+    ax1.annotate('a', (0.,.9), xycoords='axes fraction', fontsize=FONTSIZE+1, weight='bold')
+    fig1.savefig('fig1.svg')
     fig2, ax2 = scatter(Y=np.random.randn(10,4),\
                         sY=np.random.randn(10,4))
     curdir=os.path.abspath(__file__).replace(os.path.basename(__file__),'')
 
     # put_list_of_figs_to_multipage_pdf([fig1, fig2])
-    # put_list_of_figs_to_svg_fig([fig1, fig2, fig1],
-    #                             fig_name=curdir+'fig.svg',
-    #                             Props={'XCOORD':[10,160,310],
-    #                                    'YCOORD':10*np.ones(3),
-    #                                    'LABELS':['a','b','c']},
-    #                             figsize=(.9,.2),
-    #                             visualize=False, export_as_png=True, transparent=True)
+    put_list_of_figs_to_svg_fig([fig1, fig2, fig1],
+                                fig_name=curdir+'fig.svg',
+                                Props={'XCOORD':[10,160,310],
+                                       'YCOORD':10*np.ones(3),
+                                       'LABELS':['a','b','c']},
+                                figsize=(.9,.2),
+                                visualize=False, export_as_png=True, transparent=True)
     
     export_as_png(curdir+'fig.svg')
