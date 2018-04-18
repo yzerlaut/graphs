@@ -5,11 +5,12 @@ import matplotlib as mpl
 import matplotlib.pylab as plt
 
 FONTSIZE= 8
-mpl.rcParams.update({'axes.labelsize': FONTSIZE,
-                     'font.size': FONTSIZE,
-                     'legend.fontsize': FONTSIZE,
-                     'xtick.labelsize': FONTSIZE,
-                     'ytick.labelsize': FONTSIZE})
+# mpl.rcParams.update({'axes.labelsize': FONTSIZE,
+#                      'font.size': FONTSIZE,
+#                      'legend.fontsize': FONTSIZE,
+#                      'xtick.labelsize': FONTSIZE,
+#                      'ytick.labelsize': FONTSIZE})
+mpl.rcParams.update({'font.size': FONTSIZE})
 
 A0_format = {'width':8.3, 'height':11.7}
 

@@ -118,7 +118,7 @@ def save_on_desktop(fig, figname='temp.svg'):
 ###########################################################
 
 def plot(x=None, y=None, sy=None,
-         c='k',
+         color='k',
          X=None, Y=None, sY=None,
          COLORS=None, colormap=viridis,
          ax=None,
@@ -152,7 +152,7 @@ def plot(x=None, y=None, sy=None,
                                    lw=lw, ls=ls, m=m, ms=ms)
     else:
         line_plots.single_curve(ax, x, y, sy,
-                                color=c,
+                                color=color,
                                 alpha_std=alpha_std,
                                 lw=lw, label=label, ls=ls, m=m, ms=ms)
 
@@ -305,11 +305,9 @@ if __name__=='__main__':
 
     fig, AX = figure(axes_extents=[\
                                   [[3,2], [1,2] ],
-                                   [[1,1], [2,1], [1,1] ] ],
+                                   [[1,1], [1,1], [2,1] ] ],
                      left=.3, bottom=.4, hspace=1.4, wspace=1.2,
-                     with_top_left_letter='A',\
                      figsize=[.8, .35])
-
     
     plot(Y=[
         np.random.randn(20),
@@ -323,8 +321,7 @@ if __name__=='__main__':
              np.random.randn(20)],
          ax=AX[0][0],
          COLORS=[Red, Purple, Blue, Green],
-         legend_args={'frameon':False,
-                      'prop':{'size':'small'}},
+         legend_args={'frameon':False},
          axes_args={'spines':['left']})
     
     scatter(X=np.random.randn(4,5), Y=np.random.randn(4,5),
@@ -334,25 +331,36 @@ if __name__=='__main__':
             bar_label='condition')
     
     plot(np.random.randn(20), sy=np.random.randn(20),
-         ax=AX[1][1])
+         ax=AX[1][2])
     scatter(np.random.randn(20), sy=np.random.randn(20),
-            ax=AX[1][1])
+            ax=AX[1][2])
     plot(np.random.randn(20), sy=np.random.randn(20),
-            ax=AX[1][1], color=Red)
+            ax=AX[1][2], color=Red)
     scatter(np.random.randn(20), sy=np.random.randn(20),
-            ax=AX[1][1], color=Red)
+            ax=AX[1][2], color=Red)
     plot(np.sin(np.linspace(0,1,30)*3*np.pi)*2,
-         ax=AX[1][1], color=Purple)
+         ax=AX[1][2], color=Purple)
     plot(np.cos(np.linspace(0,1,30)*3*np.pi)*2,
-         ax=AX[1][1], color=Green)
+         ax=AX[1][2], color=Green)
     
     hist(np.random.randn(200), ax=AX[0][1],\
          orientation='vertical',
          axes_args={'ylim':AX[0][0].get_ylim(), 'spines':['left']})
     
-    AX[1][2].axis('off')
+    AX[1][1].axis('off')
+    fig.savefig('fig.png', dpi=200)
+    # save_on_desktop(fig, figname='fig.png')
+
+    fig2, AX = figure(axes=(2,2),
+                      left=.4, bottom=.4, hspace=1.4, wspace=1.2,
+                      figsize=[.45, .3])
+    import itertools
+    for i, j in itertools.product(range(2), range(2)):
+        plot(np.random.randn(20), sy=np.random.randn(20),
+             ax=AX[i][j])
+    fig2.savefig('fig2.png', dpi=200)
+
     
-    save_on_desktop(fig, figname='fig.svg')
     show()
     
     # fig, _ = figure()
