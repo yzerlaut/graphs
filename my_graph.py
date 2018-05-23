@@ -291,14 +291,16 @@ def show(module=None):
 def annotate(s, stuff, x=0.5, y=0.8,
              fontsize=FONTSIZE,
              fontweight='normal',
+             rotation=0,
              color='k'):
     if type(stuff)==mpl.figure.Figure:
         plt.annotate(s, (x,y), xycoords='figure fraction',
-                     fontweight=fontweight, fontsize=fontsize, color=color)
+                     fontweight=fontweight, fontsize=fontsize,
+                     color=color, rotation=rotation)
     else:
         stuff.annotate(s, (x,y), xycoords='axes fraction',
                        fontweight=fontweight, fontsize=fontsize,
-                       color=color)
+                       color=color, rotation=rotation)
 
 
 if __name__=='__main__':
