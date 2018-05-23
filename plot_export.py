@@ -11,12 +11,15 @@ import string, datetime
 import svgutils.compose as sg # SVG
 # import fpdf # PDF
 from PIL import Image # BITMAP (png, jpg, ...)
+INKSCAPE_PATH = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape'
 
 def put_list_of_figs_to_svg_fig(FIGS,
                                 fig_name="fig.svg",
-                                visualize=True,\
+                                visualize=True,export_as_png=False,
                                 Props = None,
                                 figsize = None,
+                                fontsize=FONTSIZE+1,
+                                SCALING_FACTOR=1.25, # needed to get the right cm size ...
                                 with_top_left_letter=False,
                                 transparent=True):
     """ take a list of figures and make a multi panel plot"""
@@ -63,9 +66,16 @@ def put_list_of_figs_to_svg_fig(FIGS,
     PANELS = []
     for i in range(len(FIGS)):
         PANELS.append(sg.Panel(\
-            sg.SVG('/tmp/'+str(i)+'.svg').move(XCOORD[i],YCOORD[i]),\
+            sg.SVG('/tmp/'+str(i)+'.svg').move(XCOORD[i],YCOORD[i])))
+            # sg.Text(LABELS[i], 15, 10,
+            #         size=FONTSIZE+1, weight='bold').move(\
+                               # XCOORD_LABELS[i],YCOORD_LABELS[i]))\
+        # ))
+                      
+    for i in range(len(LABELS)):
+        PANELS.append(sg.Panel(\
             sg.Text(LABELS[i], 15, 10,
-                    size=FONTSIZE+1, weight='bold').move(\
+                    size=fontsize, weight='bold').move(\
                                                        XCOORD_LABELS[i],YCOORD_LABELS[i]))\
         )
 
@@ -73,7 +83,8 @@ def put_list_of_figs_to_svg_fig(FIGS,
         sg.Figure("21cm", "29.7cm", *PANELS).save(fig_name)
     else:
         sg.Figure(str(inch2cm(figsize[0]*A0_format['width'])[0])+"cm",\
-                  str(inch2cm(figsize[1]*A0_format['height'])[0])+"cm", *PANELS).save(fig_name)
+                  str(inch2cm(figsize[1]*A0_format['height'])[0])+"cm",\
+                  *PANELS).scale(SCALING_FACTOR).save(fig_name)
 
     if visualize:
         os.system('open '+fig_name) # works well with 'Gapplin' on OS-X
@@ -90,6 +101,11 @@ def put_list_of_figs_to_svg_fig(FIGS,
         # if not no_show:
         #     from graphs.my_graph import show
         #     show()
+
+def export_as_png(fig_name, dpi=300):
+    instruction = INKSCAPE_PATH+' '+fig_name+' --export-area-drawing --export-png='+\
+                    fig_name.replace('.svg', '.png')+' --export-dpi='+str(dpi)
+    os.system(instruction)
         
 def put_list_of_figs_to_multipage_pdf(FIGS,
                                       pdf_name='figures.pdf',
@@ -140,14 +156,21 @@ if __name__=='__main__':
 
     fig1, ax1 = plot(Y=np.random.randn(10,4),\
                      sY=np.random.randn(10,4))
+    ax1.annotate('a', (0.,.9), xycoords='axes fraction', fontsize=FONTSIZE+1, weight='bold')
+    fig1.savefig('fig1.svg')
     fig2, ax2 = scatter(Y=np.random.randn(10,4),\
                         sY=np.random.randn(10,4))
-    
+    curdir=os.path.abspath(__file__).replace(os.path.basename(__file__),'')
+
     # put_list_of_figs_to_multipage_pdf([fig1, fig2])
     put_list_of_figs_to_svg_fig([fig1, fig2, fig1],
+                                fig_name=curdir+'fig.svg',
                                 Props={'XCOORD':[10,160,310],
-                                       'YCOORD':[10,10,10],
-                                       'LABELS':['a','b','c']},
+                                       'YCOORD':10*np.ones(3),
+                                       'XCOORD_LABELS':[10,160,310, 330],
+                                       'YCOORD_LABELS':10*np.ones(4),
+                                       'LABELS':['a','b','c', 'd']},
                                 figsize=(.9,.2),
-                                visualize=True)
-        
+                                visualize=False, export_as_png=True, transparent=True)
+    
+    export_as_png(curdir+'fig.svg')

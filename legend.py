@@ -11,7 +11,7 @@ def get_linear_colormap(color1='blue', color2='red'):
 def build_bar_legend(X, ax, mymap,
                      label='$\\nu$ (Hz)',\
                      bounds=None,
-                     ticks_labels=None,
+                     ticks_labels=None, no_ticks=False,
                      orientation='vertical',
                      scale='linear',\
                      color_discretization=None):
@@ -37,9 +37,13 @@ def build_bar_legend(X, ax, mymap,
     norm = mpl.colors.BoundaryNorm(bounds, mymap.N)
     cb = mpl.colorbar.ColorbarBase(ax, cmap=mymap, norm=norm,\
                                    orientation=orientation)
-    cb.set_ticks(X)
-    if ticks_labels is not None:
-        cb.set_ticklabels(ticks_labels)
+    if no_ticks:
+        cb.set_ticks([])
+    else:
+        cb.set_ticks(X)
+        if ticks_labels is not None:
+            cb.set_ticklabels(ticks_labels)
+        
     cb.set_label(label)
     return cb
 
