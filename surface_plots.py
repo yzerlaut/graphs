@@ -1,7 +1,10 @@
 import numpy as np
 from matplotlib import cm
 
-def twoD_plot(ax, x, y, z, alpha=1., cmap=cm.viridis, interpolation='none',):
+def twoD_plot(ax, x, y, z, alpha=1.,
+              cmap=cm.viridis,
+              sequential=True,
+              interpolation='none'):
     """
     surface plots for x, y and z 1 dimensional data
     """
@@ -14,9 +17,16 @@ def twoD_plot(ax, x, y, z, alpha=1., cmap=cm.viridis, interpolation='none',):
             Z[i,j] = z[cond1][x[cond1]==xx]
     z1 = np.array(Z).reshape(len(np.unique(y)), len(np.unique(x)))
     z1 = Z
-    ac = ax.imshow(z1, interpolation=interpolation,
-                     extent = (x.min(), x.max(), y.min(), y.max()),
-                     alpha=alpha, cmap=cmap, origin='lower', aspect='auto')
+    if sequential:
+        ac = ax.imshow(z1, interpolation=interpolation,
+                       extent = (x.min(), x.max(), y.min(), y.max()),
+                       alpha=alpha, cmap=cmap, origin='lower', aspect='auto')
+    else:
+        ac = ax.imshow(z1, interpolation=interpolation,
+                       extent = (x.min(), x.max(), y.min(), y.max()),
+                       vmin = -np.max(np.abs(z)), 
+                       vmax = np.max(np.abs(z)), 
+                       alpha=alpha, cmap=cmap, origin='lower', aspect='auto')
     return ac
     
 
