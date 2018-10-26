@@ -2,13 +2,16 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.scaling import FONTSIZE, A0_format
 from matplotlib.ticker import MaxNLocator, NullFormatter
+import numpy as np
 
 def set_plot(ax, spines=['left', 'bottom'],\
              num_xticks=4, num_yticks=4,\
              xlabel='', ylabel='', tck_outward=3,\
              xticks=None, yticks=None,\
+             xminor_ticks=None, yminor_ticks=None,
              xticks_labels=None, yticks_labels=None,\
              xticks_rotation=0, yticks_rotation=0,\
+             xscale='linear', yscale='linear',
              xlim_enhancment=1., ylim_enhancment=1.,\
              xlim=None, ylim=None, fontsize=FONTSIZE):
 
@@ -20,35 +23,70 @@ def set_plot(ax, spines=['left', 'bottom'],\
         
     # drawing spines
     adjust_spines(ax, spines, tck_outward=tck_outward)
+
+    if yscale=='log':
+        ax.set_yscale('log')
+    if xscale=='log':
+        ax.set_xscale('log')
     
     # Boundaries
     if xlim is None:
         xmin, xmax = ax.get_xaxis().get_view_interval()
         dx = xmax-xmin
-        ax.set_xlim([xmin-xlim_enhancment*dx/100.,xmax+xlim_enhancment*dx/100.])
-    else:
-        ax.set_xlim(xlim)
+        if xscale=='log':
+            xlim = [xmin/1.1,1.1*xmax]
+            xlim, xmajor_ticks, xminor_ticks = find_good_log_ticks(lim=xlim)
+        else:
+            xlim = [xmin-xlim_enhancment*dx/100.,xmax+xlim_enhancment*dx/100.]
+
+    ax.plot(xlim, np.ones(2)*np.mean(ax.get_ylim()), 'w.', ms=0.001, alpha=0.001)
+    ax.set_xlim(xlim)
+        
+    if xscale=='log': # we calculate the tick positions
+        xlim, xmajor_ticks, xminor_ticks2 = find_good_log_ticks(lim=ylim)
+        if xminor_ticks is None:
+            xminor_ticks = xminor_ticks2
+        if xticks is None:
+            xticks = xmajor_ticks
+        
     if ylim is None:
         ymin, ymax = ax.get_yaxis().get_view_interval()
         dy = ymax-ymin
-        ax.set_ylim([ymin-ylim_enhancment*dy/100.,ymax+ylim_enhancment*dy/100.])
-    else:
-        ax.set_ylim(ylim)
+        if yscale=='log':
+            ylim = [ymin/1.2,1.2*ymax]
+        else:
+            ylim = [ymin-ylim_enhancment*dy/100.,ymax+ylim_enhancment*dy/100.]
+    if yscale=='log':
+        ylim, ymajor_ticks, yminor_ticks = find_good_log_ticks(lim=ylim)
+        if yminor_ticks is None:
+            yminor_ticks = yminor_ticks2
+        if yticks is None:
+            yticks = ymajor_ticks
+        print(ymajor_ticks, yminor_ticks, ylim)
+    # then we set it:
+    ax.plot(np.ones(2)*np.mean(ax.get_xlim()), ylim, 'w.', ms=0.001, alpha=0.001)
+    ax.set_ylim(ylim)
 
+    # x-Ticks
     if (xticks is None) and ('bottom' or 'top' in spines):
         ax.xaxis.set_major_locator( MaxNLocator(nbins = num_xticks) )
     else:
         ax.xaxis.set_minor_formatter(NullFormatter())
         ax.set_xticks(xticks)
+    if xscale=='log':
+        ax.set_xticks(xminor_ticks, minor=True)
         
     if xticks_labels is not None:
         ax.set_xticklabels(xticks_labels, rotation=xticks_rotation)
 
+    # y-Ticks
     if (yticks is None) and ('left' or 'right' in spines):
         ax.yaxis.set_major_locator( MaxNLocator(nbins = num_yticks) )
     else:
         ax.yaxis.set_minor_formatter(NullFormatter())
         ax.set_yticks(yticks)
+    if yscale=='log':
+        ax.set_yticks(yminor_ticks, minor=True)
         
     if yticks_labels is not None:
         ax.set_yticklabels(yticks_labels, rotation=yticks_rotation)
@@ -62,7 +100,6 @@ def ticks_number(ax, xticks=3, yticks=3):
         ax.xaxis.set_major_locator( MaxNLocator(nbins = xticks) )
     if yticks>1:
         ax.yaxis.set_major_locator( MaxNLocator(nbins = yticks) )
-
 
 def adjust_spines(ax, spines, tck_outward=3):
     for loc, spine in ax.spines.items():
@@ -84,6 +121,40 @@ def adjust_spines(ax, spines, tck_outward=3):
     else:
         # no xaxis ticks
         ax.xaxis.set_ticks([])
+
+def find_good_log_ticks(lim=[0.009, 0.0099]):
+    if lim[0]<=0:
+        print('/!\ need positive lower bound of graphs, set to 1e-3')
+        lim[0] = 1e-3
+    if lim[1]<=0:
+        print('/!\ need positive lower bound of graphs, set to 10')
+        lim[1] = 10
+    i0 =  int(np.log(lim[0])/np.log(10))
+    i1 =  int(np.log(lim[1])/np.log(10))
+
+    if i1>i0:
+        major_ticks = np.power(10., np.arange(i0, i1+1))
+    else:
+        # lim[0] = np.power(10., i0-1)*.99
+        major_ticks = [10.**(i0-1)] # 
+
+    i0 =  int(np.log(lim[0])/np.log(10))-1
+    i1 =  int(np.log(lim[1])/np.log(10))
+    xx, ii = int(lim[0]/(10.**(i0))), i0
+    while xx>10:
+        xx, ii = int(lim[0]/(10.**(ii+1))), ii+1
+        
+    minor_ticks = []
+    while (xx*np.power(10., ii)<lim[1]):
+        minor_ticks.append(xx*np.power(10., ii))
+        xx +=1
+        print(xx, ii)
+        if xx==10:
+            ii+=1
+            xx=1
+    minor_ticks = np.unique(np.array(minor_ticks))
+    
+    return lim, major_ticks, minor_ticks[(minor_ticks>lim[0])]
 
 
 def scale_graphs_boudaries(x_plots, y_plots,
@@ -124,4 +195,15 @@ def scale_figure(height_to_width, A0_ratio, x_plots, y_plots,
 
 
 
-        
+if __name__=='__main__':
+    from my_graph import figure, show
+    import numpy as np
+    fig, ax = figure()
+    # ax.plot(np.exp(3*np.random.randn(100)))
+    ax.plot([1,2], [3.3, 20.3])
+    set_plot(ax,
+             yscale='log',
+             # ylim=[0.08, 200],
+             # yticks=[0.01, 1., 100.], yticks_labels=['0.01', '1', '100'],
+             tck_outward=2)
+    show()
