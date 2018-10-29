@@ -77,10 +77,6 @@ def put_list_of_figs_to_svg_fig(FIGS,
     for i in range(len(FIGS)):
         PANELS.append(sg.Panel(\
             sg.SVG(LOCATIONS[i]).move(XCOORD[i],YCOORD[i])))
-            # sg.Text(LABELS[i], 15, 10,
-            #         size=FONTSIZE+1, weight='bold').move(\
-                               # XCOORD_LABELS[i],YCOORD_LABELS[i]))\
-        # ))
                       
     for i in range(len(LABELS)):
         PANELS.append(sg.Panel(\
@@ -165,19 +161,19 @@ if __name__=='__main__':
     from my_graph import *
 
     fig1, ax1 = plot(Y=np.random.randn(10,4),\
-                     sY=np.random.randn(10,4))
+                     sY=np.random.randn(10,4), axes_args={'xlabel':'x-label', 'ylabel':'y-label'})
     fig1.savefig('fig1.svg')
     fig2, ax2 = scatter(X=np.arange(4)+0.1*np.random.randn(10,4),\
                         Y=np.random.randn(10,4),\
-                        sY=np.random.randn(10,4))
+                        sY=np.random.randn(10,4), axes_args={'xlabel':'x-label', 'ylabel':'y-label'})
     curdir=os.path.abspath(__file__).replace(os.path.basename(__file__),'')
 
     # put_list_of_figs_to_multipage_pdf([fig1, fig2])
     put_list_of_figs_to_svg_fig(['schematic.svg', fig2, fig1],
                                 fig_name=curdir+'fig.svg',
-                                Props={'XCOORD':[0,90,190],
-                                       'YCOORD':[40, 0, 0],
-                                       'XCOORD_LABELS':[0,85,185],
+                                Props={'XCOORD':[0,100,200],
+                                       'YCOORD':[0, 0, 0],
+                                       'XCOORD_LABELS':[0,90,195],
                                        'YCOORD_LABELS':np.zeros(3),
                                        'LABELS':['a','b','c']},
                                 figsize=(.1,.1))
