@@ -18,7 +18,7 @@ mpl.rcParams.update({'axes.labelsize': FONTSIZE,
                      'savefig.facecolor': 'none'})
 
 A0_format = {'width':8.3, 'height':11.7}
-Single_Plot_Size = (0.25, 0.14)
+Single_Plot_Size = (0.23, 0.13)
 
 def cm2inch(*tupl):
     inch = 2.54

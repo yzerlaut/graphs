@@ -20,15 +20,12 @@ Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
 
 
-def figure(figsize=[0.25, 0.14],
-           axes = (1,1),
+def figure(axes = (1,1),
            axes_extents=None,
-           wspace=1., hspace=1.,
+           figsize=(1.,1.),
            left=1., right=1.,
            bottom=1., top=1.,
-           wspace0=0.4, hspace0=0.4,
-           left0=0.32, right0=0.97,
-           bottom0=0.32, top0=0.97,
+           wspace=1., hspace=1.,
            with_top_left_letter='',
            fontsize=FONTSIZE, fontweight='bold'):
     
@@ -70,25 +67,24 @@ def figure(figsize=[0.25, 0.14],
             axes_extents = [[[1,1] for j in range(axes[1])]\
                             for i in range(axes[0])]
 
-    axes_extents = np.array(axes_extents)
-    print(axes_extents)
-    # print(np.sum(axes_extents, axis=(0,2))/2)
-        
     x_plots = np.sum([axes_extents[0][j][0] \
                       for j in range(len(axes_extents[0]))])
     y_plots = np.sum([axes_extents[i][0][1] \
                       for i in range(len(axes_extents))])
+
+    # FIGURE size
+    figsize = (A0_format['width']*Single_Plot_Size[0]*x_plots*figsize[0],
+               A0_format['height']*Single_Plot_Size[1]*y_plots*figsize[1])
+    fig = plt.figure(figsize=figsize)
+
     
-    fig = plt.figure(figsize=(A0_format['width']*figsize[0],
-                              A0_format['height']*figsize[1]))
-
-    plt.subplots_adjust(wspace=wspace0*wspace,
-                        hspace=hspace0*hspace,
-                        left=left0*left,
-                        right=right0*right,
-                        bottom=bottom0*bottom,
-                        top=top0*top)
-
+    # Subplots placements adjustements
+    plt.subplots_adjust(left=left*0.55/figsize[0], # 0.5cm by default
+                        bottom=bottom*0.5/figsize[1],# 0.5cm by default
+                        top=1.-top*0.1/figsize[0], # 0.1cm by default
+                        right=1.-right*0.1/figsize[1],# 0.1cm by default
+                        wspace=wspace*0.5/figsize[0]*x_plots, # 0.5cm by default
+                        hspace=hspace*0.5/figsize[1]*y_plots) # 0.5cm by default
 
     AX = []
     j0_row = 0
@@ -109,8 +105,12 @@ def figure(figsize=[0.25, 0.14],
                  xycoords='figure fraction',
                  fontsize=fontsize+1, fontweight='bold')
 
-    if (np.shape(axes_extents)[0]==1) and (np.shape(axes_extents)[1]==1):        
+    if (x_plots==1) and (y_plots==1):        
         return fig, AX[0][0]
+    elif (x_plots==1):
+        return fig, [AX[i][0] for i in range(len(AX))]
+    elif (y_plots==1):
+        return fig, AX[0]
     else:
         return fig, AX
 
@@ -365,14 +365,25 @@ if __name__=='__main__':
     #     plot(np.random.randn(20), sy=np.random.randn(20),
     #          ax=AX[i])
     # # fig2.savefig('fig2.png', dpi=200)
-    fig2, AX = figure(axes=(1,1))
+    # fig1, AX = figure(axes_extents=[\
+    #                                [[3,1], [1,1] ],
+    #                                [[1,1], [2,1], [1,1] ] ] )
     fig2, AX = figure(axes=(2,1))
-    # fig2, AX = figure(axes=(1,2))
-    show()
-    
-    # fig, _ = figure()
-    # fig, _ = plot(Y=np.random.randn(10,4), sY=np.random.randn(10,4),
-    #               axes_args={'spines':['left'], 'xlabel':'my-x value'})
-    # save_on_desktop(fig, figname='2.svg')
+    for ax in AX: set_plot(ax)
     # show()
+    # print('should be 1, 1')
+    # fig2, AX = figure(axes=(1,1))
+    # print('should be 2, 1')
+    # fig2, AX = figure(axes=(2,1))
+    # print('should be 1, 2')
+    # fig2, AX = figure(axes=(1,2))
+    # print('should be 3, 2')
+    # fig2, AX = figure(axes=(3,2))
+    # # show()
+
+    # fig, _ = figure()
+    # fig, _ = plot(Y=np.random.randn(4, 10), sY=np.random.randn(4, 10),
+    #               axes_args={'spines':['left', 'bottom'], 'xlabel':'my-x value', 'ylabel':'my-y value'})
+    # save_on_desktop(fig, figname='2.svg')
+    show()
 
