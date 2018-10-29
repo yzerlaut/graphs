@@ -369,7 +369,9 @@ if __name__=='__main__':
     #                                [[3,1], [1,1] ],
     #                                [[1,1], [2,1], [1,1] ] ] )
     fig2, AX = figure(axes=(2,1))
-    for ax in AX: set_plot(ax)
+    for ax in AX:
+        scatter(np.abs(np.exp(np.random.randn(100))), np.abs(np.exp(np.random.randn(100))), ax=ax)
+        set_plot(ax, yscale='log', xscale='log')
     # show()
     # print('should be 1, 1')
     # fig2, AX = figure(axes=(1,1))

@@ -33,28 +33,28 @@ def set_plot(ax, spines=['left', 'bottom'],\
     
     # Boundaries
     if xlim is None:
-        xmin, xmax = ax.get_xaxis().get_view_interval()
+        xmin, xmax = ax.get_xlim()
         dx = xmax-xmin
         if xscale=='log':
+            if xmin<=0:
+                xmin = np.concatenate([line.get_xdata() for line in ax.get_lines()[:2]]).min() # what are the additional line objects ??
             xlim = [xmin/1.1,1.1*xmax]
-            xlim, xmajor_ticks, xminor_ticks = find_good_log_ticks(lim=xlim)
         else:
             xlim = [xmin-xlim_enhancment*dx/100.,xmax+xlim_enhancment*dx/100.]
 
-    ax.plot(xlim, np.ones(2)*np.mean(ax.get_ylim()), 'w.', ms=0.001, alpha=0.001)
-    ax.set_xlim(xlim)
-        
     if xscale=='log': # we calculate the tick positions
-        xlim, xmajor_ticks, xminor_ticks2 = find_good_log_ticks(lim=ylim)
+        xlim, xmajor_ticks, xminor_ticks2 = find_good_log_ticks(lim=xlim)
         if xminor_ticks is None:
             xminor_ticks = xminor_ticks2
         if xticks is None:
             xticks = xmajor_ticks
         
     if ylim is None:
-        ymin, ymax = ax.get_yaxis().get_view_interval()
+        ymin, ymax = ax.get_ylim()
         dy = ymax-ymin
         if yscale=='log':
+            if ymin<=0:
+                ymin = np.concatenate([line.get_ydata() for line in ax.get_lines()[::-2]]).min() # what are the additional lines ??
             ylim = [ymin/1.2,1.2*ymax]
         else:
             ylim = [ymin-ylim_enhancment*dy/100.,ymax+ylim_enhancment*dy/100.]
@@ -64,8 +64,11 @@ def set_plot(ax, spines=['left', 'bottom'],\
             yminor_ticks = yminor_ticks2
         if yticks is None:
             yticks = ymajor_ticks
+
     # then we set it:
-    ax.plot(np.ones(2)*np.mean(ax.get_xlim()), ylim, 'w.', ms=0.001, alpha=0.001)
+    ax.plot(np.ones(2)*np.mean(xlim), ylim, 'w.', ms=0.001, alpha=0.001)
+    ax.plot(xlim, np.ones(2)*np.mean(ylim), 'w.', ms=0.001, alpha=0.001)
+    ax.set_xlim(xlim)
     ax.set_ylim(ylim)
 
     # x-Ticks
