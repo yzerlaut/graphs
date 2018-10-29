@@ -21,14 +21,14 @@ Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
 
 
 def figure(figsize=[0.25, 0.14],
+           axes = (1,1),
+           axes_extents=None,
            wspace=1., hspace=1.,
            left=1., right=1.,
            bottom=1., top=1.,
            wspace0=0.4, hspace0=0.4,
            left0=0.32, right0=0.97,
            bottom0=0.32, top0=0.97,
-           axes = (1,1),
-           axes_extents=None,
            with_top_left_letter='',
            fontsize=FONTSIZE, fontweight='bold'):
     
@@ -69,7 +69,11 @@ def figure(figsize=[0.25, 0.14],
         else:
             axes_extents = [[[1,1] for j in range(axes[1])]\
                             for i in range(axes[0])]
-    
+
+    axes_extents = np.array(axes_extents)
+    print(axes_extents)
+    # print(np.sum(axes_extents, axis=(0,2))/2)
+        
     x_plots = np.sum([axes_extents[0][j][0] \
                       for j in range(len(axes_extents[0]))])
     y_plots = np.sum([axes_extents[i][0][1] \
@@ -105,7 +109,7 @@ def figure(figsize=[0.25, 0.14],
                  xycoords='figure fraction',
                  fontsize=fontsize+1, fontweight='bold')
 
-    if axes_extents==[[[1, 1]]]:
+    if (np.shape(axes_extents)[0]==1) and (np.shape(axes_extents)[1]==1):        
         return fig, AX[0][0]
     else:
         return fig, AX
@@ -305,64 +309,65 @@ def annotate(s, stuff, x=0.5, y=0.8,
 
 if __name__=='__main__':
 
-    fig, AX = figure(axes_extents=[\
-                                  [[3,2], [1,2] ],
-                                   [[1,1], [1,1], [2,1] ] ],
-                     left=.3, bottom=.4, hspace=1.4, wspace=1.2,
-                     figsize=[.8, .35])
+    # fig, AX = figure(axes_extents=[\
+    #                               [[3,2], [1,2] ],
+    #                                [[1,1], [1,1], [2,1] ] ],
+    #                  left=.3, bottom=.4, hspace=1.4, wspace=1.2,
+    #                  figsize=[.8, .35])
     
-    plot(Y=[
-        np.random.randn(20),
-        np.random.randn(20),
-        np.random.randn(20),
-        np.random.randn(20)],
-         sY=[
-             np.ones(20),
-             np.ones(20),
-             np.random.randn(20),
-             np.random.randn(20)],
-         ax=AX[0][0],
-         COLORS=[Red, Purple, Blue, Green],
-         legend_args={'frameon':False},
-         axes_args={'spines':['left']})
+    # plot(Y=[
+    #     np.random.randn(20),
+    #     np.random.randn(20),
+    #     np.random.randn(20),
+    #     np.random.randn(20)],
+    #      sY=[
+    #          np.ones(20),
+    #          np.ones(20),
+    #          np.random.randn(20),
+    #          np.random.randn(20)],
+    #      ax=AX[0][0],
+    #      COLORS=[Red, Purple, Blue, Green],
+    #      legend_args={'frameon':False},
+    #      axes_args={'spines':['left']})
     
-    scatter(X=np.random.randn(4,5), Y=np.random.randn(4,5),
-            sX=np.random.randn(4,5),sY=np.random.randn(4,5),
-            ax=AX[1][0],
-            bar_legend_args={},
-            bar_label='condition')
+    # scatter(X=np.random.randn(4,5), Y=np.random.randn(4,5),
+    #         sX=np.random.randn(4,5),sY=np.random.randn(4,5),
+    #         ax=AX[1][0],
+    #         bar_legend_args={},
+    #         bar_label='condition')
     
-    plot(np.random.randn(20), sy=np.random.randn(20),
-         ax=AX[1][2])
-    scatter(np.random.randn(20), sy=np.random.randn(20),
-            ax=AX[1][2])
-    plot(np.random.randn(20), sy=np.random.randn(20),
-            ax=AX[1][2], color=Red)
-    scatter(np.random.randn(20), sy=np.random.randn(20),
-            ax=AX[1][2], color=Red)
-    plot(np.sin(np.linspace(0,1,30)*3*np.pi)*2,
-         ax=AX[1][2], color=Purple)
-    plot(np.cos(np.linspace(0,1,30)*3*np.pi)*2,
-         ax=AX[1][2], color=Green)
+    # plot(np.random.randn(20), sy=np.random.randn(20),
+    #      ax=AX[1][2])
+    # scatter(np.random.randn(20), sy=np.random.randn(20),
+    #         ax=AX[1][2])
+    # plot(np.random.randn(20), sy=np.random.randn(20),
+    #         ax=AX[1][2], color=Red)
+    # scatter(np.random.randn(20), sy=np.random.randn(20),
+    #         ax=AX[1][2], color=Red)
+    # plot(np.sin(np.linspace(0,1,30)*3*np.pi)*2,
+    #      ax=AX[1][2], color=Purple)
+    # plot(np.cos(np.linspace(0,1,30)*3*np.pi)*2,
+    #      ax=AX[1][2], color=Green)
     
-    hist(np.random.randn(200), ax=AX[0][1],\
-         orientation='vertical',
-         axes_args={'ylim':AX[0][0].get_ylim(), 'spines':['left']})
+    # hist(np.random.randn(200), ax=AX[0][1],\
+    #      orientation='vertical',
+    #      axes_args={'ylim':AX[0][0].get_ylim(), 'spines':['left']})
     
-    AX[1][1].axis('off')
-    fig.savefig('fig.png', dpi=200)
+    # AX[1][1].axis('off')
+    # fig.savefig('fig.png', dpi=200)
     # save_on_desktop(fig, figname='fig.png')
 
-    fig2, AX = figure(axes=(2,2),
-                      left=.4, bottom=.4, hspace=1.4, wspace=1.2,
-                      figsize=[.45, .3])
-    import itertools
-    for i, j in itertools.product(range(2), range(2)):
-        plot(np.random.randn(20), sy=np.random.randn(20),
-             ax=AX[i][j])
-    fig2.savefig('fig2.png', dpi=200)
-
-    
+    # fig2, AX = figure(axes=(2,1),
+    #                   left=.4, bottom=.4, hspace=1.4, wspace=1.2,
+    #                   figsize=[.45, .3])
+    # import itertools
+    # for i in range(2):
+    #     plot(np.random.randn(20), sy=np.random.randn(20),
+    #          ax=AX[i])
+    # # fig2.savefig('fig2.png', dpi=200)
+    fig2, AX = figure(axes=(1,1))
+    fig2, AX = figure(axes=(2,1))
+    # fig2, AX = figure(axes=(1,2))
     show()
     
     # fig, _ = figure()

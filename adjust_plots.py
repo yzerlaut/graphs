@@ -13,7 +13,9 @@ def set_plot(ax, spines=['left', 'bottom'],\
              xticks_rotation=0, yticks_rotation=0,\
              xscale='linear', yscale='linear',
              xlim_enhancment=1., ylim_enhancment=1.,\
-             xlim=None, ylim=None, fontsize=FONTSIZE):
+             xlim=None, ylim=None,
+             grid=False,
+             fontsize=FONTSIZE):
 
     # no ticks if no axis bar
     if not (('top' in spines) or ('bottom' in spines)):
@@ -62,7 +64,6 @@ def set_plot(ax, spines=['left', 'bottom'],\
             yminor_ticks = yminor_ticks2
         if yticks is None:
             yticks = ymajor_ticks
-        print(ymajor_ticks, yminor_ticks, ylim)
     # then we set it:
     ax.plot(np.ones(2)*np.mean(ax.get_xlim()), ylim, 'w.', ms=0.001, alpha=0.001)
     ax.set_ylim(ylim)
@@ -75,7 +76,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
         ax.set_xticks(xticks)
     if xscale=='log':
         ax.set_xticks(xminor_ticks, minor=True)
-        
+    
     if xticks_labels is not None:
         ax.set_xticklabels(xticks_labels, rotation=xticks_rotation)
 
@@ -86,7 +87,13 @@ def set_plot(ax, spines=['left', 'bottom'],\
         ax.yaxis.set_minor_formatter(NullFormatter())
         ax.set_yticks(yticks)
     if yscale=='log':
-        ax.set_yticks(yminor_ticks, minor=True)
+        if (np.all(ax.get_yticks()<ylim[0]) or np.all(ax.get_yticks()>ylim[1])):
+            # then no main ticks is on the plot, we set the minor ticks as the major ticks
+            print(ax.get_yticks(), ymajor_ticks, yminor_ticks, ylim)
+            print('no main ticks is on the plot, we set the minor ticks as the major ticks')
+            ax.set_yticks(yminor_ticks)
+        else:
+            ax.set_yticks(yminor_ticks, minor=True)
         
     if yticks_labels is not None:
         ax.set_yticklabels(yticks_labels, rotation=yticks_rotation)
@@ -94,6 +101,8 @@ def set_plot(ax, spines=['left', 'bottom'],\
     ax.set_xlabel(xlabel, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize)
 
+    if grid:
+        ax.grid()
         
 def ticks_number(ax, xticks=3, yticks=3):
     if xticks>1:
@@ -129,14 +138,11 @@ def find_good_log_ticks(lim=[0.009, 0.0099]):
     if lim[1]<=0:
         print('/!\ need positive lower bound of graphs, set to 10')
         lim[1] = 10
-    i0 =  int(np.log(lim[0])/np.log(10))
-    i1 =  int(np.log(lim[1])/np.log(10))
-
-    if i1>i0:
-        major_ticks = np.power(10., np.arange(i0, i1+1))
-    else:
-        # lim[0] = np.power(10., i0-1)*.99
-        major_ticks = [10.**(i0-1)] # 
+    i0 =  np.floor(np.log(lim[0])/np.log(10))
+    i1 =  np.floor(np.log(lim[1])/np.log(10))
+    
+    major_ticks = np.power(10., np.arange(i0, i1+1))
+    major_ticks = major_ticks[(major_ticks>=lim[0]) & (major_ticks<=lim[1])]
 
     i0 =  int(np.log(lim[0])/np.log(10))-1
     i1 =  int(np.log(lim[1])/np.log(10))
@@ -148,14 +154,13 @@ def find_good_log_ticks(lim=[0.009, 0.0099]):
     while (xx*np.power(10., ii)<lim[1]):
         minor_ticks.append(xx*np.power(10., ii))
         xx +=1
-        print(xx, ii)
         if xx==10:
             ii+=1
             xx=1
     minor_ticks = np.unique(np.array(minor_ticks))
+    minor_ticks = minor_ticks[(minor_ticks>=lim[0]) & (minor_ticks<=lim[1])]
     
-    return lim, major_ticks, minor_ticks[(minor_ticks>lim[0])]
-
+    return lim, major_ticks, minor_ticks
 
 def scale_graphs_boudaries(x_plots, y_plots,
                            wspace=0.2, hspace=0.2,
@@ -174,7 +179,6 @@ def scale_figure(height_to_width, A0_ratio, x_plots, y_plots,
                  left=0.3, right=0.9,
                  bottom=0.3, top=0.9):
 
-    print(x_plots, y_plots)
     SCALE = scale_graphs_boudaries(x_plots, y_plots,
                                    wspace=wspace, hspace=hspace,
                                    left=left, right=right,
@@ -199,11 +203,12 @@ if __name__=='__main__':
     from my_graph import figure, show
     import numpy as np
     fig, ax = figure()
-    # ax.plot(np.exp(3*np.random.randn(100)))
-    ax.plot([1,2], [3.3, 20.3])
+    ax.plot(np.exp(np.random.randn(100)))
+    # ax.plot([1,2], [3.3, 20.3])
     set_plot(ax,
              yscale='log',
-             # ylim=[0.08, 200],
+             # ylim=[0.71, 2.01],
+             # yticks=[0.8, 0.9, 1., 2.],yticks_labels=['0.8', '0.9', '1', '2'],
              # yticks=[0.01, 1., 100.], yticks_labels=['0.01', '1', '100'],
              tck_outward=2)
     show()

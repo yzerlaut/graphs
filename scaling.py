@@ -18,6 +18,7 @@ mpl.rcParams.update({'axes.labelsize': FONTSIZE,
                      'savefig.facecolor': 'none'})
 
 A0_format = {'width':8.3, 'height':11.7}
+Single_Plot_Size = (0.25, 0.14)
 
 def cm2inch(*tupl):
     inch = 2.54
@@ -43,7 +44,7 @@ if __name__=='__main__':
     from my_graph import *
     
     import sys
-    FONTSIZE = int(sys.argv[-1])
+    FONTSIZE = 8 #int(sys.argv[-1])
     
     # mpl.rcParams.update({'axes.labelsize': FONTSIZE,
     #                      'font.size': FONTSIZE,
