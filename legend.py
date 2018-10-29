@@ -15,6 +15,7 @@ def build_bar_legend(X, ax, mymap,
                      orientation='vertical',
                      scale='linear',\
                      color_discretization=None):
+    
     """ X -> ticks """
     if color_discretization is None:
         color_discretization = len(X)

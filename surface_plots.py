@@ -1,18 +1,41 @@
 import numpy as np
 from matplotlib import cm
-
-def twoD_plot(ax, x, y, z, alpha=1.,
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+from graphs.scaling import *
+from graphs.my_graph import figure
+    
+def twoD_plot(x, y, z,
+              ax=None,
+              acb=None,
+              bar_legend={},
+              alpha=1.,
+              fig_args={},
               cmap=cm.viridis,
               diverging=False,
-              vmin=None, vmax=None,
+              vmin=None,
+              vmax=None,
               interpolation='none'):
     """
     surface plots for x, y and z 1 dimensional data
+
+    switch to bar_legend=None to remove the bar legend
     """
     
+    if ax is None:
+        if ('figsize' not in fig_args) and (bar_legend is not None):
+            fig_args['figsize'] = (1.4, 1.)
+            fig_args['right'] = 5.5
+        fig, ax = figure(**fig_args)
+    if (bar_legend is not None) and (acb is None):
+        if 'position' not in bar_legend:
+            bar_legend['position'] = [.7,.35,.03,.55]
+        acb = plt.axes(bar_legend['position'], facecolor='b')
+    else:
+        fig = plt.gcf()
+        
     if diverging and (cmap==cm.viridis):
         cmap = cm.PiYG # we switch to a diverging colormap
-
         
     x, y = np.array(x), np.array(y)
     Z = np.ones((len(np.unique(y)), len(np.unique(x))))*np.nan
@@ -34,13 +57,30 @@ def twoD_plot(ax, x, y, z, alpha=1.,
         else:
             vmax = np.max(z)
             
-    ac = ax.imshow(z1, interpolation=interpolation,
+    ac = ax.imshow(z1,
+                   interpolation=interpolation,
                    extent = (x.min(), x.max(), y.min(), y.max()),
                    vmin = vmin,
                    vmax = vmax,
-                   alpha=alpha, cmap=cmap,
-                   origin='lower', aspect='auto')
-    return ac, vmin, vmax
+                   alpha=alpha,
+                   cmap=cmap,
+                   origin='lower',
+                   aspect='auto')
+
+    """
+    Need to polish the integration of "build_bar_legend" within this function
+    """
+    if bar_legend is not None:
+        if not 'ticks' in bar_legend:
+            bar_legend['ticks'] = np.unique(np.round(np.linspace(vmin, vmax, 5), 1))
+        if not 'label' in bar_legend:
+            bar_legend['label'] = ''
+        if not 'color_discretization' in bar_legend:
+            bar_legend['color_discretization'] = None
+        build_bar_legend(bar_legend['ticks'], acb, cmap,
+                         label=bar_legend['label'],
+                         color_discretization=bar_legend['color_discretization'])
+    return ax, acb
     
 
 if __name__=='__main__':
@@ -54,14 +94,11 @@ if __name__=='__main__':
     index = np.arange(len(x))
     np.random.shuffle(index)
     x, y, z = x[index], y[index], z[index]
-    # x, y, z = x[z>20], y[z>20], z[z>20]
-    fig, ax = figure(figsize=(.25,.1), right=.7)
-    # ax = twoD_plot(plt.gca(), x[x<y], y[x<y], z[x<y]*0.+1, cmap=cm.Greys)
-    acb = plt.axes([.75,.3,.03,.55], facecolor='b')
-    ac, vmin, vmax = twoD_plot(ax, x, y, z, interpolation='bilinear', diverging=True)
-    # ac = twoD_plot(ax, x, y, np.log(z)/np.log(10), interpolation='bilinear', diverging=True)
-    build_bar_legend(np.logspace(np.log(vmin)/np.log(10),
-                                 np.log(vmax)/np.log(10), 6),\
-                     acb, viridis)
-    set_plot(ax)
+
+    # ax, acb = twoD_plot(x[x<y], y[x<y], z[x<y],
+    ax, acb = twoD_plot(x, y, z,
+                        vmin=-7, vmax=7,
+                        bar_legend={'label':'color',
+                                    'color_discretization':20})
+    set_plot(ax, xlabel='x-label (X)', ylabel='y-label (Y)')
     show()

@@ -36,5 +36,7 @@ def multiple_curves(ax, X, Y, sY, COLORS, LABELS,
 
 if __name__=='__main__':
     from my_graph import *
-    plot(Y=np.random.randn(4,10), ls=':', m='o', ms=2, lw=0.4)
+    plot(Y=3*np.random.randn(4,10),
+         sY=np.random.randn(4,10),
+         ls=':', m='o', ms=0.1, lw=0.4)
     show()

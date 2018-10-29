@@ -18,7 +18,7 @@ mpl.rcParams.update({'axes.labelsize': FONTSIZE,
                      'savefig.facecolor': 'none'})
 
 A0_format = {'width':8.3, 'height':11.7}
-Single_Plot_Size = (0.23, 0.13)
+Single_Plot_Size = (0.2, 0.12) # DEFAULT SIZE OF PLOT in terms of A0 format ratio
 
 def cm2inch(*tupl):
     inch = 2.54
@@ -52,8 +52,8 @@ if __name__=='__main__':
     #                      'ytick.labelsize': FONTSIZE})
     
     fig, ax = figure(with_top_left_letter='a')
-    annotate('The fontsize is \n now set to '+str(FONTSIZE), fig,
-             fontsize=FONTSIZE)
+    annotate('The fontsize is \n now set to '+str(FONTSIZE),
+             fig, fontsize=FONTSIZE)
     set_plot(ax, xlabel='my xlabel (Unit)', ylabel='my ylabel (Unit)',
              fontsize=FONTSIZE, num_xticks=3, num_yticks=3)
     fig.savefig(desktop+'fig.svg')
