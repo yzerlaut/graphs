@@ -15,7 +15,9 @@ INKSCAPE_PATH = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape'
 
 def put_list_of_figs_to_svg_fig(FIGS,
                                 fig_name="fig.svg",
-                                visualize=True,export_as_png=False,
+                                initial_guess=True,
+                                visualize=False,
+                                export_as_png=False,
                                 Props = None,
                                 figsize = None,
                                 fontsize=FONTSIZE+1,
@@ -26,10 +28,13 @@ def put_list_of_figs_to_svg_fig(FIGS,
     
     label = list(string.ascii_uppercase)[:len(FIGS)]
 
-
     SIZE = []
     for fig in FIGS:
-        SIZE.append(fig.get_size_inches())
+        if type(fig)==str:
+            SIZE.append([1.,1.])
+        else:
+            SIZE.append(fig.get_size_inches())
+            
     width = np.max([s[0] for s in SIZE])
     height = np.max([s[1] for s in SIZE])
     
@@ -58,15 +63,20 @@ def put_list_of_figs_to_svg_fig(FIGS,
         else:
             XCOORD_LABELS,\
                 YCOORD_LABELS = XCOORD, YCOORD
-            
+
+    LOCATIONS = []
     for i in range(len(FIGS)):
-        FIGS[i].savefig('/tmp/'+str(i)+'.svg', format='svg',
-                        transparent=transparent)
+        if type(FIGS[i]) is str:
+            LOCATIONS.append(FIGS[i])
+        else:
+            LOCATIONS.append('/tmp/'+str(i)+'.svg')
+            FIGS[i].savefig(LOCATIONS[-1], format='svg',
+                            transparent=transparent)
         
     PANELS = []
     for i in range(len(FIGS)):
         PANELS.append(sg.Panel(\
-            sg.SVG('/tmp/'+str(i)+'.svg').move(XCOORD[i],YCOORD[i])))
+            sg.SVG(LOCATIONS[i]).move(XCOORD[i],YCOORD[i])))
             # sg.Text(LABELS[i], 15, 10,
             #         size=FONTSIZE+1, weight='bold').move(\
                                # XCOORD_LABELS[i],YCOORD_LABELS[i]))\
@@ -156,21 +166,21 @@ if __name__=='__main__':
 
     fig1, ax1 = plot(Y=np.random.randn(10,4),\
                      sY=np.random.randn(10,4))
-    ax1.annotate('a', (0.,.9), xycoords='axes fraction', fontsize=FONTSIZE+1, weight='bold')
     fig1.savefig('fig1.svg')
-    fig2, ax2 = scatter(Y=np.random.randn(10,4),\
+    fig2, ax2 = scatter(X=np.arange(4)+0.1*np.random.randn(10,4),\
+                        Y=np.random.randn(10,4),\
                         sY=np.random.randn(10,4))
     curdir=os.path.abspath(__file__).replace(os.path.basename(__file__),'')
 
     # put_list_of_figs_to_multipage_pdf([fig1, fig2])
-    put_list_of_figs_to_svg_fig([fig1, fig2, fig1],
+    put_list_of_figs_to_svg_fig(['schematic.svg', fig2, fig1],
                                 fig_name=curdir+'fig.svg',
-                                Props={'XCOORD':[10,160,310],
-                                       'YCOORD':10*np.ones(3),
-                                       'XCOORD_LABELS':[10,160,310, 330],
-                                       'YCOORD_LABELS':10*np.ones(4),
-                                       'LABELS':['a','b','c', 'd']},
-                                figsize=(.9,.2),
-                                visualize=False, export_as_png=True, transparent=True)
+                                Props={'XCOORD':[0,90,190],
+                                       'YCOORD':[40, 0, 0],
+                                       'XCOORD_LABELS':[0,85,185],
+                                       'YCOORD_LABELS':np.zeros(3),
+                                       'LABELS':['a','b','c']},
+                                figsize=(.1,.1))
     
     export_as_png(curdir+'fig.svg')
+    os.system('open fig.png') # works well with 'Gapplin' on OS-X
