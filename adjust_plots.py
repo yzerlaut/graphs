@@ -1,8 +1,9 @@
+import matplotlib.pylab as plt
+import numpy as np
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from graphs.scaling import FONTSIZE, A0_format
+from graphs.scaling import FONTSIZE, A0_format, Single_Plot_Size
 from matplotlib.ticker import MaxNLocator, NullFormatter
-import numpy as np
 
 def set_plot(ax, spines=['left', 'bottom'],\
              num_xticks=4, num_yticks=4,\
@@ -203,8 +204,7 @@ def scale_figure(height_to_width, A0_ratio, x_plots, y_plots,
 
 
 if __name__=='__main__':
-    from my_graph import figure, show
-    import numpy as np
+    from my_graph import *
     fig, ax = figure()
     ax.plot(np.exp(np.random.randn(100)))
     # ax.plot([1,2], [3.3, 20.3])
