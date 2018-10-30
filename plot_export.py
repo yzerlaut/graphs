@@ -171,12 +171,12 @@ if __name__=='__main__':
     # put_list_of_figs_to_multipage_pdf([fig1, fig2])
     put_list_of_figs_to_svg_fig(['schematic.svg', fig2, fig1],
                                 fig_name=curdir+'fig.svg',
-                                Props={'XCOORD':[0,100,200],
+                                Props={'XCOORD':[0,100,210],
                                        'YCOORD':[0, 0, 0],
                                        'XCOORD_LABELS':[0,90,195],
                                        'YCOORD_LABELS':np.zeros(3),
-                                       'LABELS':['a','b','c']},
-                                figsize=(.1,.1))
+                                       'LABELS':['a','b','c']})
     
     export_as_png(curdir+'fig.svg')
     os.system('open fig.png') # works well with 'Gapplin' on OS-X
+

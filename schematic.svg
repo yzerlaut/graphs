@@ -32389,7 +32389,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.862845"
-     inkscape:cx="91.933596"
+     inkscape:cx="4.7014323"
      inkscape:cy="54.192032"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -32411,7 +32411,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -33424,27 +33424,15 @@
          style="stroke-linecap:butt;stroke-linejoin:round" /></flowRoot>    <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:3.99992752px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="-398.35141"
+       x="-378.35141"
        y="-34.215233"
        id="text12523"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan12525"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.99983788px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';stroke-linecap:butt;stroke-linejoin:round"
-         x="-398.35141"
+         x="-378.35141"
          y="-34.215233">a</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text12527"
-       y="-27.815348"
-       x="-398.35141"
-       style="font-style:normal;font-weight:normal;font-size:3.99992752px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       xml:space="preserve"><tspan
-         y="-27.815348"
-         x="-398.35141"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.999856px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';stroke-linecap:butt;stroke-linejoin:round"
-         id="tspan12529"
-         sodipodi:role="line">a</tspan></text>
     <flowRoot
        transform="matrix(0.79999102,0,0,0.79999102,-242.00649,49.803195)"
        xml:space="preserve"
@@ -33499,7 +33487,7 @@
            id="rect12559" /></flowRegion><flowPara
          style="font-size:11.25000095px;stroke-linecap:butt;stroke-linejoin:round"
          id="flowPara12561">fontsize 9</flowPara></flowRoot>    <flowRoot
-       transform="matrix(0.58391497,0,0,0.58391497,-284.37556,-24.900005)"
+       transform="matrix(0.58391497,0,0,0.58391497,-264.37556,-24.900005)"
        xml:space="preserve"
        id="flowRoot12535"
        style="font-style:normal;font-weight:normal;font-size:11.26683044px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -33533,23 +33521,6 @@
            style="stroke-linecap:butt;stroke-linejoin:round" /></flowRegion><flowPara
          id="flowPara12549"
          style="font-size:8.75000095px;stroke-linecap:butt;stroke-linejoin:round">fontsize 7</flowPara></flowRoot>    <flowRoot
-       inkscape:export-ydpi="300"
-       inkscape:export-xdpi="300"
-       inkscape:export-filename="/Users/yzerlaut/Desktop/1.png"
-       style="font-style:normal;font-weight:normal;font-size:11.26683044px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       id="flowRoot12551"
-       xml:space="preserve"
-       transform="matrix(0.58391497,0,0,0.58391497,-284.37556,-19.369799)"><flowRegion
-         style="stroke-linecap:butt;stroke-linejoin:round"
-         id="flowRegion12553"><rect
-           style="stroke-linecap:butt;stroke-linejoin:round"
-           y="-23.910839"
-           x="-182.80025"
-           height="119.10649"
-           width="218.89842"
-           id="rect12555" /></flowRegion><flowPara
-         style="font-size:7.5px;stroke-linecap:butt;stroke-linejoin:round"
-         id="flowPara12557">&lt;- fontsize 8</flowPara></flowRoot>    <flowRoot
        transform="matrix(0.79999102,0,0,0.79999102,-257.24493,11.945615)"
        xml:space="preserve"
        id="flowRoot14455"
