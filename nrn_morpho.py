@@ -1,26 +1,9 @@
 import brian2
-import matplotlib.pylab as plt
-import numpy as np
 import sys, pathlib, os, json
 # specific modules
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
-# from data_analysis.IO.load_data import load_file
-# from data_analysis.freq_analysis.fourier_for_real import time_to_freq, FT
-# from data_analysis.freq_analysis.wavelet_transform import my_cwt
-# from data_analysis.processing.signanalysis import gaussian_smoothing,\
-#     autocorrel, butter_highpass_filter
 from graphs.my_graph import *
-from graphs.plot_export import put_list_of_figs_to_multipage_pdf
 from matplotlib.cm import viridis, copper, plasma, gray, binary
-from scipy.integrate import cumtrapz
-Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
-        Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
-        '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
-
-desktop = os.path.join(os.path.join(os.path.expanduser('~')),
-                       'Desktop', os.path.sep)
-home = os.path.join(os.path.expanduser('~'), os.path.sep)
-curdir=os.path.abspath(__file__).replace(os.path.basename(__file__),'')
 
 def get_compartment_list(morpho):
 
@@ -47,14 +30,14 @@ def plot_nrn_shape(COMP_LIST,
     [x0, y0, z0] = 1e6*COMP_LIST[0].x, 1e6*COMP_LIST[0].y, 1e6*COMP_LIST[0].z
 
     # plotting each segment
-    ax.plot(0, 0, 'ko', ms=ms)
+    ax.plot(0, 0, 'o', ms=ms, color=dend_color)
     for c in COMP_LIST[1:]:
         x = np.cos(polar_angle)*(1e6*c.x-x0)+np.sin(polar_angle)*(1e6*c.y-y0)
         y = np.sin(polar_angle)*(1e6*c.x-x0)+np.cos(polar_angle)*(1e6*c.y-y0)
 
         if (len(c.type.split('dend'))>1) or (len(c.type.split('apic'))>1):
             ax.plot(x, y, '-', lw=lw, color=dend_color)
-        if (len(c.type.split('axon'))>1) and (axon_color is not None):
+        if (len(c.type.split('axon'))>1) and (axon_color is not 'None'):
             ax.plot(x, y, '-', lw=lw, color=axon_color)
 
     # adding a bar for the spatial scale
@@ -89,7 +72,7 @@ def plot_nrn_shape_with_density(COMP_LIST,
 
         if (c.type=='dend') or (c.type=='apic'):
             ax.plot(x, y, '-', lw=lw, color=dend_color)
-        if (c.type=='axon') and (axon_color is not None):
+        if (c.type=='axon') and (axon_color is not 'None'):
             ax.plot(x, y, '-', lw=lw, color=axon_color)
 
     # adding a bar for the spatial scale
@@ -109,22 +92,44 @@ def dist_to_soma(comp, soma):
     
 if __name__=='__main__':
 
+    from my_graph import *
+    import argparse
+    # First a nice documentation 
+    parser=argparse.ArgumentParser(description=
+                                   """ 
+                                   Plots a 2D representation of the morphological reconstruction of a single cell
+                                   """
+                                   ,formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument("-ac", "--axon_color",help="", default='r')
+    parser.add_argument("-pa", "--polar_angle",help="", type=float, default=0.)
+    parser.add_argument("-aa", "--azimuth_angle",help="", type=float, default=0.)
+    # parser.add_argument("--std",help="std of the random values", type=float, default=10.)
+    # parser.add_argument("--n",help="number of random events",\
+    #                     type=int, default=2000)
+    # parser.add_argument("-v", "--verbose", help="increase output verbosity",
+    #                     action="store_true")
+    # parser.add_argument("-s", "--save", help="save the figures",
+    #                     action="store_true")
+    # parser.add_argument("-u", "--update_plot", help="plot the figures", action="store_true")
+    parser.add_argument("--filename", '-f', help="filename", type=str,
+                 default=home+'work/neural_network_dynamics/single_cell_integration/morphologies/Jiang_et_al_2015/L5pyr-j140408b.CNG.swc')
+    # filename = home+'work/neural_network_dynamics/single_cell_integration/morphologies/Jiang_et_al_2015/L23pyr-j150123a.CNG.swc'
+    args = parser.parse_args()
+    
     print('[...] loading morphology')
-    morpho = brian2.Morphology.from_file('/Users/yzerlaut/Downloads/tolias/CNG version/L5pyr-j140408b.CNG.swc')
+    morpho = brian2.Morphology.from_swc_file(args.filename)
     print('[...] creating list of compartments')
     COMP_LIST = get_compartment_list(morpho)
-
-    from my_graph import *
-    plot_nrn_shape(COMP_LIST, lw=0.5, ms=0.1)
+    plot_nrn_shape(COMP_LIST, lw=0.5, ms=0.1,
+                   polar_angle=args.polar_angle, azimuth_angle=args.azimuth_angle, 
+                   axon_color=args.axon_color)
     
     # fig, AX = plt.subplots(1, 4, figsize=(7,4))
-
     # plot(COMP_LIST, ax=AX[0])
     # for ax in AX[1:]:
     #     plot(COMP_LIST, ax=ax, lw=0.1, ms=0.1, spatial_scale=0)
 
     # x0, y0, z0 = 1e6*COMP_LIST[0][0].x, 1e6*COMP_LIST[0][0].y, 1e6*COMP_LIST[0][0].z
-
     # # adding density of excitatory synapses
     # Density= 30./(100.*brian2.um2)
     # scale_per_ms = 0.03
@@ -141,7 +146,6 @@ if __name__=='__main__':
     # AX[1].plot([AX[1].get_xlim()[0]], [AX[1].get_ylim()[0]], 'o',
     #            ms=100.*scale_per_ms, color=Green, label='100 synapses')
     # AX[1].legend(frameon=False, prop={'size':'xx-small'})
-
     # # adding density of PV synapses
     # scale_per_ms = 0.01
     # # -- Proximal
