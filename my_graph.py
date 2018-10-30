@@ -2,19 +2,20 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 home = os.path.expanduser('~')+os.path.sep
-# module that 
+# module that construct the plot settings
+from graphs.draw_figure import figure
 from graphs.adjust_plots import *
 
-from matplotlib.ticker import MaxNLocator, NullFormatter
-from matplotlib.cm import viridis, copper
 import numpy as np
 from graphs.annotations import *
 import graphs.line_plots as line_plots
 import graphs.scatter_plots as scatter_plots
+from graphs.hist_plots import hist
 from graphs.inset import add_inset
 from graphs.legend import *
 
 # custom colors
+from matplotlib.cm import viridis, copper
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
@@ -32,8 +33,8 @@ def plot(x=None, y=None, sy=None,
          X=None, Y=None, sY=None,
          COLORS=None, colormap=viridis,
          ax=None,
-         lw=2, alpha_std=0.3, ms=0, m='', ls='-',
-         xlabel='', ylabel='occurence',bar_label='',
+         lw=1, alpha_std=0.3, ms=0, m='', ls='-',
+         xlabel='', ylabel='', bar_label='',
          label=None,
          LABELS=None,
          fig_args={},
@@ -41,6 +42,9 @@ def plot(x=None, y=None, sy=None,
          bar_legend_args=None,
          legend_args=None):
 
+    """    
+    return fig, ax
+    """
     # getting or creating the axis
     if ax is None:
         fig, ax = figure(**fig_args)
@@ -77,7 +81,11 @@ def plot(x=None, y=None, sy=None,
     # if legend_args is not
     if legend_args is not None:
         ax.legend(**legend_args)
-
+        
+    if 'xlabel' not in axes_args:
+        axes_args['xlabel'] = xlabel
+    if 'ylabel' not in axes_args:
+        axes_args['ylabel'] = ylabel
     set_plot(ax, **axes_args)
 
     return fig, ax
@@ -135,38 +143,6 @@ def scatter(x=None, y=None, sx=None, sy=None,
     if legend_args is not None:
         ax.legend(**legend_args)
     
-    set_plot(ax, **axes_args)
-    
-    return fig, ax
-
-
-###########################################################
-######  Histogram
-###########################################################
-
-def hist(x, bins=20, ax=None,
-         orientation='horizontal',
-         edgecolor='k', facecolor='lightgray',
-         lw=0.3,
-         xlabel='', ylabel='occurence',
-         normed=True,
-         fig_args={}, axes_args={}):
-    
-    hist, be = np.histogram(x, bins=bins, normed=normed)
-    
-    if ax is None:
-        fig, AX = figure(**fig_args)
-        ax = AX[0][0]
-    else:
-        fig = plt.gcf()
-
-    if orientation=='vertical':
-        ax.barh(.5*(be[1:]+be[:-1]), hist, height=be[1]-be[0], 
-                edgecolor=edgecolor, facecolor=facecolor, lw=lw)
-    elif orientation=='horizontal':
-        ax.bar(.5*(be[1:]+be[:-1]), hist, width=be[1]-be[0], 
-                edgecolor=edgecolor, facecolor=facecolor, lw=lw)
-        
     set_plot(ax, **axes_args)
     
     return fig, ax

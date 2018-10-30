@@ -1,6 +1,6 @@
 import matplotlib.pylab as plt
 
-def add_inset(ax, rect=[.9,.3,.05,.6], facecolor='w'):
+def add_inset(ax, rect=[.5,.5,.5,.4], facecolor='w'):
     fig = plt.gcf()
     box = ax.get_position()
     width = box.width
@@ -20,3 +20,13 @@ def add_inset(ax, rect=[.9,.3,.05,.6], facecolor='w'):
     # subax.xaxis.set_tick_params(labelsize=x_labelsize)
     # subax.yaxis.set_tick_params(labelsize=y_labelsize)
     return subax
+
+
+if __name__=='__main__':
+
+    from my_graph import *
+    y = np.exp(np.random.randn(100))
+    fig, ax = plot(y, xlabel='time', color=Blue, ylabel='y-value')
+    sax = add_inset(ax)
+    hist(y, bins=10, ax=sax, c=Blue, axes_args={'spines':[]}, xlabel='y-value')
+    show()
