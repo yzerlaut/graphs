@@ -15,11 +15,11 @@ from graphs.inset import add_inset
 from graphs.legend import *
 
 # custom colors
-from matplotlib.cm import viridis, copper
+from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
-
+Color_List = [Blue, Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan]
 
 def save_on_desktop(fig, figname='temp.svg'):
     fig.savefig(desktop+figname)
