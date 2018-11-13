@@ -34,7 +34,7 @@ def bar_scales(ax,
     if xlim is None:
         xlim = ax.get_xlim()
     if ylim is None:
-        ylim = ax.get_xlim()
+        ylim = ax.get_ylim()
         
     if location=='top right':
         x0 = xlim[1]-(1.-factor)*(xlim[1]-xlim[0])
@@ -67,7 +67,6 @@ def bar_scales(ax,
     else:
         x0, y0 = location
         
-
     # we reintroduce the data limits
     ax.set_ylim(ylim)
     ax.set_xlim(xlim)
