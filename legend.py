@@ -1,8 +1,8 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+from graphs.inset import add_inset
 from graphs.scaling import FONTSIZE, A0_format
 import numpy as np
-from inset import add_inset
 import matplotlib as mpl
 
 def get_linear_colormap(color1='blue', color2='red'):
