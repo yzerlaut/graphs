@@ -60,9 +60,10 @@ def plot(x=None, y=None, sy=None,
             X = [x for i in range(len(Y))]
         elif (X is None):
             X = [np.arange(len(y)) for y in Y]
-
+        
         line_plots.multiple_curves(ax, X, Y, sY, COLORS, LABELS,
                                    alpha_std=alpha_std,
+                                   colormap=colormap,
                                    lw=lw, ls=ls, m=m, ms=ms)
     else:
         line_plots.single_curve(ax, x, y, sy,

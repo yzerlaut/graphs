@@ -18,6 +18,7 @@ def single_curve(ax, x, y, sy,
 def multiple_curves(ax, X, Y, sY, COLORS, LABELS,
                     lw=1, ms=0, ls='-', m='',
                     alpha_std=0.3, colormap=viridis):
+    
     # meaning we have to plot several curves
     if COLORS is None:
         COLORS = [colormap(i/(len(Y)-1)) for i in range(len(Y))]
@@ -26,7 +27,7 @@ def multiple_curves(ax, X, Y, sY, COLORS, LABELS,
     for x, y, l, c in zip(X, Y, LABELS, COLORS):
         ax.plot(x, y,
                 color=c, linestyle=ls,
-                marker=m, ms=ms, label=l)
+                lw=lw, marker=m, ms=ms, label=l)
 
     # then errorbars if needed:
     if (sY is not None):

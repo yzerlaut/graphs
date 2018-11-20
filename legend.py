@@ -2,6 +2,7 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.scaling import FONTSIZE, A0_format
 import numpy as np
+from inset import add_inset
 import matplotlib as mpl
 
 def get_linear_colormap(color1='blue', color2='red'):
@@ -11,7 +12,8 @@ def get_linear_colormap(color1='blue', color2='red'):
 def build_bar_legend(X, ax, mymap,
                      label='$\\nu$ (Hz)',\
                      bounds=None,
-                     ticks_labels=None, no_ticks=False,
+                     ticks_labels=None,
+                     no_ticks=False,
                      orientation='vertical',
                      scale='linear',\
                      color_discretization=None):
@@ -48,5 +50,46 @@ def build_bar_legend(X, ax, mymap,
     cb.set_label(label)
     return cb
 
+def bar_legend(X, ax,
+               inset_rect=[.8,.5,.07,.46],
+               colormap=mpl.cm.copper,
+               facecolor='w',
+               label='$\\nu$ (Hz)',\
+               bounds=None,
+               ticks_labels=None,
+               no_ticks=False,
+               orientation='vertical',
+               scale='linear',\
+               color_discretization=None):
+
+    cb = add_inset(ax,
+                   rect=inset_rect,
+                   facecolor=facecolor)
+
+    build_bar_legend(X,
+                     cb,
+                     colormap,
+                     label=label,
+                     scale=scale, bounds=bounds,
+                     orientation=orientation,
+                     color_discretization=color_discretization,
+                     no_ticks=no_ticks, ticks_labels=ticks_labels)
+    
+    return cb
 
 
+
+if __name__=='__main__':
+
+    from my_graph import *
+    
+    Y = [np.exp(np.random.randn(100)) for i in range(4)]
+    fig, ax = plot(Y=Y,
+                   xlabel='time', ylabel='y-value',
+                   colormap=copper,
+                   lw=1.)
+    bar_legend(np.arange(5), ax,
+               colormap=copper,
+               label='Trial ID', no_ticks=True)
+    
+    show()
