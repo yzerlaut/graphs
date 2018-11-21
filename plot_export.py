@@ -6,6 +6,7 @@ import matplotlib.pylab as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 import string, datetime
+from tempfile import gettempdir
 
 # SPECIAL PYTHON PACKAGES FOR:
 import svgutils.compose as sg # SVG
@@ -69,7 +70,7 @@ def put_list_of_figs_to_svg_fig(FIGS,
         if type(FIGS[i]) is str:
             LOCATIONS.append(FIGS[i])
         else:
-            LOCATIONS.append('/tmp/'+str(i)+'.svg')
+            LOCATIONS.append(os.path.join(gettempdir(), str(i)+'.svg'))
             FIGS[i].savefig(LOCATIONS[-1], format='svg',
                             transparent=transparent)
         
