@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, platform
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 home = os.path.expanduser('~')+os.path.sep
@@ -170,9 +170,12 @@ def replace_axis_by_legend(ax, text, x0=0.1, y0=0.1, on_fig=False):
 
 
 def show(module=None):
-    plt.show(block=False)
-    input('Hit Enter To Close')
-    plt.close()
+    if platform.system()=='Windows':
+        plt.show()
+    else:
+        plt.show(block=False)
+        input('Hit Enter To Close')
+        plt.close()
 
 
 def annotate(s, stuff, x=0.5, y=0.8,
