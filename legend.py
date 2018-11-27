@@ -25,7 +25,11 @@ def build_bar_legend(X, ax, mymap,
     # scale : 'linear' / 'log' / 'custom'
     if scale is 'linear':
         if bounds is None:
-            bounds = [X[0]+(X[1]-X[0])/2., X[-1]+(X[1]-X[0])/2.]
+            try:
+                bounds = [X[0]+(X[1]-X[0])/2., X[-1]+(X[1]-X[0])/2.]
+            except IndexError:
+                bounds = [X[0], X[0]+1]
+                
         bounds = np.linspace(bounds[0], bounds[1], color_discretization)
     elif scale is 'log10':
         if bounds is None:
