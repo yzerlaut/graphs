@@ -64,7 +64,7 @@ def twoD_plot(x, y, z,
                    vmin = vmin,
                    vmax = vmax,
                    alpha=alpha,
-                   colormap=colormap,
+                   cmap=colormap,
                    origin='lower',
                    aspect='auto')
 
