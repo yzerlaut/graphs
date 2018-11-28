@@ -12,7 +12,7 @@ def twoD_plot(x, y, z,
               bar_legend={},
               alpha=1.,
               fig_args={},
-              cmap=cm.viridis,
+              colormap=cm.viridis,
               diverging=False,
               vmin=None,
               vmax=None,
@@ -35,8 +35,8 @@ def twoD_plot(x, y, z,
     else:
         fig = plt.gcf()
         
-    if diverging and (cmap==cm.viridis):
-        cmap = cm.PiYG # we switch to a diverging colormap
+    if diverging and (colormap==cm.viridis):
+        colormap = cm.PiYG # we switch to a diverging colormap
         
     x, y = np.array(x), np.array(y)
     Z = np.ones((len(np.unique(y)), len(np.unique(x))))*np.nan
@@ -64,7 +64,7 @@ def twoD_plot(x, y, z,
                    vmin = vmin,
                    vmax = vmax,
                    alpha=alpha,
-                   cmap=cmap,
+                   colormap=colormap,
                    origin='lower',
                    aspect='auto')
 
@@ -78,7 +78,7 @@ def twoD_plot(x, y, z,
             bar_legend['label'] = ''
         if not 'color_discretization' in bar_legend:
             bar_legend['color_discretization'] = None
-        build_bar_legend(bar_legend['ticks'], acb, cmap,
+        build_bar_legend(bar_legend['ticks'], acb, colormap,
                          label=bar_legend['label'],
                          color_discretization=bar_legend['color_discretization'])
     return ax, acb
