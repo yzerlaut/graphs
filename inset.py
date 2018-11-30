@@ -1,6 +1,8 @@
 import matplotlib.pylab as plt
 
-def add_inset(ax, rect=[.5,.5,.5,.4], facecolor='w'):
+def add_inset(ax,
+              rect=[.5,.5,.5,.4],
+              facecolor='w'):
     fig = plt.gcf()
     box = ax.get_position()
     width = box.width

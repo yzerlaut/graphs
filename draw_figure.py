@@ -89,11 +89,11 @@ def figure(axes = (1,1),
                  xycoords='figure fraction',
                  fontsize=fontsize+1, fontweight='bold')
 
-    if (x_plots==1) and (y_plots==1):        
+    if len(AX)==1 and (len(AX[0])==1):
         return fig, AX[0][0]
-    elif (x_plots==1):
+    elif len(AX[0])==1:
         return fig, [AX[i][0] for i in range(len(AX))]
-    elif (y_plots==1):
+    elif len(AX)==1:
         return fig, AX[0]
     else:
         return fig, AX
