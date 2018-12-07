@@ -99,6 +99,7 @@ def figure(axes = (1,1),
         return fig, AX
     
 if __name__=='__main__':
+    
     from graphs.my_graph import *
     figure()
     figure(axes_extents=[\
