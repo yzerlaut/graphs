@@ -4,6 +4,7 @@ from graphs.inset import add_inset
 from graphs.scaling import FONTSIZE, A0_format
 import numpy as np
 import matplotlib as mpl
+import matplotlib.pylab as plt
 
 def get_linear_colormap(color1='blue', color2='red'):
     return mpl.colors.LinearSegmentedColormap.from_list(\
@@ -82,6 +83,35 @@ def bar_legend(X, ax,
     return cb
 
 
+def legend(list_of_lines,
+           list_of_labels,
+           fig=None,
+           frameon=False,
+           handletextpad=0.3,
+           handlelength=1.,
+           ncol=1,
+           title='',
+           fontsize=FONTSIZE-1,
+           columnspacing=1.,
+           loc='upper center'):
+
+    if fig is None:
+        fig = plt.gcf()
+
+    fig.legend(list_of_lines,
+               list_of_labels,
+               loc=loc,
+               frameon=frameon,
+               ncol=ncol,
+               # numpoints=1,
+               # scatterpoints=1,
+               columnspacing=columnspacing,
+               handletextpad=handletextpad,
+               handlelength=handlelength,
+               title=title,
+               fontsize=fontsize)
+
+    
 
 if __name__=='__main__':
 
@@ -92,8 +122,21 @@ if __name__=='__main__':
                    xlabel='time', ylabel='y-value',
                    colormap=copper,
                    lw=1.)
+    LINES, LABELS = [], []
+    for i in range(2):
+        line, = ax.plot(np.arange(10)*10, np.exp(np.random.randn(10)), 'o', ms=2)
+        LINES.append(line)
+        LABELS.append('line'+str(i+1))
+    for i in range(2):
+        line, = ax.plot(np.arange(10)*10, np.exp(np.random.randn(10)), '-')
+        LINES.append(line)
+        LABELS.append('line'+str(i+1))
+
+    legend(LINES, LABELS, ncol=2, loc=(.2,.6))
+    
     bar_legend(np.arange(5), ax,
                colormap=copper,
+               # orientation='horizontal',
                label='Trial ID', no_ticks=True)
     
     show()
