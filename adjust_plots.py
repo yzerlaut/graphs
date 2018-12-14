@@ -16,6 +16,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
              xlim_enhancment=1., ylim_enhancment=1.,\
              xlim=None, ylim=None,
              grid=False,
+             xcolor='k', ycolor='k',
              fontsize=FONTSIZE):
 
     # no ticks if no axis bar
@@ -25,8 +26,10 @@ def set_plot(ax, spines=['left', 'bottom'],\
         yticks=[]
         
     # drawing spines
-    adjust_spines(ax, spines, tck_outward=tck_outward)
-
+    adjust_spines(ax, spines,
+                  tck_outward=tck_outward,
+                  ycolor=ycolor, xcolor=xcolor)
+    
     if yscale=='log':
         ax.set_yscale('log')
     if xscale=='log':
@@ -102,11 +105,13 @@ def set_plot(ax, spines=['left', 'bottom'],\
     if yticks_labels is not None:
         ax.set_yticklabels(yticks_labels, rotation=yticks_rotation)
 
-    ax.set_xlabel(xlabel, fontsize=fontsize)
-    ax.set_ylabel(ylabel, fontsize=fontsize)
+    ax.set_xlabel(xlabel, fontsize=fontsize, color=xcolor)
+    ax.set_ylabel(ylabel, fontsize=fontsize, color=ycolor)
 
     if grid:
         ax.grid()
+
+        
         
 def ticks_number(ax, xticks=3, yticks=3):
     if xticks>1:
@@ -114,7 +119,7 @@ def ticks_number(ax, xticks=3, yticks=3):
     if yticks>1:
         ax.yaxis.set_major_locator( MaxNLocator(nbins = yticks) )
 
-def adjust_spines(ax, spines, tck_outward=3):
+def adjust_spines(ax, spines, tck_outward=3, xcolor='k', ycolor='k'):
     for loc, spine in ax.spines.items():
         if loc in spines:
             spine.set_position(('outward', tck_outward)) # outward by 10 points by default
@@ -125,15 +130,28 @@ def adjust_spines(ax, spines, tck_outward=3):
     # turn off ticks where there is no spine
     if 'left' in spines:
         ax.yaxis.set_ticks_position('left')
+        ax.spines['left'].set_color(ycolor)
+        ax.tick_params('y', colors=ycolor, which='both')
+    elif 'right' in spines:
+        ax.yaxis.set_ticks_position('right')
+        ax.spines['right'].set_color(ycolor)
+        ax.tick_params('y', colors=ycolor, which='both')
+        ax.yaxis.set_label_position('right')
     else:
-        # no yaxis ticks
-        ax.yaxis.set_ticks([])
+        ax.yaxis.set_ticks([]) # no yaxis ticks
 
     if 'bottom' in spines:
         ax.xaxis.set_ticks_position('bottom')
+        ax.spines['bottom'].set_color(xcolor)
+        ax.tick_params('x', colors=xcolor, which='both')
+    elif 'top' in spines:
+        ax.xaxis.set_ticks_position('top')
+        ax.spines['top'].set_color(xcolor)
+        ax.tick_params('x', colors=xcolor, which='both')
+        ax.xaxis.set_label_position('top')
     else:
-        # no xaxis ticks
-        ax.xaxis.set_ticks([])
+        ax.xaxis.set_ticks([]) # no xaxis ticks
+        
 
 def find_good_log_ticks(lim=[0.009, 0.0099]):
     if lim[0]<=0:
@@ -205,13 +223,13 @@ def scale_figure(height_to_width, A0_ratio, x_plots, y_plots,
 
 if __name__=='__main__':
     from my_graph import *
-    fig, ax = figure()
-    ax.plot(np.exp(np.random.randn(100)))
-    # ax.plot([1,2], [3.3, 20.3])
-    set_plot(ax,
-             yscale='log',
-             # ylim=[0.71, 2.01],
-             # yticks=[0.8, 0.9, 1., 2.],yticks_labels=['0.8', '0.9', '1', '2'],
-             # yticks=[0.01, 1., 100.], yticks_labels=['0.01', '1', '100'],
-             tck_outward=2)
+    fig, ax = figure(axes_extents=[[[2,1]]], left=2., right=3.)
+    ax2 = ax.twinx()
+    ax.plot(np.exp(np.random.randn(100)), 'o', ms=2, color=Blue)
+    ax2.plot(np.exp(np.random.randn(100)), 'o', ms=1, color=Red)
+    set_plot(ax2, ['right'], yscale='log', ylabel='blabal',
+             tck_outward=2, ycolor=Red)
+    set_plot(ax, ycolor=Blue, xcolor='k',
+             yscale='log', ylabel='blabal',
+             tck_outward=2, xlabel='trying')
     show()
