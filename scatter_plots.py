@@ -1,6 +1,41 @@
 from matplotlib.cm import viridis
-# import sys, os
-# sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+from scipy.stats import pearsonr
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+from graphs.draw_figure import figure
+from graphs.adjust_plots import *
+
+def two_variable_analysis(first_observations,
+                          second_observations,
+                          with_correl_annotation=True,
+                          ylabel='y-value', xlabel='x-value',
+                          colormap=None):
+
+    if len(first_observations)!=len(second_observations):
+        print('Pb with sample size !! Test is not applicable !!')
+
+    if colormap is None:
+        def colormap(x):return 'k'
+        
+    fig, ax = figure()
+    
+    for i in range(len(first_observations)):
+        ax.plot([first_observations[i]], [second_observations[i]], 'o', color=colormap(i/(len(first_observations)-1)), ms=3)
+
+
+    if with_correl_annotation:
+        c, pval = pearsonr(first_observations, second_observations)
+        lin = np.polyfit(first_observations, second_observations, 1)
+        x = np.linspace(first_observations.min(), first_observations.max(), 3)
+        ax.plot(x, np.polyval(lin, x), 'k:', lw=1)
+        ax.annotate('Pearson correlation:\n c=%.2f, p=%.2f' % (c, pval), (.99,.4), xycoords='axes fraction')
+    else:
+        c, pval = 0., 1.
+        
+    set_plot(ax, ylabel=ylabel, xlabel=xlabel)
+    
+    return fig, ax, c, pval
+
 
 def single_curve(ax, x, y, sx, sy,
                  color='k-', marker='o',
@@ -40,8 +75,10 @@ def multiple_curves(ax, X, Y, sX, sY, COLORS, LABELS,
 
 if __name__=='__main__':
     from my_graph import *
-    fig, ax = scatter(np.random.randn(10), np.random.randn(10),
-                      np.random.randn(10), np.random.randn(10))
-    ax.plot([-2,2], [-2,2], 'k:')
+    two_variable_analysis(np.random.randn(10), np.random.randn(10),
+                          colormap=viridis)
+    # fig, ax = scatter(np.random.randn(10), np.random.randn(10),
+    #                   np.random.randn(10), np.random.randn(10))
+    # ax.plot([-2,2], [-2,2], 'k:')
     show()
         
