@@ -9,7 +9,7 @@ def two_variable_analysis(first_observations,
                           second_observations,
                           with_correl_annotation=True,
                           ylabel='y-value', xlabel='x-value',
-                          colormap=None):
+                          colormap=None, ms=4):
 
     if len(first_observations)!=len(second_observations):
         print('Pb with sample size !! Test is not applicable !!')
@@ -20,13 +20,12 @@ def two_variable_analysis(first_observations,
     fig, ax = figure()
     
     for i in range(len(first_observations)):
-        ax.plot([first_observations[i]], [second_observations[i]], 'o', color=colormap(i/(len(first_observations)-1)), ms=3)
-
+        ax.plot([first_observations[i]], [second_observations[i]], 'o', color=colormap(i/(len(first_observations)-1)), ms=ms)
 
     if with_correl_annotation:
         c, pval = pearsonr(first_observations, second_observations)
         lin = np.polyfit(first_observations, second_observations, 1)
-        x = np.linspace(first_observations.min(), first_observations.max(), 3)
+        x = np.linspace(np.min(first_observations), np.max(first_observations), 3)
         ax.plot(x, np.polyval(lin, x), 'k:', lw=1)
         ax.annotate('Pearson correlation:\n c=%.2f, p=%.2f' % (c, pval), (.99,.4), xycoords='axes fraction')
     else:
