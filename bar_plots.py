@@ -10,7 +10,7 @@ def related_samples_two_conditions_comparison(first_observations,
                                               with_annotation=True,
                                               xticks_rotation=0,
                                               lw=.5,
-                                              color1='b', color2='r',
+                                              color1='#1f77b4', color2='#ff7f0e',
                                               ylabel='value',
                                               xticks=[0, 1],
                                               xticks_labels=['cond1', 'cond2'],
@@ -47,7 +47,7 @@ def unrelated_samples_two_conditions_comparison(first_observations,
                                               with_annotation=True,
                                               xticks_rotation=0,
                                               lw=.5,
-                                              color1='b', color2='r',
+                                              color1='#1f77b4', color2='#ff7f0e',
                                               ylabel='value',
                                               xticks=[0, 1],
                                               xticks_labels=['cond1', 'cond2']):
@@ -60,8 +60,8 @@ def unrelated_samples_two_conditions_comparison(first_observations,
         ax.plot([0+np.random.randn()*.1], [first_observations[i]], 'o', ms=2, color=color1)
         ax.plot([1+np.random.randn()*.1], [second_observations[i]], 'o', ms=2, color=color2)
         
-    ax.bar([0], [np.mean(first_observations)], yerr=np.std(first_observations), color=color1, lw=lw, alpha=.5)
-    ax.bar([1], [np.mean(second_observations)], yerr=np.std(second_observations), color=color2, lw=lw, alpha=.5)
+    ax.bar([0], [np.mean(first_observations)], yerr=np.std(first_observations), color=color1, lw=lw, alpha=.7)
+    ax.bar([1], [np.mean(second_observations)], yerr=np.std(second_observations), color=color2, lw=lw, alpha=.7)
     
     if with_annotation:
         ax.annotate('unpaired t-test:\n p=%.2f' % pval, (.99,.4), xycoords='axes fraction')
