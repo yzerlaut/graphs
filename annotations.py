@@ -20,6 +20,70 @@ def sci_str(x, rounding=0, remove_0_in_exp=True):
     if remove_0_in_exp: y = y.replace('-0', '-')
     return y
 
+def draw_bar_scales(ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label,
+                    orientation='left-bottom',
+                    Xbar_label2='',Ybar_label2='', color2='k',
+                    fontsize=FONTSIZE-1,
+                    shift_factor=20., color='k', lw=1):
+    """
+    USE:
+
+    fig, ax = figure()
+    ax.plot(np.random.randn(10), np.random.randn(10), 'o')
+    draw_bar_scales(ax, (0,0), 1, '1s', 2, '2s', orientation='right-bottom', Ybar_label2='12s')
+    set_plot(ax)    
+    """
+    
+    if orientation=='left-bottom':
+        
+        ax.plot(xyLoc[0]-np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
+        ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]-np.arange(2)*Ybar, lw=lw, color=color)
+        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=color, va='bottom', ha='right',fontsize=fontsize)
+        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=color, va='top', ha='left',fontsize=fontsize)
+        if Ybar_label2!='':
+            ax.annotate('\n'+Ybar_label2, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor),
+                        color=color2, va='top', ha='left',fontsize=fontsize)
+            
+    elif orientation=='right-bottom':
+        
+        ax.plot(xyLoc[0]+np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
+        ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]-np.arange(2)*Ybar, lw=lw, color=color)
+        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=color, va='bottom', ha='left',fontsize=fontsize)
+        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=color, va='top', ha='right',fontsize=fontsize)
+        if Ybar_label2!='':
+            ax.annotate('\n'+Ybar_label2, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor),
+                        color=color2, va='top', ha='right',fontsize=fontsize)
+
+    elif orientation=='left-top':
+        
+        ax.plot(xyLoc[0]-np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
+        ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]+np.arange(2)*Ybar, lw=lw, color=color)
+        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=color, va='top', ha='right',fontsize=fontsize)
+        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=color, va='bottom', ha='left',fontsize=fontsize)
+        if Ybar_label2!='':
+            ax.annotate(Ybar_label2+'\n',
+                        (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor),
+                        color=color2, va='bottom', ha='right',fontsize=fontsize)
+
+    elif orientation=='right-top':
+        
+        ax.plot(xyLoc[0]+np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
+        ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]+np.arange(2)*Ybar, lw=lw, color=color)
+        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=color, va='top', ha='left',fontsize=fontsize)
+        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=color, va='bottom', ha='right',fontsize=fontsize)
+        if Ybar_label2!='':
+            ax.annotate(Ybar_label2+'\n', (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor),
+                        color=color2, va='bottom', ha='right',fontsize=fontsize)
+    else:
+        print("""
+        orientation not recognized, it should be one of
+        - right-top
+        - left-top
+        - right-bottom
+        - left-bottom
+        """)
+        
+
 def bar_scales(ax,
                xlim=None, ylim=None,
                xbar=0, ybar=0,
@@ -27,6 +91,10 @@ def bar_scales(ax,
                location = 'top right',
                remove_axis=True,
                factor=0.98):
+    """
+    deprecated !
+    TO BE REPLACED BY the above function
+    """
 
     if remove_axis:
         ax.axis('off')
