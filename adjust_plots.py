@@ -11,6 +11,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
              xticks=None, yticks=None,\
              xminor_ticks=None, yminor_ticks=None,
              xticks_labels=None, yticks_labels=None,\
+             xlabelpad=None, ylabelpad=None,\
              xticks_rotation=0, yticks_rotation=0,\
              xscale='linear', yscale='linear',
              xlim_enhancment=1., ylim_enhancment=1.,\
@@ -105,8 +106,8 @@ def set_plot(ax, spines=['left', 'bottom'],\
     if yticks_labels is not None:
         ax.set_yticklabels(yticks_labels, rotation=yticks_rotation)
 
-    ax.set_xlabel(xlabel, fontsize=fontsize, color=xcolor)
-    ax.set_ylabel(ylabel, fontsize=fontsize, color=ycolor)
+    ax.set_xlabel(xlabel, fontsize=fontsize, color=xcolor, labelpad=xlabelpad)
+    ax.set_ylabel(ylabel, fontsize=fontsize, color=ycolor, labelpad=ylabelpad)
 
     if grid:
         ax.grid()
@@ -231,5 +232,5 @@ if __name__=='__main__':
              tck_outward=2, ycolor=Red)
     set_plot(ax, ycolor=Blue, xcolor='k',
              yscale='log', ylabel='blabal',
-             tck_outward=2, xlabel='trying')
+             tck_outward=2, xlabel='trying', ylabelpad=-5)
     show()

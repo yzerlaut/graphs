@@ -85,6 +85,7 @@ def twoD_plot(x, y, z,
     
 
 if __name__=='__main__':
+    
     from my_graph import *
     
     x, y = np.meshgrid(np.arange(1, 11), np.arange(1, 11))
