@@ -1,6 +1,7 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.scaling import FONTSIZE
+import numpy as np
 
 def from_pval_to_star(p,
                       threshold1=1e-3,
