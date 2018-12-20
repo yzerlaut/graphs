@@ -21,9 +21,32 @@ def sci_str(x, rounding=0, remove_0_in_exp=True):
     if remove_0_in_exp: y = y.replace('-0', '-')
     return y
 
+def int_to_roman(input, capitals=False):
+   """
+   #########################################################
+   TAKEN FROM:
+   http://code.activestate.com/recipes/81611-roman-numerals/
+   #########################################################
+   
+   Convert an integer to Roman numerals.
+   """
+   ints = (1000, 900,  500, 400, 100,  90, 50,  40, 10,  9,   5,  4,   1)
+   if capitals:
+       nums = ('M',  'CM', 'D', 'CD','C', 'XC','L','XL','X','IX','V','IV','I')
+   else:
+       nums = ('m',  'cm', 'd', 'cd','c', 'xc','l','xl','x','ix','v','iv','i')
+   result = ""
+   for i in range(len(ints)):
+      count = int(input / ints[i])
+      result += nums[i] * count
+      input -= ints[i] * count
+   return result
+
+
 def draw_bar_scales(ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label,
                     orientation='left-bottom',
-                    Xbar_label2='',Ybar_label2='', color2='k',
+                    Xbar_label2='',Ybar_label2='',
+                    xcolor='k', ycolor='k', ycolor2='k',
                     fontsize=FONTSIZE-1,
                     shift_factor=20., color='k', lw=1):
     """
@@ -39,42 +62,42 @@ def draw_bar_scales(ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label,
         
         ax.plot(xyLoc[0]-np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
         ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]-np.arange(2)*Ybar, lw=lw, color=color)
-        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=color, va='bottom', ha='right',fontsize=fontsize)
-        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=color, va='top', ha='left',fontsize=fontsize)
+        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=xcolor, va='bottom', ha='right',fontsize=fontsize)
+        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=ycolor, va='top', ha='left',fontsize=fontsize)
         if Ybar_label2!='':
             ax.annotate('\n'+Ybar_label2, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor),
-                        color=color2, va='top', ha='left',fontsize=fontsize)
+                        color=ycolor2, va='top', ha='left',fontsize=fontsize)
             
     elif orientation=='right-bottom':
         
         ax.plot(xyLoc[0]+np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
         ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]-np.arange(2)*Ybar, lw=lw, color=color)
-        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=color, va='bottom', ha='left',fontsize=fontsize)
-        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=color, va='top', ha='right',fontsize=fontsize)
+        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=xcolor, va='bottom', ha='left',fontsize=fontsize)
+        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=ycolor, va='top', ha='right',fontsize=fontsize)
         if Ybar_label2!='':
             ax.annotate('\n'+Ybar_label2, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor),
-                        color=color2, va='top', ha='right',fontsize=fontsize)
+                        color=ycolor2, va='top', ha='right',fontsize=fontsize)
 
     elif orientation=='left-top':
         
         ax.plot(xyLoc[0]-np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
         ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]+np.arange(2)*Ybar, lw=lw, color=color)
-        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=color, va='top', ha='right',fontsize=fontsize)
-        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=color, va='bottom', ha='left',fontsize=fontsize)
+        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=xcolor, va='top', ha='right',fontsize=fontsize)
+        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=ycolor, va='bottom', ha='left',fontsize=fontsize)
         if Ybar_label2!='':
             ax.annotate(Ybar_label2+'\n',
                         (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor),
-                        color=color2, va='bottom', ha='right',fontsize=fontsize)
+                        color=ycolor2, va='bottom', ha='left',fontsize=fontsize)
 
     elif orientation=='right-top':
         
         ax.plot(xyLoc[0]+np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
         ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]+np.arange(2)*Ybar, lw=lw, color=color)
-        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=color, va='top', ha='left',fontsize=fontsize)
-        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=color, va='bottom', ha='right',fontsize=fontsize)
+        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=xcolor, va='top', ha='left',fontsize=fontsize)
+        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=ycolor, va='bottom', ha='right',fontsize=fontsize)
         if Ybar_label2!='':
             ax.annotate(Ybar_label2+'\n', (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor),
-                        color=color2, va='bottom', ha='right',fontsize=fontsize)
+                        color=ycolor2, va='bottom', ha='right',fontsize=fontsize)
     else:
         print("""
         orientation not recognized, it should be one of
@@ -145,12 +168,11 @@ if __name__=='__main__':
     x = 32.23545345e-5
     print(sci_str(x, rounding=2))
     print(from_pval_to_star(x))
-
-    from my_graph import *
-
-    fig, ax = figure()
-
-    ax.plot(np.random.randn(30), np.random.randn(30), 'o')
-    bar_scales(ax, xbar=2, ybar=2, location='bottom left',
-               ybar_label=r'10$\mu$V', xbar_label='200ms')
-    show()
+    for i in range(20):
+        print(int_to_roman(i))
+    # from my_graph import *
+    # fig, ax = figure()
+    # ax.plot(np.random.randn(30), np.random.randn(30), 'o')
+    # bar_scales(ax, xbar=2, ybar=2, location='bottom left',
+    #            ybar_label=r'10$\mu$V', xbar_label='200ms')
+    # show()

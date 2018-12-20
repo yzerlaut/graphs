@@ -192,7 +192,7 @@ def annotate(s, stuff, x=0.5, y=0.8,
                        fontweight=fontweight, fontsize=fontsize,
                        color=color, rotation=rotation)
 
-    
+  
 if __name__=='__main__':
 
     # fig, AX = figure(axes_extents=[\

@@ -11,7 +11,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
              xticks=None, yticks=None,\
              xminor_ticks=None, yminor_ticks=None,
              xticks_labels=None, yticks_labels=None,\
-             xlabelpad=None, ylabelpad=None,\
+             xlabelpad=0, ylabelpad=0,\
              xticks_rotation=0, yticks_rotation=0,\
              xscale='linear', yscale='linear',
              xlim_enhancment=1., ylim_enhancment=1.,\
