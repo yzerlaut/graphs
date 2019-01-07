@@ -1,36 +1,106 @@
 import numpy as np
 from matplotlib import cm
-
-def twoD_plot(ax, x, y, z, alpha=1., cmap=cm.viridis, interpolation='none',):
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+from graphs.scaling import *
+from graphs.my_graph import figure
+from graphs.legend import build_bar_legend
+    
+def twoD_plot(x, y, z,
+              ax=None,
+              acb=None,
+              bar_legend={},
+              alpha=1.,
+              fig_args={},
+              colormap=cm.viridis,
+              diverging=False,
+              vmin=None,
+              vmax=None,
+              interpolation='none'):
     """
     surface plots for x, y and z 1 dimensional data
+
+    switch to bar_legend=None to remove the bar legend
     """
+    
+    if ax is None:
+        if ('figsize' not in fig_args) and (bar_legend is not None):
+            fig_args['figsize'] = (1.4, 1.)
+            fig_args['right'] = 5.5
+        fig, ax = figure(**fig_args)
+    if (bar_legend is not None) and (acb is None):
+        if 'position' not in bar_legend:
+            bar_legend['position'] = [.7,.35,.03,.55]
+        acb = plt.axes(bar_legend['position'], facecolor='b')
+    else:
+        fig = plt.gcf()
+        
+    if diverging and (colormap==cm.viridis):
+        colormap = cm.PiYG # we switch to a diverging colormap
+        
     x, y = np.array(x), np.array(y)
     Z = np.ones((len(np.unique(y)), len(np.unique(x))))*np.nan
     for i, yy in enumerate(np.unique(y)):
         cond1 = y==yy
         for j, xx in enumerate(np.unique(x[cond1])):
-            # Z.append(z[cond1][x[cond1]==xx])
             Z[i,j] = z[cond1][x[cond1]==xx]
     z1 = np.array(Z).reshape(len(np.unique(y)), len(np.unique(x)))
     z1 = Z
-    return ax.imshow(z1, interpolation=interpolation,
-                     extent = (x.min(), x.max(), y.min(), y.max()),
-                     alpha=alpha, cmap=cmap, origin='lower', aspect='auto')
+    
+    if vmin is None:
+        if diverging:
+            vmin = -np.max(np.abs(z))
+        else:
+            vmin = np.min(z)
+    if vmax is None:
+        if diverging:
+            vmax = np.max(np.abs(z))
+        else:
+            vmax = np.max(z)
+            
+    ac = ax.imshow(z1,
+                   interpolation=interpolation,
+                   extent = (x.min(), x.max(), y.min(), y.max()),
+                   vmin = vmin,
+                   vmax = vmax,
+                   alpha=alpha,
+                   cmap=colormap,
+                   origin='lower',
+                   aspect='auto')
+
+    """
+    Need to polish the integration of "build_bar_legend" within this function
+    """
+    if bar_legend is not None:
+        if not 'ticks' in bar_legend:
+            bar_legend['ticks'] = np.unique(np.round(np.linspace(vmin, vmax, 5), 1))
+        if not 'label' in bar_legend:
+            bar_legend['label'] = ''
+        if not 'color_discretization' in bar_legend:
+            bar_legend['color_discretization'] = None
+        build_bar_legend(bar_legend['ticks'], acb, colormap,
+                         label=bar_legend['label'],
+                         color_discretization=bar_legend['color_discretization'])
+    return ax, acb
     
 
 if __name__=='__main__':
+    
     from my_graph import *
-    x, y = np.meshgrid(np.arange(10), np.arange(20))
-    z = x*y
-    x, y, z = np.array(x).flatten(), np.array(y).flatten(), np.array(z).flatten()
+    
+    x, y = np.meshgrid(np.arange(1, 11), np.arange(1, 11))
+    z = np.sqrt(x*y)
+    x, y, z = np.array(x).flatten(),\
+              np.array(y).flatten(),\
+              np.array(z).flatten()*np.random.randn(len(z.flatten()))
     index = np.arange(len(x))
     np.random.shuffle(index)
     x, y, z = x[index], y[index], z[index]
-    # x, y, z = x[z>20], y[z>20], z[z>20]
-    ax = twoD_plot(plt.gca(), x[x<y], y[x<y], z[x<y]*0.+1, cmap=cm.Greys)
-    ax = twoD_plot(plt.gca(), x, y, z, interpolation='bilinear')
-    plt.gca().set_xticks(np.arange(6)*2)
-    plt.colorbar(ax)
-    plt.savefig('/Users/yzerlaut/Desktop/1.svg')
+
+    # ax, acb = twoD_plot(x[x<y], y[x<y], z[x<y],
+    ax, acb = twoD_plot(x, y, z,
+                        vmin=-7, vmax=7,
+                        bar_legend={'label':'color',
+                                    'color_discretization':20})
+    set_plot(ax, xlabel='x-label (X)', ylabel='y-label (Y)')
     show()
