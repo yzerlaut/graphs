@@ -86,7 +86,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
         ax.set_xticks(xminor_ticks, minor=True)
     
     if xticks_labels is not None:
-        ax.set_xticklabels(xticks_labels, rotation=xticks_rotation)
+        ax.set_xticklabels(xticks_labels, rotation=xticks_rotation, fontsize=fontsize)
 
     # y-Ticks
     if (yticks is None) and ('left' or 'right' in spines):
@@ -104,7 +104,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
             ax.set_yticks(yminor_ticks, minor=True)
         
     if yticks_labels is not None:
-        ax.set_yticklabels(yticks_labels, rotation=yticks_rotation)
+        ax.set_yticklabels(yticks_labels, rotation=yticks_rotation, fontsize=fontsize)
 
     ax.set_xlabel(xlabel, fontsize=fontsize, color=xcolor, labelpad=xlabelpad)
     ax.set_ylabel(ylabel, fontsize=fontsize, color=ycolor, labelpad=ylabelpad)
