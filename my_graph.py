@@ -3,7 +3,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 home = os.path.expanduser('~')+os.path.sep
 # module that construct the plot settings
-from graphs.draw_figure import figure
+from graphs.draw_figure import figure, figure_with_bar_legend
 from graphs.adjust_plots import *
 
 import numpy as np
@@ -15,7 +15,7 @@ from graphs.inset import add_inset
 from graphs.legend import *
 
 # custom colors
-from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet
+from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'

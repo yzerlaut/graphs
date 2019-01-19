@@ -3,6 +3,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.
 from graphs.scaling import FONTSIZE, A0_format, Single_Plot_Size
 import matplotlib.pylab as plt
 import numpy as np
+from graphs.inset import add_inset    
 
 def figure(axes = (1,1),
            axes_extents=None,
@@ -97,16 +98,25 @@ def figure(axes = (1,1),
         return fig, AX[0]
     else:
         return fig, AX
+
+
+def figure_with_bar_legend(shift_up=0., shrink=1.):
+
+    fig, ax = figure(figsize=(1.5,1.), right=5.5)
+    acb = add_inset(ax, [1.17, -.08+shift_up, .08, shrink*1.])
+
+    return fig, ax, acb
     
 if __name__=='__main__':
     
     from graphs.my_graph import *
     figure()
-    figure(axes_extents=[\
-                         [[3,1], [1,1] ],
-                         [[1,1], [2,1], [1,1] ] ] )
-    figure(axes_extents=[\
-                         [[3,2], [1,2] ],
-                         [[1,1], [2,1], [1,1] ] ] )
+    # figure(axes_extents=[\
+    #                      [[3,1], [1,1] ],
+    #                      [[1,1], [2,1], [1,1] ] ] )
+    # figure(axes_extents=[\
+    #                      [[3,2], [1,2] ],
+    #                      [[1,1], [2,1], [1,1] ] ] )
+    fig, ax, acb = figure_with_bar_legend()
     show()
 

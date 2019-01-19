@@ -3,19 +3,19 @@ from matplotlib import cm
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.scaling import *
-from graphs.my_graph import figure
-from graphs.legend import build_bar_legend
+from graphs.my_graph import figure, figure_with_bar_legend
+from graphs.legend import build_bar_legend_continuous
     
 def twoD_plot(x, y, z,
               ax=None,
               acb=None,
-              bar_legend={},
-              alpha=1.,
-              fig_args={},
-              colormap=cm.viridis,
               diverging=False,
+              colormap=cm.viridis,
+              alpha=1.,
               vmin=None,
               vmax=None,
+              scale='log',
+              bar_legend={},
               interpolation='none'):
     """
     surface plots for x, y and z 1 dimensional data
@@ -23,15 +23,8 @@ def twoD_plot(x, y, z,
     switch to bar_legend=None to remove the bar legend
     """
     
-    if ax is None:
-        if ('figsize' not in fig_args) and (bar_legend is not None):
-            fig_args['figsize'] = (1.4, 1.)
-            fig_args['right'] = 5.5
-        fig, ax = figure(**fig_args)
-    if (bar_legend is not None) and (acb is None):
-        if 'position' not in bar_legend:
-            bar_legend['position'] = [.7,.35,.03,.55]
-        acb = plt.axes(bar_legend['position'], facecolor='b')
+    if (ax is None) and (acb is None):
+        fig, ax, acb = figure_with_bar_legend()
     else:
         fig = plt.gcf()
         
@@ -43,8 +36,12 @@ def twoD_plot(x, y, z,
     for i, yy in enumerate(np.unique(y)):
         cond1 = y==yy
         for j, xx in enumerate(np.unique(x[cond1])):
-            Z[i,j] = z[cond1][x[cond1]==xx]
-    z1 = np.array(Z).reshape(len(np.unique(y)), len(np.unique(x)))
+            try:
+                Z[i,j] = z[cond1][x[cond1]==xx]
+            except ValueError:
+                print('multiple values for the same (x=', xx, ', y=', yy, ') couple: ', z[cond1][x[cond1]==xx])
+                Z[i,j] = np.mean(z[cond1][x[cond1]==xx])
+    # z1 = np.array(Z).reshape(len(np.unique(y)), len(np.unique(x)))
     z1 = Z
     
     if vmin is None:
@@ -68,19 +65,22 @@ def twoD_plot(x, y, z,
                    origin='lower',
                    aspect='auto')
 
+    
     """
     Need to polish the integration of "build_bar_legend" within this function
     """
     if bar_legend is not None:
-        if not 'ticks' in bar_legend:
-            bar_legend['ticks'] = np.unique(np.round(np.linspace(vmin, vmax, 5), 1))
-        if not 'label' in bar_legend:
-            bar_legend['label'] = ''
-        if not 'color_discretization' in bar_legend:
-            bar_legend['color_discretization'] = None
-        build_bar_legend(bar_legend['ticks'], acb, colormap,
-                         label=bar_legend['label'],
-                         color_discretization=bar_legend['color_discretization'])
+        for key, val in zip(['ticks', 'scale', 'label', 'labelpad'],
+                            [np.unique(np.round(np.linspace(vmin, vmax, 5), 1)),
+                             'linear', '', 1.]):
+            if key not in bar_legend:
+                bar_legend[key] = val
+        build_bar_legend_continuous(acb, colormap,
+                                    bounds=[vmin, vmax],
+                                    scale=bar_legend['scale'],
+                                    ticks=bar_legend['ticks'],
+                                    label=bar_legend['label'],
+                                    labelpad=bar_legend['labelpad'])
     return ax, acb
     
 

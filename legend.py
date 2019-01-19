@@ -2,6 +2,7 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.inset import add_inset
 from graphs.scaling import FONTSIZE, A0_format
+from graphs.adjust_plots import find_good_log_ticks, set_ticks_to_log10_axis
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pylab as plt
@@ -16,6 +17,8 @@ def build_bar_legend(X, ax, mymap,
                      ticks_labels=None,
                      no_ticks=False,
                      orientation='vertical',
+                     labelpad=1.,
+                     alpha=1.,
                      scale='linear',\
                      color_discretization=None):
     
@@ -44,7 +47,7 @@ def build_bar_legend(X, ax, mymap,
         
     norm = mpl.colors.BoundaryNorm(bounds, mymap.N)
     cb = mpl.colorbar.ColorbarBase(ax, cmap=mymap, norm=norm,\
-                                   orientation=orientation)
+                                   orientation=orientation, alpha=alpha)
     if no_ticks:
         cb.set_ticks([])
     else:
@@ -52,7 +55,46 @@ def build_bar_legend(X, ax, mymap,
         if ticks_labels is not None:
             cb.set_ticklabels(ticks_labels)
         
-    cb.set_label(label)
+    cb.set_label(label, labelpad=labelpad)
+    return cb
+
+def build_bar_legend_continuous(ax, mymap,
+                                label='$\\nu$ (Hz)',\
+                                bounds=None,
+                                ticks=None,
+                                ticks_labels=None,
+                                orientation='vertical',
+                                labelpad=1.,
+                                alpha=1.,
+                                scale='linear'):
+
+    cb = mpl.colorbar.ColorbarBase(ax, cmap=mymap, orientation=orientation, alpha=alpha)
+    
+    if (bounds is None):
+        cb.set_ticks([])
+    else:
+        if scale=='log':
+            if bounds[0]<=0.:
+                print('need to set a positive lower bound for the data')
+                print('set to 0.01')
+                bounds[0] = 0.01
+            if orientation=='vertical':
+                set_ticks_to_log10_axis(cb.ax.yaxis, bounds, normed_to_unit=True)
+                if ticks_labels is not None:
+                    cb.ax.yaxis.set_ticklabels(ticks_labels)
+            elif orientation=='horizontal':
+                set_ticks_to_log10_axis(cb.ax.xaxis, bounds, normed_to_unit=True)
+                if ticks_labels is not None:
+                    cb.ax.xaxis.set_ticklabels(ticks_labels)
+        else:
+            if ticks is None:
+                ticks = np.linspace(bounds[0]+.1*(bounds[1]-bounds[0]), bounds[1]-.1*(bounds[1]-bounds[0]), 3)
+            if ticks_labels is None:
+                ticks_labels = ['%.1f' % t for t in ticks]
+            cb.set_ticks((np.array(ticks)-bounds[0])/(bounds[1]-bounds[0]))
+            cb.set_ticklabels(ticks_labels)
+        
+    cb.set_label(label, labelpad=labelpad)
     return cb
 
 def bar_legend(X, ax,
@@ -65,6 +107,7 @@ def bar_legend(X, ax,
                no_ticks=False,
                orientation='vertical',
                scale='linear',\
+               labelpad=2.,
                color_discretization=None):
 
     cb = add_inset(ax,
@@ -77,6 +120,7 @@ def bar_legend(X, ax,
                      label=label,
                      scale=scale, bounds=bounds,
                      orientation=orientation,
+                     labelpad=labelpad,
                      color_discretization=color_discretization,
                      no_ticks=no_ticks, ticks_labels=ticks_labels)
     
@@ -118,10 +162,11 @@ if __name__=='__main__':
     from my_graph import *
     
     Y = [np.exp(np.random.randn(100)) for i in range(4)]
-    fig, ax = plot(Y=Y,
-                   xlabel='time', ylabel='y-value',
-                   colormap=copper,
-                   lw=1.)
+    fig, ax, acb = figure_with_bar_legend()
+    plot(Y=Y,
+         xlabel='time', ylabel='y-value',
+         colormap=copper,
+         lw=1., ax=ax)
     LINES, LABELS = [], []
     for i in range(2):
         line, = ax.plot(np.arange(10)*10, np.exp(np.random.randn(10)), 'o', ms=2)
@@ -138,5 +183,7 @@ if __name__=='__main__':
                colormap=copper,
                # orientation='horizontal',
                label='Trial ID', no_ticks=True)
+    build_bar_legend_continuous(acb, copper)
+    # set_plot(acb, [])
     
     show()

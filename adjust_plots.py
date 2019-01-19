@@ -6,7 +6,7 @@ from graphs.scaling import FONTSIZE, A0_format, Single_Plot_Size
 from matplotlib.ticker import MaxNLocator, NullFormatter
 
 def set_plot(ax, spines=['left', 'bottom'],\
-             num_xticks=4, num_yticks=4,\
+             num_xticks=3, num_yticks=3,\
              xlabel='', ylabel='', tck_outward=3,\
              xticks=None, yticks=None,\
              xminor_ticks=None, yminor_ticks=None,
@@ -53,7 +53,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
             xminor_ticks = xminor_ticks2
         if xticks is None:
             xticks = xmajor_ticks
-        
+
     if ylim is None:
         ymin, ymax = ax.get_ylim()
         dy = ymax-ymin
@@ -63,6 +63,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
             ylim = [ymin/1.2,1.2*ymax]
         else:
             ylim = [ymin-ylim_enhancment*dy/100.,ymax+ylim_enhancment*dy/100.]
+            
     if yscale=='log':
         ylim, ymajor_ticks, yminor_ticks = find_good_log_ticks(lim=ylim)
         if yminor_ticks is None:
@@ -77,11 +78,14 @@ def set_plot(ax, spines=['left', 'bottom'],\
     ax.set_ylim(ylim)
 
     # x-Ticks
-    if (xticks is None) and ('bottom' or 'top' in spines):
+    if xscale=='already-log10':
+        set_ticks_to_log10_axis(ax.axes.xaxis, np.power(10, xlim))
+    elif (xticks is None) and ('bottom' or 'top' in spines):
         ax.xaxis.set_major_locator( MaxNLocator(nbins = num_xticks) )
     else:
         ax.xaxis.set_minor_formatter(NullFormatter())
         ax.set_xticks(xticks)
+        
     if xscale=='log':
         ax.set_xticks(xminor_ticks, minor=True)
     
@@ -89,7 +93,9 @@ def set_plot(ax, spines=['left', 'bottom'],\
         ax.set_xticklabels(xticks_labels, rotation=xticks_rotation, fontsize=fontsize)
 
     # y-Ticks
-    if (yticks is None) and ('left' or 'right' in spines):
+    if yscale=='already-log10':
+        set_ticks_to_log10_axis(ax.axes.yaxis, np.power(10, ylim))
+    elif (yticks is None) and ('left' or 'right' in spines):
         ax.yaxis.set_major_locator( MaxNLocator(nbins = num_yticks) )
     else:
         ax.yaxis.set_minor_formatter(NullFormatter())
@@ -167,14 +173,18 @@ def find_good_log_ticks(lim=[0.009, 0.0099]):
     major_ticks = np.power(10., np.arange(i0, i1+1))
     major_ticks = major_ticks[(major_ticks>=lim[0]) & (major_ticks<=lim[1])]
 
-    i0 =  int(np.log(lim[0])/np.log(10))-1
+    i0 =  int(np.log(lim[0])/np.log(10))
     i1 =  int(np.log(lim[1])/np.log(10))
+    # i0 =  int(np.log(lim[0])/np.log(10))-1
+    if i0==i1:
+        i0 -=1
     xx, ii = int(lim[0]/(10.**(i0))), i0
     while xx>10:
         xx, ii = int(lim[0]/(10.**(ii+1))), ii+1
-        
+
     minor_ticks = []
     while (xx*np.power(10., ii)<lim[1]):
+        # print(xx*np.power(10., ii), lim[1])
         minor_ticks.append(xx*np.power(10., ii))
         xx +=1
         if xx==10:
@@ -184,6 +194,26 @@ def find_good_log_ticks(lim=[0.009, 0.0099]):
     minor_ticks = minor_ticks[(minor_ticks>=lim[0]) & (minor_ticks<=lim[1])]
     
     return lim, major_ticks, minor_ticks
+
+def set_ticks_to_log10_axis(axis, bounds, normed_to_unit=False):
+    
+    lim, major_ticks, minor_ticks = find_good_log_ticks(lim=bounds)
+
+    if normed_to_unit:
+        axis.set_ticks((np.log10(major_ticks)-np.log10(lim[0]))/(np.log10(lim[1])-np.log10(lim[0])))
+    else:
+        axis.set_ticks(np.log10(major_ticks))
+        
+    if (bounds[0]>.1) and (bounds[1]<2e3):
+        axis.set_ticklabels(['%i' % mt for mt in major_ticks])
+    else:
+        axis.set_ticklabels(['$10^{%i}$' % np.log10(mt) for mt in major_ticks])
+        
+    if normed_to_unit:
+        axis.set_ticks((np.log10(minor_ticks)-np.log10(lim[0]))/(np.log10(lim[1])-np.log10(lim[0])), minor=True)
+    else:
+        axis.set_ticks(np.log10(minor_ticks), minor=True)
+    
 
 def scale_graphs_boudaries(x_plots, y_plots,
                            wspace=0.2, hspace=0.2,
@@ -226,11 +256,11 @@ if __name__=='__main__':
     from my_graph import *
     fig, ax = figure(axes_extents=[[[2,1]]], left=2., right=3.)
     ax2 = ax.twinx()
-    ax.plot(np.exp(np.random.randn(100)), 'o', ms=2, color=Blue)
-    ax2.plot(np.exp(np.random.randn(100)), 'o', ms=1, color=Red)
+    ax.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=2, color=Blue)
+    ax2.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=1, color=Red)
     set_plot(ax2, ['right'], yscale='log', ylabel='blabal',
              tck_outward=2, ycolor=Red)
     set_plot(ax, ycolor=Blue, xcolor='k',
-             yscale='log', ylabel='blabal',
+             yscale='log', ylabel='blabal', xscale='already-log10',
              tck_outward=2, xlabel='trying', ylabelpad=-5)
     show()
