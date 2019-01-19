@@ -57,7 +57,7 @@ def draw_bar_scales(ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label,
     draw_bar_scales(ax, (0,0), 1, '1s', 2, '2s', orientation='right-bottom', Ybar_label2='12s')
     set_plot(ax)    
     """
-    
+
     if orientation=='left-bottom':
         
         ax.plot(xyLoc[0]-np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
