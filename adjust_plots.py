@@ -5,16 +5,16 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.
 from graphs.scaling import FONTSIZE, A0_format, Single_Plot_Size
 from matplotlib.ticker import MaxNLocator, NullFormatter
 
-def set_plot(ax, spines=['left', 'bottom'],\
-             num_xticks=3, num_yticks=3,\
-             xlabel='', ylabel='', tck_outward=3,\
-             xticks=None, yticks=None,\
+def set_plot(ax, spines=['left', 'bottom'],
+             num_xticks=3, num_yticks=3,
+             xlabel='', ylabel='', tck_outward=3, tck_length=4,
+             xticks=None, yticks=None,
              xminor_ticks=None, yminor_ticks=None,
-             xticks_labels=None, yticks_labels=None,\
-             xlabelpad=1.5, ylabelpad=1.5,\
-             xticks_rotation=0, yticks_rotation=0,\
+             xticks_labels=None, yticks_labels=None,
+             xlabelpad=1.5, ylabelpad=1.5,
+             xticks_rotation=0, yticks_rotation=0,
              xscale='linear', yscale='linear',
-             xlim_enhancment=1., ylim_enhancment=1.,\
+             xlim_enhancment=1., ylim_enhancment=1.,
              xlim=None, ylim=None,
              grid=False,
              xcolor='k', ycolor='k',
@@ -28,7 +28,7 @@ def set_plot(ax, spines=['left', 'bottom'],\
         
     # drawing spines
     adjust_spines(ax, spines,
-                  tck_outward=tck_outward,
+                  tck_outward=tck_outward, tck_length=tck_length,
                   ycolor=ycolor, xcolor=xcolor)
     
     if yscale=='log':
@@ -126,11 +126,13 @@ def ticks_number(ax, xticks=3, yticks=3):
     if yticks>1:
         ax.yaxis.set_major_locator( MaxNLocator(nbins = yticks) )
 
-def adjust_spines(ax, spines, tck_outward=3, xcolor='k', ycolor='k'):
+def adjust_spines(ax, spines, tck_outward=3, tck_length=4., xcolor='k', ycolor='k'):
     for loc, spine in ax.spines.items():
         if loc in spines:
             spine.set_position(('outward', tck_outward)) # outward by 10 points by default
             spine.set_smart_bounds(True)
+            ax.xaxis.set_tick_params(length=tck_length)
+            ax.yaxis.set_tick_params(length=tck_length)
         else:
             spine.set_color('none')  # don't draw spine
 
