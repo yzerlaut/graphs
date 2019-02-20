@@ -97,10 +97,10 @@ if __name__=='__main__':
     np.random.shuffle(index)
     x, y, z = x[index], y[index], z[index]
 
-    # ax, acb = twoD_plot(x[x<y], y[x<y], z[x<y],
     ax, acb = twoD_plot(x, y, z,
                         vmin=-7, vmax=7,
                         bar_legend={'label':'color',
                                     'color_discretization':20})
     set_plot(ax, xlabel='x-label (X)', ylabel='y-label (Y)')
+    plt.gcf().savefig('output/2d.png', dpi=300)
     show()

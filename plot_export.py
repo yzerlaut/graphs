@@ -163,7 +163,7 @@ if __name__=='__main__':
 
     fig1, ax1 = plot(Y=np.random.randn(10,4),\
                      sY=np.random.randn(10,4), axes_args={'xlabel':'x-label', 'ylabel':'y-label'})
-    fig1.savefig('fig1.svg')
+    fig1.savefig('output/fig1.svg')
     fig2, ax2 = scatter(X=np.arange(4)+0.1*np.random.randn(10,4),\
                         Y=np.random.randn(10,4),\
                         sY=np.random.randn(10,4), axes_args={'xlabel':'x-label', 'ylabel':'y-label'})
@@ -171,13 +171,13 @@ if __name__=='__main__':
 
     # put_list_of_figs_to_multipage_pdf([fig1, fig2])
     put_list_of_figs_to_svg_fig(['schematic.svg', fig2, fig1],
-                                fig_name=curdir+'fig.svg',
+                                fig_name=curdir+'output/fig.svg',
                                 Props={'XCOORD':[0,100,210],
                                        'YCOORD':[0, 0, 0],
                                        'XCOORD_LABELS':[0,90,195],
                                        'YCOORD_LABELS':np.zeros(3),
                                        'LABELS':['a','b','c']})
     
-    export_as_png(curdir+'fig.svg')
-    os.system('open fig.png') # works well with 'Gapplin' on OS-X
+    export_as_png(curdir+'output/fig.svg')
+    os.system('open output/fig.png') # works well with 'Gapplin' on OS-X
 
