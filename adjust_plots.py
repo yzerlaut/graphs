@@ -5,6 +5,9 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.
 from graphs.scaling import FONTSIZE, A0_format, Single_Plot_Size
 from matplotlib.ticker import MaxNLocator, NullFormatter
 
+def use_dark_background():
+    plt.style.use('dark_background')
+
 def set_plot(ax, spines=['left', 'bottom'],
              num_xticks=3, num_yticks=3,
              xlabel='', ylabel='', tck_outward=3, tck_length=4,
