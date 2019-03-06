@@ -15,6 +15,8 @@ mpl.rcParams.update({'axes.labelsize': FONTSIZE,
                      'figure.facecolor': 'none',
                      'legend.facecolor': 'none',
                      'axes.facecolor': 'none',
+                     'savefig.transparent':True,
+                     'savefig.dpi':150,
                      'savefig.facecolor': 'none'})
 
 A0_format = {'width':8.3, 'height':11.7}
@@ -51,11 +53,12 @@ if __name__=='__main__':
     #                      'xtick.labelsize': FONTSIZE,
     #                      'ytick.labelsize': FONTSIZE})
     
+
     fig, ax = figure(with_top_left_letter='a')
     annotate('The fontsize is \n now set to '+str(FONTSIZE),
              fig, fontsize=FONTSIZE)
     set_plot(ax, xlabel='my xlabel (Unit)', ylabel='my ylabel (Unit)',
              fontsize=FONTSIZE, num_xticks=3, num_yticks=3)
-    fig.savefig(desktop+'fig.svg')
+    # fig.savefig('fig.png')
     show()
 
