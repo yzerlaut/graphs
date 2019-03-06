@@ -115,8 +115,10 @@ def set_plot(ax, spines=['left', 'bottom'],
     if yticks_labels is not None:
         ax.set_yticklabels(yticks_labels, rotation=yticks_rotation, fontsize=fontsize)
 
-    ax.set_xlabel(xlabel, fontsize=fontsize, color=xcolor, labelpad=xlabelpad)
-    ax.set_ylabel(ylabel, fontsize=fontsize, color=ycolor, labelpad=ylabelpad)
+    ax.set_xlabel(xlabel, fontsize=fontsize, color=xcolor,
+                  labelpad=xlabelpad)
+    ax.set_ylabel(ylabel, fontsize=fontsize, color=ycolor,
+                  labelpad=ylabelpad)
 
     if grid:
         ax.grid()
@@ -129,7 +131,8 @@ def ticks_number(ax, xticks=3, yticks=3):
     if yticks>1:
         ax.yaxis.set_major_locator( MaxNLocator(nbins = yticks) )
 
-def adjust_spines(ax, spines, tck_outward=3, tck_length=4., xcolor='k', ycolor='k'):
+def adjust_spines(ax, spines, tck_outward=3, tck_length=4.,
+                  xcolor='k', ycolor='k'):
     for loc, spine in ax.spines.items():
         if loc in spines:
             spine.set_position(('outward', tck_outward)) # outward by 10 points by default

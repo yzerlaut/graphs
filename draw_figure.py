@@ -100,7 +100,6 @@ def figure(axes = (1,1),
     else:
         return fig, AX
 
-
 def figure_with_bar_legend(shift_up=0., shrink=1.):
 
     fig, ax = figure(figsize=(1.5,1.), right=5.5)
@@ -111,15 +110,14 @@ def figure_with_bar_legend(shift_up=0., shrink=1.):
 if __name__=='__main__':
     
     from graphs.my_graph import *
-    use_dark_background()
     figure()
     fig, _ = figure(axes_extents=[\
-                               [[3,1], [1,1] ],
-                               [[1,1], [2,1], [1,1] ] ] )
+                                  [[3,1], [1,1] ],
+                                  [[1,1], [2,1], [1,1] ] ] )
     # figure(axes_extents=[\
     #                      [[3,2], [1,2] ],
     #                      [[1,1], [2,1], [1,1] ] ] )
     # fig, ax, acb = figure_with_bar_legend()
     fig.savefig('fig.png')
-    # show()
+    show()
 

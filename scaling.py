@@ -59,6 +59,6 @@ if __name__=='__main__':
              fig, fontsize=FONTSIZE)
     set_plot(ax, xlabel='my xlabel (Unit)', ylabel='my ylabel (Unit)',
              fontsize=FONTSIZE, num_xticks=3, num_yticks=3)
-    fig.savefig('fig.png')
-    # show()
+    # fig.savefig('fig.png')
+    show()
 

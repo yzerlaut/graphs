@@ -1,8 +1,9 @@
 from scipy.stats import ttest_rel, ttest_ind
+import numpy as np
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.draw_figure import figure
-from graphs.adjust_plots import *
+from graphs.adjust_plots import set_plot
 
 
 def related_samples_two_conditions_comparison(first_observations,
