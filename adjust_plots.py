@@ -123,8 +123,7 @@ def set_plot(ax, spines=['left', 'bottom'],
     if grid:
         ax.grid()
 
-        
-        
+
 def ticks_number(ax, xticks=3, yticks=3):
     if xticks>1:
         ax.xaxis.set_major_locator( MaxNLocator(nbins = xticks) )

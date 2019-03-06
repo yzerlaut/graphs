@@ -93,7 +93,7 @@ def figure(axes = (1,1),
 
     if len(AX)==1 and (len(AX[0])==1):
         return fig, AX[0][0]
-    elif len(AX[0])==1:
+    elif (len(AX[0])==1) and (len(AX[-1])==1):
         return fig, [AX[i][0] for i in range(len(AX))]
     elif len(AX)==1:
         return fig, AX[0]
