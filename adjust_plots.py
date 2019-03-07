@@ -5,9 +5,6 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.
 from graphs.scaling import FONTSIZE, A0_format, Single_Plot_Size
 from matplotlib.ticker import MaxNLocator, NullFormatter
 
-def use_dark_background():
-    plt.style.use('dark_background')
-
 def set_plot(ax, spines=['left', 'bottom'],
              num_xticks=3, num_yticks=3,
              xlabel='', ylabel='', tck_outward=3, tck_length=4,
@@ -123,13 +120,14 @@ def set_plot(ax, spines=['left', 'bottom'],
     if grid:
         ax.grid()
 
-
+        
 def ticks_number(ax, xticks=3, yticks=3):
     if xticks>1:
         ax.xaxis.set_major_locator( MaxNLocator(nbins = xticks) )
     if yticks>1:
         ax.yaxis.set_major_locator( MaxNLocator(nbins = yticks) )
 
+        
 def adjust_spines(ax, spines, tck_outward=3, tck_length=4.,
                   xcolor='k', ycolor='k'):
     for loc, spine in ax.spines.items():

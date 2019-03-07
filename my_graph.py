@@ -24,7 +24,6 @@ Color_List = [Blue, Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan]
 def save_on_desktop(fig, figname='temp.svg'):
     fig.savefig(desktop+figname)
 
-
 def update_rcParams(FONTSIZE):
     mpl.rcParams.update({'axes.labelsize': FONTSIZE,
                          'axes.titlesize': FONTSIZE,
@@ -49,6 +48,7 @@ class graphs:
         if output_display=='manuscript':
             self.FONTSIZE = 8
             self.size_factor = 1.
+            self.default_color = 'k'
         else:
             self.FONTSIZE = 12
             self.size_factor = 2.
@@ -96,6 +96,34 @@ class graphs:
                                 left, right, bottom, top, wspace, hspace)
             return fig, AX
 
+    def annotate(self, stuff, s,
+                 xy, xycoords='axes fraction', bold=False, italic=False, rotation=0,
+                 fontsize=None, color=None, ha='left', va='bottom', weight='normal', style='normal'):
+        """
+        """
+        if fontsize is None:
+            fontsize=self.FONTSIZE
+        if color is None:
+            color=self.default_color
+        if bold and (weight=='normal'):
+            weight = 'bold'
+        if italic and (style=='normal'):
+            style = 'italic'
+
+        if type(stuff)==mpl.figure.Figure: # if figure, no choice, if figure relative coordinates
+            plt.annotate(s, xy, xycoords='figure fraction',
+                         weight=weight, fontsize=fontsize, style=style,
+                         color=color, rotation=rotation)
+        else:
+            stuff.annotate(s, xy, xycoords=xycoords,
+                           weight=weight, fontsize=fontsize, style=style,
+                           color=color, rotation=rotation)
+
+    def top_left_letter(self, ax, s, xy=(-0.3,1.02), bold=True, fontsize=None):
+        if fontsize is None:
+            fontsize=self.FONTSIZE+1
+        self.annotate(ax, s, xy, bold=bold, fontsize=fontsize)
+        
     def adjust_spines(ax, spines, tck_outward=3, tck_length=4.,
                       xcolor='w', ycolor='w'):
         if xcolor is None:
@@ -401,10 +429,16 @@ if __name__=='__main__':
     # save_on_desktop(fig, figname='2.svg')
     # show()
 
-    mg = graphs('ggplot_notebook')
-    # mg = graphs('manuscript')
-    fig_lf, AX = mg.figure(axes_extents=[[[3,1]],[[1,2],[1,2],[1,2]]], figsize=(.7,.5))
+    # mg = graphs('ggplot_notebook')
+    mg = graphs()
+    fig_lf, AX = mg.figure(axes_extents=[[[3,1]],[[1,2],[1,2],[1,2]]], figsize=(1.,.5), wspace=3., hspace=2.)
+    for ax in [item for sublist in AX for item in sublist]:
+        mg.top_left_letter(ax, 'a')
     # _, ax, _ = mg.figure(with_space_for_bar_legend=True)
     AX[1][0].hist(np.random.randn(100))
-    # mg.set_plot(ax)
+    fig, ax = mg.figure()
+    ax.hist(np.random.randn(100))
+    mg.top_left_letter(ax, 'a')
+    mg.annotate(ax, 'blabla', (0.7, 0.8), italic=True)
+    mg.set_plot(ax)
     mg.show()

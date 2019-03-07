@@ -5,7 +5,6 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.
 from graphs.draw_figure import figure
 from graphs.adjust_plots import set_plot
 
-
 def related_samples_two_conditions_comparison(first_observations,
                                               second_observations,
                                               with_annotation=True,
