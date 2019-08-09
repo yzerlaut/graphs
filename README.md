@@ -8,7 +8,7 @@ Typically a data science project involves:
 
 ### Analysis automation (on full dataset) using scripts
 
-### Exports to multi-panel figures for final reports
+### Exports to carefully-designed multi-panel figures for final reports
 
 ## Installation
 
