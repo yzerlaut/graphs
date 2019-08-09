@@ -1,14 +1,14 @@
 # Graphs
 
-Get your plots right, all along your analysis workflow. A layer on top of *matplotlib* to achieve flexible data visualization across different mediums.
+*Get your plots right, all along your analysis workflow. A layer on top of _matplotlib_ to achieve flexible & high-standard data visualization across different mediums.*
 
 Typically a data science project involves:
 
 ### Data mining in Jupyter Notebooks
 
-### Automation on analysis 
+### Analysis automation (on full dataset) using scripts
 
-### Nice rendering for exports to publication-quality 
+### Exports to multi-panel figures for final reports
 
 ## Installation
 
