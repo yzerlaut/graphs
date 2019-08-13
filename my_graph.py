@@ -59,6 +59,7 @@ class graphs:
         self.override_style=True
         if len(output_display.split('dark'))>1:
             self.set_style('dark_background')
+            self.default_color = 'lightgray'
         elif len(output_display.split('ggplot'))>1:
             self.default_color = 'dimgrey'
             self.set_style('ggplot')
@@ -119,7 +120,7 @@ class graphs:
         
 
     def plot(self,
-             x=None, y=None, sy=None, color='k',
+             x=None, y=None, sy=None, color=None,
              X=None, Y=None, sY=None,
              COLORS=None, colormap=viridis,
              ax=None,
@@ -138,7 +139,9 @@ class graphs:
         # getting or creating the axis
         if ax is None:
             fig, ax = self.figure(**fig_args)
-
+        if color is None:
+            color = self.default_color
+            
         if (y is None) and (Y is None):
             y = x
             x = np.arange(len(y))
