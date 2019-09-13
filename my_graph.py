@@ -69,9 +69,9 @@ class graphs:
         
         update_rcParams(self.FONTSIZE)
         self.colors = [Blue, Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan]
-        self.b, self.o, self.g, self.r, self.purple, self.brown,\
+        self.blue, self.orange, self.green, self.red, self.purple, self.brown,\
             self.pink, self.grey, self.kaki, self.cyan = Blue,\
-                            Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan
+                Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan
         self.viridis, self.viridis_r, self.copper, self.copper_r, self.cool, self.jet,\
             self.PiYG = viridis, viridis_r, copper, copper_r, cool, jet, PiYG
         self.cmaps = [viridis, viridis_r, copper, copper_r, cool, jet, PiYG]
@@ -82,7 +82,7 @@ class graphs:
         self.red_to_green = get_linear_colormap(Red, Green)
         self.green_to_orange = get_linear_colormap(Green, Orange)
         self.orange_to_green = get_linear_colormap(Orange, Green)
-        
+        self.b, self.o, self.g, self.r = self.blue, self.orange, self.green, self.red
         
     def set_style(self, style='default'):
         plt.style.use(style)
