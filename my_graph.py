@@ -2,11 +2,11 @@ import sys, os, platform
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 home = os.path.expanduser('~')+os.path.sep
+from graphs.dependencies import *
 # module that construct the plot settings
 import graphs.draw_figure as df
 import graphs.adjust_plots as ap
 
-import numpy as np
 import graphs.annotations as annotations
 import graphs.line_plots as line_plots
 import graphs.scatter_plots as scatter_plots
@@ -182,11 +182,12 @@ class graphs:
     ################################################
     def annotate(self, stuff, s,
                  xy, xycoords='axes fraction', bold=False, italic=False, rotation=0,
-                 fontsize=None, size=None, color=None, ha='left', va='bottom', weight='normal', style='normal'):
+                 fontsize=None, size=None, color=None,
+                 ha='left', va='bottom', weight='normal', style='normal'):
         """
         stuff can be either a figure or a subplot
         """
-        annotate_general(self, stuff, s, xy,
+        annotations.annotate(self, stuff, s, xy,
                  xycoords=xycoords,
                  bold=bold, italic=italic, rotation=rotation,
                  fontsize=fontsize, size=size, color=color,
@@ -221,6 +222,7 @@ class graphs:
                  xlim=None, ylim=None,
                  grid=False,
                  xcolor=None, ycolor=None, fontsize=None):
+        
         if fontsize is None:
             fontsize=self.FONTSIZE
         if xcolor is None:
@@ -247,11 +249,6 @@ class graphs:
             input('Hit Enter To Close')
             plt.close()
 
-###########################################################
-###### Now a set of predefined functions
-###########################################################
-    
-    
 ###########################################################
 ###### a versatile line plot function
 ###########################################################

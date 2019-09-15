@@ -1,5 +1,6 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+from graphs.dependencies import *
 from graphs.draw_figure import figure
 import numpy as np
 from graphs.adjust_plots import set_plot
@@ -9,7 +10,8 @@ from graphs.adjust_plots import set_plot
 ######  Histogram
 ###########################################################
 
-def hist(x, bins=20, ax=None,
+def hist(graph,
+         x, bins=20, ax=None,
          orientation='horizontal',
          edgecolor='k', facecolor='lightgray',
          c=None,
@@ -18,14 +20,14 @@ def hist(x, bins=20, ax=None,
          normed=True,
          fig_args={}, axes_args={}):
     
-    hist, be = np.histogram(x, bins=bins, normed=normed)
+    hist, be = np.histogram(x, bins=bins, density=normed)
 
     if c is not None:
         facecolor = c
         lw = 0
         
     if ax is None:
-        fig, ax = figure(**fig_args)
+        fig, ax = graph.figure(**fig_args)
     else:
         fig = plt.gcf()
 
@@ -41,7 +43,7 @@ def hist(x, bins=20, ax=None,
     if 'ylabel' not in axes_args:
         axes_args['ylabel'] = ylabel
         
-    set_plot(ax, **axes_args)
+    graph.set_plot(ax, **axes_args)
     
     return fig, ax
 
@@ -50,6 +52,6 @@ if __name__=='__main__':
 
     from graphs.my_graph import graphs
     mg = graphs()
-    fig, ax = mg.hist(np.random.randn(100), xlabel='some value')
+    fig, ax = hist(mg, np.random.randn(100), xlabel='some value')
     mg.show()
 
