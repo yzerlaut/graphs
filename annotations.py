@@ -1,8 +1,6 @@
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-import numpy as np
+from .dependencies import *
 
-def annotate_general(graph, stuff, s,
+def annotate(graph, stuff, s,
              xy,
              xycoords='axes fraction',
              bold=False, italic=False,

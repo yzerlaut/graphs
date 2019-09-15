@@ -7,7 +7,7 @@ import graphs.draw_figure as df
 import graphs.adjust_plots as ap
 
 import numpy as np
-from graphs.annotations import *
+import graphs.annotations as annotations
 import graphs.line_plots as line_plots
 import graphs.scatter_plots as scatter_plots
 from graphs.hist_plots import hist
