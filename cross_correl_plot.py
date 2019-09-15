@@ -152,12 +152,22 @@ def features_plot(graph, data, features=None,
 
 if __name__=='__main__':
 
+    from graphs.my_graph import graphs
+    mg = graphs()
+    
+
     data = {}
     for i in range(7):
         data['feature_%s'%(i+1)] = np.random.randn(30)
-
-    from graphs.my_graph import graphs
-    mg = graphs()
-    # cross_correl_plot(mg, data, many_data=True)
-    features_plot(mg, data, features=['feature_1', 'feature_3', 'feature_5'], ms=3)
+    features_plot(mg, data, features=list(data.keys())[:7], ms=3)
     mg.show()
+
+    # breast cancer dataset from sklearn
+    from sklearn.datasets import load_breast_cancer
+    raw = load_breast_cancer()
+    data = {}
+    for feature, values in zip(raw['feature_names'], raw['data']):
+        data[feature+'\n(log)'] = np.log(values)
+    features_plot(mg, data, features=list(data.keys())[:7], ms=3)
+    mg.show()
+
