@@ -1,8 +1,42 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from graphs.scaling import FONTSIZE
 import numpy as np
 
+def annotate_general(graph, stuff, s,
+             xy,
+             xycoords='axes fraction',
+             bold=False, italic=False,
+             rotation=0,
+             fontsize=None, size=None, color=None, ha='left', va='bottom', weight='normal', style='normal'):
+    """
+    stuff can be either a figure or a subplot
+    """
+    if fontsize is None:
+        fontsize=graph.FONTSIZE
+    if size=='small':
+        fontsize=graph.FONTSIZE-1
+    elif size=='x-small':
+        fontsize=graph.FONTSIZE-2
+    elif size=='large':
+        fontsize=graph.FONTSIZE+1
+    elif size=='x-large':
+        fontsize=graph.FONTSIZE+2
+    if color is None:
+        color=graph.default_color
+    if bold and (weight=='normal'):
+        weight = 'bold'
+    if italic and (style=='normal'):
+        style = 'italic'
+
+    if type(stuff)==mpl.figure.Figure: # if figure, no choice, if figure relative coordinates
+        plt.annotate(s, xy, xycoords='figure fraction',
+                     weight=weight, fontsize=fontsize, style=style,
+                     color=color, rotation=rotation, ha=ha, va=va)
+    else: # means subplot
+        stuff.annotate(s, xy, xycoords=xycoords,
+                       weight=weight, fontsize=fontsize, style=style,
+                       color=color, rotation=rotation, ha=ha, va=va)
+    
 def from_pval_to_star(p,
                       threshold1=1e-3,
                       threshold2=1e-2,
@@ -47,7 +81,7 @@ def draw_bar_scales(ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label,
                     orientation='left-bottom',
                     Xbar_label2='',Ybar_label2='',
                     xcolor='k', ycolor='k', ycolor2='k',
-                    fontsize=FONTSIZE-1,
+                    fontsize=10,
                     shift_factor=20., color='k', lw=1):
     """
     USE:

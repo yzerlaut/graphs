@@ -41,7 +41,6 @@ def update_rcParams(FONTSIZE):
     
 class graphs:
     
-    
     def __init__(self, output_display='manuscript', color='k'):
         """
         accepts styles such as : manuscript, dark_notebook, ggplot_notebook, ...
@@ -185,28 +184,13 @@ class graphs:
                  xy, xycoords='axes fraction', bold=False, italic=False, rotation=0,
                  fontsize=None, size=None, color=None, ha='left', va='bottom', weight='normal', style='normal'):
         """
+        stuff can be either a figure or a subplot
         """
-        if fontsize is None:
-            fontsize=self.FONTSIZE
-        if size=='small':
-            fontsize=self.FONTSIZE-1
-        elif size=='x-small':
-            fontsize=self.FONTSIZE-2
-        if color is None:
-            color=self.default_color
-        if bold and (weight=='normal'):
-            weight = 'bold'
-        if italic and (style=='normal'):
-            style = 'italic'
-
-        if type(stuff)==mpl.figure.Figure: # if figure, no choice, if figure relative coordinates
-            plt.annotate(s, xy, xycoords='figure fraction',
-                         weight=weight, fontsize=fontsize, style=style,
-                         color=color, rotation=rotation, ha=ha, va=va)
-        else:
-            stuff.annotate(s, xy, xycoords=xycoords,
-                           weight=weight, fontsize=fontsize, style=style,
-                           color=color, rotation=rotation, ha=ha, va=va)
+        annotate_general(self, stuff, s, xy,
+                 xycoords=xycoords,
+                 bold=bold, italic=italic, rotation=rotation,
+                 fontsize=fontsize, size=size, color=color,
+                 ha=ha, va=va, weight=weight, style=style)
 
     def top_left_letter(self, ax, s, xy=(-0.3,1.02), bold=True, fontsize=None):
         if fontsize is None:
@@ -530,4 +514,4 @@ if __name__=='__main__':
     mg.top_left_letter(ax, 'a')
     mg.annotate(ax, 'blabla', (0.7, 0.8), italic=True)
     mg.set_plot(ax)
-    mg.show()
+    plt.show()

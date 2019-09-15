@@ -75,4 +75,4 @@ if __name__=='__main__':
         data.append({'vec':np.random.randn(10), 'label':'label'+str(i+1)})
 
     cross_correl_plot(data, many_data=True)
-    plt.show()
+    mg.show()

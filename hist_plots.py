@@ -48,7 +48,8 @@ def hist(x, bins=20, ax=None,
 
 if __name__=='__main__':
 
-    from graphs.my_graph import *
-    fig, ax = hist(np.random.randn(100), xlabel='some value')
-    show()
+    from graphs.my_graph import graphs
+    mg = graphs()
+    fig, ax = mg.hist(np.random.randn(100), xlabel='some value')
+    mg.show()
 
