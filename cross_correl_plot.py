@@ -77,7 +77,7 @@ def features_plot(graph, data, features=None,
     if features is None:
         features = list(data.keys())
         
-    fig, AX = plt.subplots(len(data), len(data), figsize=FIGSIZE)
+    fig, AX = plt.subplots(len(features), len(features), figsize=FIGSIZE)
     plt.subplots_adjust(wspace=wspace, hspace=hspace, right=right, left=left)
 
     mymap = get_linear_colormap(color1='white', color2='gray')
@@ -115,18 +115,18 @@ def features_plot(graph, data, features=None,
                 graph.set_plot(AX[j,i], ['bottom', 'left'],
                                xlim=LIMS[i], num_xticks=3, num_yticks=1,
                                yticks_labels=[], xticks_labels=[], ylabel=key_i)
-            elif (i==j) and (j==len(data)-1):
+            elif (i==j) and (j==len(features)-1):
                 graph.set_plot(AX[j,i], ['bottom'],
                                xlim=LIMS[i], num_xticks=3, xlabel=key_i)
             elif (i==j):
                 graph.set_plot(AX[j,i], ['bottom'],
                                xlim=LIMS[i], num_xticks=3, xticks_labels=[])
-            elif ((i==0) and (j==len(data)-1)):
+            elif ((i==0) and (j==len(features)-1)):
                 graph.set_plot(AX[j,i],
                                xlim=LIMS[i], ylim=LIMS[j],
                                xlabel=key_i, ylabel=key_j,
                                num_xticks=3, num_yticks=3, yticks_labels=[])
-            elif (j==len(data)-1):
+            elif (j==len(features)-1):
                 graph.set_plot(AX[j,i],
                                xlim=LIMS[i], ylim=LIMS[j],
                                xlabel=key_i,
@@ -159,5 +159,5 @@ if __name__=='__main__':
     from graphs.my_graph import graphs
     mg = graphs()
     # cross_correl_plot(mg, data, many_data=True)
-    features_plot(mg, data, ms=3)
+    features_plot(mg, data, features=['feature_1', 'feature_3', 'feature_5'], ms=3)
     mg.show()
