@@ -18,13 +18,16 @@ def features_plot(graph, data,
     if features is None:
         features = list(data.keys())
         
-    fig, AX = graph.figure(axes=(int(len(features)/nrow_fig), nrow_fig), hspace=2.)
+    fig, AX = graph.figure(axes=(int(np.ceil(len(features)/nrow_fig)), nrow_fig), hspace=2.)
 
     LIMS = [[np.inf, -np.inf] for f in features]
     for i, key_i in enumerate(features):
         hist(graph, data[key_i], ax=np.ravel(AX)[i],
              ylabel='', xlabel=key_i, axes_args={'spines':'bottom'})
-                 
+
+    for i in range(len(features), len(np.ravel(AX))):
+        np.ravel(AX)[i].axis('off')
+        
     return fig
 
 if __name__=='__main__':
