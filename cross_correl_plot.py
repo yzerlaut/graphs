@@ -5,69 +5,7 @@ from scipy.stats.stats import pearsonr
 from graphs.legend import get_linear_colormap, build_bar_legend
 from graphs.hist_plots import hist
 
-def cross_correl_plot(graph,
-                      data, FIGSIZE=(7,7), wspace=.5, hspace=.5, right=0.98, left=0.1,\
-                      many_data=False):
-    """
-    'data' should be a dictionary with "features" keys whose values are the instances
-    """
-
-    fig, AX = plt.subplots(len(data)-1, len(data)-1, figsize=FIGSIZE)
-    plt.subplots_adjust(wspace=wspace, hspace=hspace, right=right, left=left)
-
-    mymap = get_linear_colormap(color1='white', color2='gray')
-
-    significance = np.array([1e-3, 2e-2, 1e-1, 1])
-    
-    for i, key_i in enumerate(data.keys()):
-        for j, key_j in enumerate(list(data.keys())[i+1:]):
-            AX[j-1,i].plot(data[key_i], data[key_j], 'ko')
-            if not many_data:
-                graph.set_plot(AX[j-1,i], xlabel=key_i, ylabel=key_j,
-                                    num_xticks=4, num_yticks=3)
-            else:
-                if ((i==0) and (j==len(data)-1)):
-                    graph.set_plot(AX[j-1,i], xlabel=key_i, ylabel=key_j,
-                                    num_xticks=4, num_yticks=3)
-
-                elif (j==len(data)-1):
-                    graph.set_plot(AX[j-1,i], xlabel=key_i, yticks_labels=[],
-                                    num_xticks=4, num_yticks=3)
-                elif (i==0):
-                    graph.set_plot(AX[j-1,i], ylabel=key_j, xticks_labels=[],
-                                    num_xticks=4, num_yticks=3)
-                else:
-                    graph.set_plot(AX[j-1,i], xticks_labels=[], yticks_labels=[],
-                                    num_xticks=4, num_yticks=3)
-
-            cc, pp = pearsonr(data[key_i], data[key_j])
-            
-            x = np.linspace(data[key_i].min(), data[key_i].max())
-            AX[j-1, i].plot(x,\
-                np.polyval(np.polyfit(np.array(data[key_i], dtype='f8'),\
-                                      np.array(data[key_j], dtype='f8'), 1), x),\
-                                      'k--', lw=.5)
-
-            ii = np.arange(len(significance))[significance-pp>=0][0]
-            color = -1.*(ii-len(significance)+1)/(len(significance)-1)
-            xmin, xmax = AX[j-1, i].get_xaxis().get_view_interval()
-            ymin, ymax = AX[j-1, i].get_yaxis().get_view_interval()
-            AX[j-1, i].add_patch(plt.Rectangle((xmin, ymin),\
-                                               xmax-xmin, ymax-ymin, color=mymap(1.*color,1)))
-
-    ax = plt.axes([.7,.7,.02,.2])
-    build_bar_legend(np.arange(len(significance)+1),\
-                     ax, mymap,\
-                     ticks_labels=['n.s.', '$<$0.1', '$<$0.02', '$<$0.001'],
-                     label='Significance \n \n (p, Pearson correl.)')
-                 
-    for ax in AX.flatten():
-        if ax.get_xaxis().get_view_interval()[1]==1.:
-            ax.axis('off')
-
-    return fig
-
-def features_plot(graph, data, features=None,
+def cross_correl_plot(graph, data, features=None,
                   FIGSIZE=(9,7), wspace=.5, hspace=.5, right=0.8, left=0.1,\
                   ms=3, many_data=False):
     """
@@ -155,19 +93,10 @@ if __name__=='__main__':
     from graphs.my_graph import graphs
     mg = graphs()
     
-
     data = {}
     for i in range(7):
         data['feature_%s'%(i+1)] = np.random.randn(30)
-    features_plot(mg, data, features=list(data.keys())[:7], ms=3)
-    mg.show()
+    cross_correl_plot(mg, data, features=list(data.keys())[:7], ms=3)
 
-    # breast cancer dataset from sklearn
-    from sklearn.datasets import load_breast_cancer
-    raw = load_breast_cancer()
-    data = {}
-    for feature, values in zip(raw['feature_names'], raw['data']):
-        data[feature+'\n(log)'] = np.log(values)
-    features_plot(mg, data, features=list(data.keys())[:7], ms=3)
     mg.show()
 
