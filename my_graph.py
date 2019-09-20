@@ -13,6 +13,8 @@ import graphs.scatter_plots as scatter_plots
 from graphs.hist_plots import hist
 from graphs.inset import add_inset
 from graphs.legend import *
+from graphs.features_plot import features_plot
+from graphs.cross_correl_plot import cross_correl_plot
 
 # custom colors
 from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG
@@ -176,7 +178,24 @@ class graphs:
         self.set_plot(ax, **axes_args)
 
         return ax
-        
+
+    
+    ################################################
+    ###### Classical plot functions ################
+    ################################################
+
+    # histogram 
+    def hist(self, x, **args):
+        return hist(self, x, **args)
+
+    # features plot
+    def features_plot(self, data, **args):
+        return features_plot(self, data, **args)
+
+    # features plot
+    def cross_correl_plot(self, data, **args):
+        return cross_correl_plot(self, data, **args)
+    
     ################################################
     ###### Annotate function #######################
     ################################################
@@ -501,14 +520,16 @@ if __name__=='__main__':
 
     # mg = graphs('ggplot_notebook')
     mg = graphs()
-    fig_lf, AX = mg.figure(axes_extents=[[[3,1]],[[1,2],[1,2],[1,2]]], figsize=(1.,.5), wspace=3., hspace=2.)
-    for ax in [item for sublist in AX for item in sublist]:
-        mg.top_left_letter(ax, 'a')
-    # _, ax, _ = mg.figure(with_space_for_bar_legend=True)
-    AX[1][0].hist(np.random.randn(100))
-    fig, ax = mg.figure()
-    ax.hist(np.random.randn(100))
-    mg.top_left_letter(ax, 'a')
-    mg.annotate(ax, 'blabla', (0.7, 0.8), italic=True)
-    mg.set_plot(ax)
-    plt.show()
+    mg.hist(np.random.randn(100), xlabel='ksjdfh')
+    
+    # fig_lf, AX = mg.figure(axes_extents=[[[3,1]],[[1,2],[1,2],[1,2]]], figsize=(1.,.5), wspace=3., hspace=2.)
+    # for ax in [item for sublist in AX for item in sublist]:
+    #     mg.top_left_letter(ax, 'a')
+    # # _, ax, _ = mg.figure(with_space_for_bar_legend=True)
+    # AX[1][0].hist(np.random.randn(100))
+    # fig, ax = mg.figure()
+    # ax.hist(np.random.randn(100))
+    # mg.top_left_letter(ax, 'a')
+    # mg.annotate(ax, 'blabla', (0.7, 0.8), italic=True)
+    # mg.set_plot(ax)
+    mg.show()
