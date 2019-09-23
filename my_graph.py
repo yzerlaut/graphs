@@ -15,9 +15,10 @@ from graphs.inset import add_inset
 from graphs.legend import *
 from graphs.features_plot import features_plot
 from graphs.cross_correl_plot import cross_correl_plot
+from graphs.surface_plots import twoD_plot
 
-# custom colors
-from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG
+# CUSTOM colors
+from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
@@ -74,7 +75,7 @@ class graphs:
             self.pink, self.grey, self.kaki, self.cyan = Blue,\
                 Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan
         self.viridis, self.viridis_r, self.copper, self.copper_r, self.cool, self.jet,\
-            self.PiYG = viridis, viridis_r, copper, copper_r, cool, jet, PiYG
+         self.PiYG, self.binary = viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary
         self.cmaps = [viridis, viridis_r, copper, copper_r, cool, jet, PiYG]
         self.blue_to_red = get_linear_colormap(Blue, Red)
         self.red_to_blue = get_linear_colormap(Red, Blue)
@@ -103,7 +104,7 @@ class graphs:
         if with_space_for_bar_legend:
             fig, ax = df.figure(axes, axes_extents,
                                 figsize=self.size_factor*np.array((1.5,1.)),
-                                right=5.5,
+                                right=self.size_factor*5.5,
                                 fontsize=self.FONTSIZE)
             acb = df.add_inset(ax, [1.17, -.08+shift_up, .08, shrink*1.])
             return fig, ax, acb
@@ -112,12 +113,6 @@ class graphs:
                                 self.size_factor*np.array(figsize),
                                 left, right, bottom, top, wspace, hspace)
             return fig, AX
-
-    def figure_with_bar_legend(self, shift_up=0., shrink=1.):
-        fig, ax = self.figure(figsize=(1.5,1.), right=5.5)
-        acb = add_inset(ax, [1.17, -.08+shift_up, .08, shrink*1.])
-        return fig, ax, acb
-        
 
     def plot(self,
              x=None, y=None, sy=None, color='k',
@@ -131,7 +126,7 @@ class graphs:
              fig_args={},
              axes_args={},
              bar_legend_args=None,
-             legend_args=None):
+             legend_args=None, no_set=False):
         
         """    
         return fig, ax
@@ -175,10 +170,74 @@ class graphs:
             axes_args['xlabel'] = xlabel
         if 'ylabel' not in axes_args:
             axes_args['ylabel'] = ylabel
-        self.set_plot(ax, **axes_args)
+            
+        if not no_set:
+            self.set_plot(ax, **axes_args)
 
         return ax
 
+    def scatter(self,
+                x=None, y=None, sx=None, sy=None, color='k',
+                X=None, Y=None, sX=None, sY=None,
+                COLORS=None, colormap=viridis,
+                ax=None,
+                lw=0, alpha_std=0.3, ms=3, m='', ls='-',
+                xlabel='', ylabel='', bar_label='',
+                label=None,
+                LABELS=None,
+                fig_args={},
+                axes_args={},
+                bar_legend_args=None,
+                legend_args=None,
+                no_set=False):
+        
+        """    
+        return fig, ax
+        """
+        # getting or creating the axis
+        if ax is None:
+            fig, ax = self.figure(**fig_args)
+
+        if (y is None) and (Y is None):
+            y = x
+            x = np.arange(len(y))
+
+        if (Y is not None):
+            if (X is None) and (x is not None):
+                X = [x for i in range(len(Y))]
+            elif (X is None):
+                X = [np.arange(len(y)) for y in Y]
+
+            scatter_plots.multiple_curves(ax, X, Y, sX, sY, COLORS, LABELS,
+                                          colormap=colormap,
+                                          lw=lw, ms=ms)
+        else:
+            scatter_plots.single_curve(ax, x, y, sx, sy,
+                                       color=color, label=label,
+                                       lw=lw,
+                                       ms=ms)
+
+        if bar_legend_args is not None:
+            cb = add_inset(ax, **bar_legend_args)
+            build_bar_legend(np.arange(len(LABELS)+1),
+                             cb,
+                             colormap,
+                             label=bar_label,
+                             ticks_labels=LABELS)
+
+        if legend_args is not None:
+            ax.legend(**legend_args)
+
+        if 'xlabel' not in axes_args:
+            axes_args['xlabel'] = xlabel
+        if 'ylabel' not in axes_args:
+            axes_args['ylabel'] = ylabel
+
+        if not no_set:
+            self.set_plot(ax, **axes_args)
+
+        return ax
+    
     
     ################################################
     ###### Classical plot functions ################
@@ -195,7 +254,23 @@ class graphs:
     # features plot
     def cross_correl_plot(self, data, **args):
         return cross_correl_plot(self, data, **args)
-    
+
+    # twoD-plot with x-y axis from bottom left
+    def twoD_plot(self, x, y, z, **args):
+        return twoD_plot(self, x, y, z, **args)
+
+    def image(self, X, cmap=binary, alpha=1., ax=None):
+        if ax is None:
+            fig, ax = self.figure()
+        else:
+            fig = plt.gcf()
+        ax.imshow(X, cmap=cmap, alpha=alpha,
+                  interpolation=None,
+                  aspect='equal')
+        ax.axis('off')
+        return fig, ax
+
+        
     ################################################
     ###### Annotate function #######################
     ################################################
@@ -268,128 +343,6 @@ class graphs:
             input('Hit Enter To Close')
             plt.close()
 
-###########################################################
-###### a versatile line plot function
-###########################################################
-
-def plot_function(x=None, y=None, sy=None,
-                  color='k',
-                  X=None, Y=None, sY=None,
-                  COLORS=None, colormap=viridis,
-                  ax=None,
-                  lw=1, alpha_std=0.3, ms=0, m='', ls='-',
-                  xlabel='', ylabel='', bar_label='',
-                  label=None,
-                  LABELS=None,
-                  fig_args={},
-                  axes_args={},
-                  bar_legend_args=None,
-                  legend_args=None):
-
-    """    
-    return fig, ax
-    """
-    # getting or creating the axis
-    if ax is None:
-        fig, ax = figure(**fig_args)
-    else:
-        fig = plt.gcf()
-
-    if (y is None) and (Y is None):
-        y = x
-        x = np.arange(len(y))
-
-    if (Y is not None):
-        if (X is None) and (x is not None):
-            X = [x for i in range(len(Y))]
-        elif (X is None):
-            X = [np.arange(len(y)) for y in Y]
-        
-        line_plots.multiple_curves(ax, X, Y, sY, COLORS, LABELS,
-                                   alpha_std=alpha_std,
-                                   colormap=colormap,
-                                   lw=lw, ls=ls, m=m, ms=ms)
-    else:
-        line_plots.single_curve(ax, x, y, sy,
-                                color=color,
-                                alpha_std=alpha_std,
-                                lw=lw, label=label, ls=ls, m=m, ms=ms)
-
-    if bar_legend_args is not None:
-        cb = add_inset(ax, **bar_legend_args)
-        build_bar_legend(np.arange(len(LABELS)+1),
-                         cb,
-                         colormap,
-                         label=bar_label,
-                         ticks_labels=LABELS)
-        
-    if legend_args is not None:
-        ax.legend(**legend_args)
-        
-    if 'xlabel' not in axes_args:
-        axes_args['xlabel'] = xlabel
-    if 'ylabel' not in axes_args:
-        axes_args['ylabel'] = ylabel
-    set_plot(ax, **axes_args)
-
-    return fig, ax
-
-###########################################################
-###### a versatile scatter plot function
-###########################################################
-
-def scatter(x=None, y=None, sx=None, sy=None,
-            color='k',
-            X=None, Y=None, sX=None, sY=None,
-            COLORS=None, colormap=viridis,
-            ax=None,
-            lw=0, elw=1, ms=3, marker='o',
-            xlabel='', ylabel='occurence',bar_label='',
-            LABELS=None,
-            fig_args={},
-            axes_args={},
-            bar_legend_args=None,
-            legend_args=None):
-
-    # getting or creating the axis
-    if ax is None:
-        fig, ax = figure(**fig_args)
-    else:
-        fig = plt.gcf()
-
-    if (y is None) and (Y is None):
-        y = x
-        x = np.arange(len(y))
-
-    if (Y is not None):
-        if (X is None) and (x is not None):
-            X = [x for i in range(len(Y))]
-        elif (X is None):
-            X = [np.arange(len(y)) for y in Y]
-        scatter_plots.multiple_curves(ax, X, Y, sX, sY, COLORS, LABELS,\
-                                      marker=marker, lw=lw, ms=ms,
-                                      elw=elw)
-    else:
-        scatter_plots.single_curve(ax, x, y, sx, sy,
-                                   color=color,
-                                   marker=marker, lw=lw, ms=ms,
-                                   elw=elw)
-
-    if bar_legend_args is not None:
-        cb = add_inset(ax, **bar_legend_args)
-        build_bar_legend(np.arange(len(Y)+1),
-                         cb,
-                         colormap,
-                         label=bar_label,
-                         ticks_labels=LABELS)
-        
-    # if legend_args is not
-    if legend_args is not None:
-        ax.legend(**legend_args)
-    
-    set_plot(ax, **axes_args)
-    
-    return fig, ax
 
 
 def set_subplot_safe_for_labels(fig, FIGSIZE=None, FONTSIZE=16,
@@ -421,21 +374,6 @@ def show(module=None):
         plt.close()
 
 
-def annotate(s, stuff, x=0.5, y=0.8,
-             fontsize=FONTSIZE,
-             fontweight='normal',
-             rotation=0,
-             color='k'):
-    if type(stuff)==mpl.figure.Figure:
-        plt.annotate(s, (x,y), xycoords='figure fraction',
-                     fontweight=fontweight, fontsize=fontsize,
-                     color=color, rotation=rotation)
-    else:
-        stuff.annotate(s, (x,y), xycoords='axes fraction',
-                       fontweight=fontweight, fontsize=fontsize,
-                       color=color, rotation=rotation)
-
-  
 if __name__=='__main__':
 
     # fig, AX = figure(axes_extents=[\
@@ -519,8 +457,8 @@ if __name__=='__main__':
     # show()
 
     # mg = graphs('ggplot_notebook')
-    mg = graphs()
-    mg.hist(np.random.randn(100), xlabel='ksjdfh')
+    # mg = graphs()
+    # mg.hist(np.random.randn(100), xlabel='ksjdfh')
     
     # fig_lf, AX = mg.figure(axes_extents=[[[3,1]],[[1,2],[1,2],[1,2]]], figsize=(1.,.5), wspace=3., hspace=2.)
     # for ax in [item for sublist in AX for item in sublist]:
@@ -532,4 +470,11 @@ if __name__=='__main__':
     # mg.top_left_letter(ax, 'a')
     # mg.annotate(ax, 'blabla', (0.7, 0.8), italic=True)
     # mg.set_plot(ax)
+    # mg.show()
+    
+    from sklearn.datasets import load_digits
+    mg = graphs('screen')
+    digits = load_digits()
+    fig, ax = mg.image(digits['data'][100].reshape(8,8), alpha=0.2)
+    mg.scatter(np.random.randint(8, size=30), np.random.randint(8, size=30), ax=ax)
     mg.show()

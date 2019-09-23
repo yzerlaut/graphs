@@ -3,10 +3,10 @@ from matplotlib import cm
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 from graphs.scaling import *
-from graphs.my_graph import figure, figure_with_bar_legend
 from graphs.legend import build_bar_legend_continuous
     
-def twoD_plot(x, y, z,
+def twoD_plot(graph,
+              x, y, z,
               ax=None,
               acb=None,
               diverging=False,
@@ -15,7 +15,7 @@ def twoD_plot(x, y, z,
               vmin=None,
               vmax=None,
               scale='log',
-              bar_legend={},
+              bar_legend=None,
               interpolation='none'):
     """
     surface plots for x, y and z 1 dimensional data
@@ -24,7 +24,7 @@ def twoD_plot(x, y, z,
     """
     
     if (ax is None) and (acb is None):
-        fig, ax, acb = figure_with_bar_legend()
+        fig, ax, acb = graph.figure(with_space_for_bar_legend=True)
     else:
         fig = plt.gcf()
         
@@ -65,7 +65,7 @@ def twoD_plot(x, y, z,
                    origin='lower',
                    aspect='auto')
 
-    
+
     """
     Need to polish the integration of "build_bar_legend" within this function
     """
@@ -81,12 +81,15 @@ def twoD_plot(x, y, z,
                                     ticks=bar_legend['ticks'],
                                     label=bar_legend['label'],
                                     labelpad=bar_legend['labelpad'])
+        
     return ax, acb
     
 
 if __name__=='__main__':
     
-    from my_graph import *
+    from graphs.my_graph import graphs
+
+    mg = graphs('screen')
     
     x, y = np.meshgrid(np.arange(1, 11), np.arange(1, 11))
     z = np.sqrt(x*y)
@@ -97,10 +100,10 @@ if __name__=='__main__':
     np.random.shuffle(index)
     x, y, z = x[index], y[index], z[index]
 
-    ax, acb = twoD_plot(x, y, z,
+    ax, acb = twoD_plot(mg, x, y, z,
                         vmin=-7, vmax=7,
                         bar_legend={'label':'color',
                                     'color_discretization':20})
-    set_plot(ax, xlabel='x-label (X)', ylabel='y-label (Y)')
-    plt.gcf().savefig('output/2d.png', dpi=300)
-    show()
+    mg.set_plot(ax, xlabel='x-label (X)', ylabel='y-label (Y)')
+
+    mg.show()

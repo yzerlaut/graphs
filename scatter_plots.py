@@ -38,38 +38,55 @@ def two_variable_analysis(first_observations,
 
 def single_curve(ax, x, y, sx, sy,
                  color='k-', marker='o',
+                 label='',
                  lw=0, ms=3, elw=1):
-    if (sy is None):
-        sy = [0 for s in y]
-    if (sx is None):
-        sx = [0 for s in x]
-        # then errorbars
-    ax.errorbar(x, y, xerr=sx, yerr=sy, fmt='o-',
-                marker=marker, color=color,
-                lw=lw, ms=ms, elinewidth=elw)
+    if (sy is None) and (sx is None):
+        ax.errorbar(x, y, fmt='o-',
+                  marker=marker, color=color,
+                  lw=lw, ms=ms, label=label)
+    elif (sy is None):
+        ax.errorbar(x, y, xerr=sx, fmt='o-',
+                    marker=marker, color=color,
+                    lw=lw, ms=ms, elinewidth=elw, label=label)
+    elif (sx is None):
+        ax.errorbar(x, y, yerr=sy, fmt='o-',
+                    marker=marker, color=color,
+                    lw=lw, ms=ms, elinewidth=elw, label=label)
+    else:
+        ax.errorbar(x, y, xerr=sx, yerr=sy, fmt='o-',
+                    marker=marker, color=color,
+                    lw=lw, ms=ms, elinewidth=elw, label=label)
 
 def multiple_curves(ax, X, Y, sX, sY, COLORS, LABELS,
                     marker='o', lw=0,
                     colormap=viridis, ms=3, elw=1):
+    
     # meaning we have to plot several curves
     if COLORS is None:
         COLORS = [colormap(i/(len(Y)-1)) for i in range(len(Y))]
     if (LABELS is None):
         LABELS = ['Y'+str(i+1) for i in range(len(Y))]
 
-    if (sY is None):
-        sY = []
-        for y in Y:
-            sY.append([0 for s in y])
-    if (sX is None):
-        sX = []
-        for x in X:
-            sX.append([0 for s in x])
-        
-    for x, y, sx, sy, c in zip(X, Y, sX, sY, COLORS):
-        ax.errorbar(x, y, xerr=sx, yerr=sy,
-                    color=c, marker=marker,
-                    lw=lw, ms=ms, elinewidth=elw)
+    if (sY is None) and (sX is None):
+        for x, y, c, label in zip(X, Y, COLORS, LABELS):
+            ax.errorbar(x, y,
+                       color=c, marker=marker,
+                       lw=lw, ms=ms, label=label)
+    elif (sY is None):
+        for x, y, sx, c, label in zip(X, Y, sX, COLORS, LABELS):
+            ax.errorbar(x, y, xerr=sx,
+                        color=c, marker=marker,
+                        lw=lw, ms=ms, elinewidth=elw, label=label)
+    elif (sX is None):
+        for x, y, sy, c, label in zip(X, Y, sY, COLORS, LABELS):
+            ax.errorbar(x, y, yerr=sy,
+                        color=c, marker=marker,
+                        lw=lw, ms=ms, elinewidth=elw, label=label)
+    else:
+        for x, y, sx, sy, c, label in zip(X, Y, sX, sY, COLORS, LABELS):
+            ax.errorbar(x, y, xerr=sx, yerr=sy,
+                        color=c, marker=marker,
+                        lw=lw, ms=ms, elinewidth=elw, label=label)
 
 
 if __name__=='__main__':
