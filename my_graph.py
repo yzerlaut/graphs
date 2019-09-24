@@ -44,7 +44,9 @@ def update_rcParams(FONTSIZE):
     
 class graphs:
     
-    def __init__(self, output_display='manuscript', color='k'):
+    def __init__(self,
+                 output_display='manuscript',
+                 color='k'):
         """
         accepts styles such as : manuscript, dark_notebook, ggplot_notebook, ...
         """
@@ -335,11 +337,11 @@ class graphs:
                     xlim_enhancment, ylim_enhancment,
                     xlim, ylim, grid, xcolor, ycolor, fontsize)
         
-    def show(self):
+    def show(self, block=False):
         if platform.system()=='Windows':
             plt.show()
         else:
-            plt.show(block=False)
+            plt.show(block=block)
             input('Hit Enter To Close')
             plt.close()
 
