@@ -1,16 +1,7 @@
 from .dependencies import *
 
-def annotate(graph, stuff, s,
-             xy,
-             xycoords='axes fraction',
-             bold=False, italic=False,
-             rotation=0,
-             fontsize=None, size=None, color=None, ha='left', va='bottom', weight='normal', style='normal'):
-    """
-    stuff can be either a figure or a subplot
-    """
-    if fontsize is None:
-        fontsize=graph.FONTSIZE
+def set_fontsize(graph, size):
+    """ set the fontsize given a size and the props of the graph class"""
     if size=='small':
         fontsize=graph.FONTSIZE-1
     elif size=='x-small':
@@ -19,6 +10,31 @@ def annotate(graph, stuff, s,
         fontsize=graph.FONTSIZE+1
     elif size=='x-large':
         fontsize=graph.FONTSIZE+2
+    else:
+        fontsize=graph.FONTSIZE
+    return fontsize
+
+def title(graph, ax, title,
+          size=None, fontsize=None, color=None,
+          weight='normal', style='normal'):
+
+    if fontsize is None:
+        fontsize=set_fontsize(graph, size)
+    if color is None:
+        color=graph.default_color
+    ax.set_title(title,
+                 weight=weight, fontsize=fontsize, style=style,
+                 color=color)
+    
+def annotate(graph, stuff, s, xy,
+             xycoords='axes fraction',
+             bold=False, italic=False,
+             rotation=0,
+             fontsize=None, size=None, color=None,
+             ha='left', va='bottom', weight='normal', style='normal'):
+    """
+    stuff can be either a figure or a subplot
+    """
     if color is None:
         color=graph.default_color
     if bold and (weight=='normal'):

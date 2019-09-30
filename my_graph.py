@@ -276,18 +276,11 @@ class graphs:
     ################################################
     ###### Annotate function #######################
     ################################################
-    def annotate(self, stuff, s,
-                 xy, xycoords='axes fraction', bold=False, italic=False, rotation=0,
-                 fontsize=None, size=None, color=None,
-                 ha='left', va='bottom', weight='normal', style='normal'):
-        """
-        stuff can be either a figure or a subplot
-        """
-        annotations.annotate(self, stuff, s, xy,
-                 xycoords=xycoords,
-                 bold=bold, italic=italic, rotation=rotation,
-                 fontsize=fontsize, size=size, color=color,
-                 ha=ha, va=va, weight=weight, style=style)
+    def title(self, ax, title, **args):
+        annotations.title(self, ax, title, **args)
+        
+    def annotate(self, stuff, s, xy, **args):
+        annotations.annotate(self, stuff, s, xy, **args)
 
     def top_left_letter(self, ax, s, xy=(-0.3,1.02), bold=True, fontsize=None):
         if fontsize is None:
@@ -479,4 +472,5 @@ if __name__=='__main__':
     digits = load_digits()
     fig, ax = mg.image(digits['data'][100].reshape(8,8), alpha=0.2)
     mg.scatter(np.random.randint(8, size=30), np.random.randint(8, size=30), ax=ax)
+    mg.title(ax, 'title', size='large')
     mg.show()

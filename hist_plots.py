@@ -16,8 +16,8 @@ def hist(graph,
          edgecolor='k', facecolor='lightgray',
          c=None,
          lw=0.3,
-         xlabel='', ylabel='occurence',
-         normed=True,
+         xlabel='', ylabel='count', title='',
+         normed=False,
          fig_args={}, axes_args={}):
     
     hist, be = np.histogram(x, bins=bins, density=normed)
@@ -44,6 +44,8 @@ def hist(graph,
         axes_args['ylabel'] = ylabel
         
     graph.set_plot(ax, **axes_args)
+    if title!='':
+        graph.title(ax, title)
     
     return fig, ax
 
