@@ -122,7 +122,7 @@ class graphs:
              COLORS=None, colormap=viridis,
              ax=None,
              lw=1, alpha_std=0.3, ms=0, m='', ls='-',
-             xlabel='', ylabel='', bar_label='',
+             xlabel='', ylabel='', bar_label='', title='',
              label=None,
              LABELS=None,
              fig_args={},
@@ -176,6 +176,9 @@ class graphs:
         if not no_set:
             self.set_plot(ax, **axes_args)
 
+        if title!='':
+            self.title(ax, title)
+            
         return ax
 
     def scatter(self,
@@ -184,7 +187,7 @@ class graphs:
                 COLORS=None, colormap=viridis,
                 ax=None,
                 lw=0, alpha_std=0.3, ms=3, m='', ls='-',
-                xlabel='', ylabel='', bar_label='',
+                xlabel='', ylabel='', bar_label='', title='',
                 label=None,
                 LABELS=None,
                 fig_args={},
@@ -237,9 +240,10 @@ class graphs:
 
         if not no_set:
             self.set_plot(ax, **axes_args)
+        if title!='':
+            self.title(ax, title)
 
         return ax
-    
     
     ################################################
     ###### Classical plot functions ################
@@ -451,7 +455,7 @@ if __name__=='__main__':
     # save_on_desktop(fig, figname='2.svg')
     # show()
 
-    # mg = graphs('ggplot_notebook')
+    # mg = graphs('ggplot_npotebook')
     # mg = graphs()
     # mg.hist(np.random.randn(100), xlabel='ksjdfh')
     
