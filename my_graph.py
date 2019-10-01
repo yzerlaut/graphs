@@ -16,9 +16,10 @@ from graphs.legend import *
 from graphs.features_plot import features_plot
 from graphs.cross_correl_plot import cross_correl_plot
 from graphs.surface_plots import twoD_plot
+from graphs.bar_plots import bar
 
 # CUSTOM colors
-from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary
+from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary, bone
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
@@ -77,7 +78,8 @@ class graphs:
             self.pink, self.grey, self.kaki, self.cyan = Blue,\
                 Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan
         self.viridis, self.viridis_r, self.copper, self.copper_r, self.cool, self.jet,\
-         self.PiYG, self.binary = viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary
+         self.PiYG, self.binary, self.bone = viridis, viridis_r, copper, copper_r,\
+                                             cool, jet, PiYG, binary, bone
         self.cmaps = [viridis, viridis_r, copper, copper_r, cool, jet, PiYG]
         self.blue_to_red = get_linear_colormap(Blue, Red)
         self.red_to_blue = get_linear_colormap(Red, Blue)
@@ -244,7 +246,7 @@ class graphs:
             self.title(ax, title)
 
         return ax
-    
+
     ################################################
     ###### Classical plot functions ################
     ################################################
@@ -253,6 +255,10 @@ class graphs:
     def hist(self, x, **args):
         return hist(self, x, **args)
 
+    # bar plot
+    def bar(self, x, **args):
+        return bar(self, x, **args)
+    
     # features plot
     def features_plot(self, data, **args):
         return features_plot(self, data, **args)

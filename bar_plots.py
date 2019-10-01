@@ -2,8 +2,60 @@ from scipy.stats import ttest_rel, ttest_ind
 import numpy as np
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from graphs.draw_figure import figure
-from graphs.adjust_plots import set_plot
+
+
+def bar(graph, y,
+        yerr=None,
+        bins=None, width=None,
+        ax=None,
+        lw=0, alpha=1., bottom=0.,
+        color='silver', COLORS=None,
+        xlabel='', ylabel='', title='', label='',
+        fig_args={},
+        axes_args={},
+        legend_args=None,
+        no_set=False):
+
+    """    
+    return fig, ax
+    """
+    # getting or creating the axis
+    if ax is None:
+        fig, ax = graph.figure(**fig_args)
+        
+    if COLORS is None:
+        COLORS = [color for i in range(len(y))]
+        
+    if bins is None:
+        bins = np.arange(len(y))
+    if width is None:
+        width = .9*(bins[1]-bins[0])
+        
+    if axes_args=={}:
+        axes_args = {'xticks':bins, 'xticks_labels':[]}
+
+    if yerr is None:
+        yerr = 0.*x
+    ax.bar(bins, y, yerr=yerr, width=width,
+           color=COLORS,
+           lw=lw, alpha=alpha,
+           bottom=bottom)
+
+    if legend_args is not None:
+        ax.legend(**legend_args)
+
+    if 'xlabel' not in axes_args:
+        axes_args['xlabel'] = xlabel
+    if 'ylabel' not in axes_args:
+        axes_args['ylabel'] = ylabel
+
+    if not no_set:
+        graph.set_plot(ax, **axes_args)
+    if title!='':
+        graph.title(ax, title)
+
+    return ax
+
 
 def related_samples_two_conditions_comparison(graph,
                                               first_observations,
@@ -25,7 +77,7 @@ def related_samples_two_conditions_comparison(graph,
     if colormap is None:
         def colormap(x):return 'k'
         
-    fig, ax = graph.figure(figsize=(.6,1.))
+    fig, ax = graph.figure(figsize=(1.,1.), right=6.)
     
     for i in range(len(first_observations)):
         ax.plot([0, 1], [first_observations[i], second_observations[i]], '-', lw=lw, color=colormap(i/(len(first_observations)-1)))
@@ -56,7 +108,8 @@ def unrelated_samples_two_conditions_comparison(graph,
 
     pval = ttest_ind(first_observations, second_observations)[1]
 
-    fig, ax = graph.figure(figsize=(.6,1.))
+    fig, ax = graph.figure(figsize=(1.,1.), right=6.)
+
     
     for i in range(len(first_observations)):
         ax.plot([0+np.random.randn()*.1], [first_observations[i]], 'o', ms=2, color=color1)
@@ -66,7 +119,7 @@ def unrelated_samples_two_conditions_comparison(graph,
     ax.bar([1], [np.mean(second_observations)], yerr=np.std(second_observations), color=color2, lw=lw, alpha=.7)
     
     if with_annotation:
-        ax.annotate('unpaired t-test:\n p=%.2f' % pval, (.99,.4), xycoords='axes fraction')
+        ax.annotate('unpaired\n  t-test:\n p=%.2f' % pval, (.99,.4), xycoords='axes fraction')
         
     graph.set_plot(ax, ylabel=ylabel,
              xticks=xticks,
@@ -79,11 +132,13 @@ if __name__=='__main__':
 
     from graphs.my_graph import graphs
     mg = graphs()
-
-    fig, ax = mg.figure()
-    unrelated_samples_two_conditions_comparison(mg,
-                                                np.random.randn(10)+1.4, np.random.randn(12)+1.4,
-                                                xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
-                                                xticks_rotation=75)
-    
+    # unrelated_samples_two_conditions_comparison(mg,
+    #                                             np.random.randn(10)+1.4, np.random.randn(12)+1.4,
+    #                                             xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
+    #                                             xticks_rotation=75)
+    # related_samples_two_conditions_comparison(mg,
+    #                                           np.random.randn(10)+1.4, np.random.randn(10)+1.4,
+    #                                           xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
+    #                                           xticks_rotation=75)
+    mg.bar(np.random.randn(5), yerr=.3*np.random.randn(5), bottom=-3, COLORS=mg.colors[:5])
     mg.show()
