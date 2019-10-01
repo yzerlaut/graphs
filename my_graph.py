@@ -17,6 +17,7 @@ from graphs.features_plot import features_plot
 from graphs.cross_correl_plot import cross_correl_plot
 from graphs.surface_plots import twoD_plot
 from graphs.bar_plots import bar
+from graphs.pie_plots import pie
 
 # CUSTOM colors
 from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary, bone
@@ -258,6 +259,10 @@ class graphs:
     # bar plot
     def bar(self, x, **args):
         return bar(self, x, **args)
+
+    # pie plot
+    def pie(self, x, **args):
+        return pie(self, x, **args)
     
     # features plot
     def features_plot(self, data, **args):
