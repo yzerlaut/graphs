@@ -35,7 +35,8 @@ def bar(graph, y,
         axes_args = {'xticks':bins, 'xticks_labels':[]}
 
     if yerr is None:
-        yerr = 0.*x
+        yerr = 0.*y
+        
     ax.bar(bins, y, yerr=yerr, width=width,
            color=COLORS,
            lw=lw, alpha=alpha,
