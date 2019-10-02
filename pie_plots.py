@@ -23,15 +23,17 @@ def pie(graph, data,
     if COLORS is None:
         COLORS = graph.colors[:len(data)]
     if (LABELS is None) or (len(LABELS)!=len(data)):
-        print('need to set up labels')
-        LABELS = [str(i+1) for i in range(len(data))]
+        # print('need to set up labels')
+        # LABELS = [str(i+1) for i in range(len(data))]
+        LABELS = []
     if (EXPLODES is None):
         EXPLODES = np.zeros(len(data))
         
     ax.pie(data,
            labels=LABELS,
            autopct=autopct,
-           explode=EXPLODES)
+           explode=EXPLODES,
+           colors=COLORS)
 
     if legend_args is not None:
         ax.legend(**legend_args)

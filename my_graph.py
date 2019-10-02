@@ -276,7 +276,7 @@ class graphs:
     def twoD_plot(self, x, y, z, **args):
         return twoD_plot(self, x, y, z, **args)
 
-    def image(self, X, cmap=binary, alpha=1., ax=None):
+    def image(self, X, cmap=binary, alpha=1., ax=None, title=''):
         if ax is None:
             fig, ax = self.figure()
         else:
@@ -285,6 +285,8 @@ class graphs:
                   interpolation=None,
                   aspect='equal')
         ax.axis('off')
+        if title!='':
+            self.title(ax, title)
         return fig, ax
 
         
@@ -488,4 +490,4 @@ if __name__=='__main__':
     fig, ax = mg.image(digits['data'][100].reshape(8,8), alpha=0.2)
     mg.scatter(np.random.randint(8, size=30), np.random.randint(8, size=30), ax=ax)
     mg.title(ax, 'title', size='large')
-    mg.show()
+    # mg.show()
