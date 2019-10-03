@@ -13,7 +13,8 @@ def figure(axes = (1,1),
            bottom=1., top=1.,
            wspace=1., hspace=1.,
            with_top_left_letter='',
-           fontsize=FONTSIZE, fontweight='bold'):
+           fontsize=FONTSIZE,
+           fontweight='bold'):
     
     """
     scales figures with respect to the A0 format !
@@ -100,9 +101,12 @@ def figure(axes = (1,1),
     else:
         return fig, AX
 
+def figure_with_legend_space():
+    fig, ax = figure(figsize=(1.5,1.), right=5.5)
+    
 def figure_with_bar_legend(shift_up=0., shrink=1.):
 
-    fig, ax = figure(figsize=(1.5,1.), right=5.5)
+    fig, ax = figure_with_legend_space()
     acb = add_inset(ax, [1.17, -.08+shift_up, .08, shrink*1.])
 
     return fig, ax, acb

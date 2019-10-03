@@ -103,9 +103,16 @@ class graphs:
                left=1., right=1.,
                bottom=1., top=1.,
                wspace=1., hspace=1.,
+               with_legend_space=False,
                with_space_for_bar_legend=False,
                shift_up=0., shrink=1.):
         
+        if with_legend_space:
+            fig, ax = df.figure(axes, axes_extents,
+                                figsize=self.size_factor*np.array((1.5,1.)),
+                                right=self.size_factor*5.5,
+                                fontsize=self.FONTSIZE)
+            return fig, ax
         if with_space_for_bar_legend:
             fig, ax = df.figure(axes, axes_extents,
                                 figsize=self.size_factor*np.array((1.5,1.)),
@@ -354,6 +361,9 @@ class graphs:
             plt.show(block=block)
             input('Hit Enter To Close')
             plt.close()
+
+    def gcf(self):
+        return plt.gcf()
 
 
 
