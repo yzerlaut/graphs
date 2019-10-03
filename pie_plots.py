@@ -3,8 +3,8 @@ from matplotlib.pylab import Circle, setp
 
 def pie(graph, data,
         ax=None,
-        ext_labels=None,
-        pie_labels = None,
+        ext_labels= [],
+        pie_labels = [],
         explodes=None,
         COLORS=None,
         ext_labels_distance = 1.1,
