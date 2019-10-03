@@ -22,6 +22,8 @@ def bar(graph, y,
     # getting or creating the axis
     if ax is None:
         fig, ax = graph.figure(**fig_args)
+    else:
+        fig = graph.gcf()
         
     if COLORS is None:
         COLORS = [color for i in range(len(y))]
@@ -55,7 +57,7 @@ def bar(graph, y,
     if title!='':
         graph.title(ax, title)
 
-    return ax
+    return fig, ax
 
 
 def related_samples_two_conditions_comparison(graph,

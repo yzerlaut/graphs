@@ -11,7 +11,7 @@ import graphs.annotations as annotations
 import graphs.line_plots as line_plots
 import graphs.scatter_plots as scatter_plots
 from graphs.hist_plots import hist
-from graphs.inset import add_inset
+from graphs.inset import add_inset, inset
 from graphs.legend import *
 from graphs.features_plot import features_plot
 from graphs.cross_correl_plot import cross_correl_plot
@@ -317,7 +317,10 @@ class graphs:
         if fontsize is None:
             fontsize=self.FONTSIZE+1
         self.annotate(ax, s, xy, bold=bold, fontsize=fontsize)
-        
+
+    def inset(self, ax, **args):
+        return inset(self, ax, **args)
+    
     def adjust_spines(ax, spines, tck_outward=3, tck_length=4.,
                       xcolor='w', ycolor='w'):
         if xcolor is None:

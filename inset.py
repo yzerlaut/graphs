@@ -1,5 +1,22 @@
 import matplotlib.pylab as plt
 
+def inset(graph, ax,
+          rect=[.5,.5,.5,.4],
+          facecolor='w'):
+    fig = graph.gcf()
+    box = ax.get_position()
+    width = box.width
+    height = box.height
+    inax_position  = ax.transAxes.transform(rect[0:2])
+    transFigure = fig.transFigure.inverted()
+    infig_position = transFigure.transform(inax_position)    
+    x = infig_position[0]
+    y = infig_position[1]
+    width *= rect[2]
+    height *= rect[3]  # <= Typo was here
+    subax = fig.add_axes([x,y,width,height],facecolor=facecolor)
+    return subax
+
 def add_inset(ax,
               rect=[.5,.5,.5,.4],
               facecolor='w'):

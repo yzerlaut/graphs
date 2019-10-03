@@ -15,6 +15,7 @@ def pie(graph, data,
         title='',
         fig_args=dict(bottom=0.3, left=0.3, top=3.),
         axes_args={},
+        pie_args={},
         legend=None):
 
     """    
@@ -40,22 +41,21 @@ def pie(graph, data,
     if pie_labels is not None:
         pie_labels_map = {}
         for pl, val in zip(pie_labels, data):
-            pie_labels_map[str(np.round(100.*val/data.sum(),2))] = pl
+            pie_labels_map[str(np.round(100.*val/np.sum(data),2))] = pl
         def func(pct):
             return pie_labels_map[str(np.round(pct,2))]
-        print(pie_labels_map)
     else:
         def func(pct):
             return ''
         
     
     wedges, ext_texts, pie_texts = ax.pie(data,
-                                      labels=ext_labels,
-                                      autopct=func,
-                                      explode=explodes,
-                                      pctdistance=pie_labels_distance,
-                                      labeldistance=ext_labels_distance,
-                                      colors=COLORS)
+                                          labels=ext_labels,
+                                          autopct=func,
+                                          explode=explodes,
+                                          pctdistance=pie_labels_distance,
+                                          labeldistance=ext_labels_distance,
+                                          colors=COLORS, **pie_args)
     setp(pie_texts, **pie_text_settings)
     setp(ext_texts, **ext_text_settings)
     
@@ -86,5 +86,5 @@ if __name__=='__main__':
                      explodes=[.05,.05,.05],
                      center_circle=0.2,
                      COLORS = [mg.tab20(x) for x in np.linspace(0,1,len(data))],
-                     legend={})
+                     legend={}, pie_args=dict(rotate=90))
     mg.show()
