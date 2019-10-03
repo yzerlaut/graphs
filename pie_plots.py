@@ -3,8 +3,8 @@ from matplotlib.pylab import Circle, setp
 
 def pie(graph, data,
         ax=None,
-        ext_labels= [],
-        pie_labels = [],
+        ext_labels= None,
+        pie_labels = None,
         explodes=None,
         COLORS=None,
         ext_labels_distance = 1.1,
@@ -34,8 +34,10 @@ def pie(graph, data,
         COLORS = graph.colors[:len(data)]
     if (explodes is None):
         explodes = np.zeros(len(data))
+    if (ext_labels is None):
+        ext_labels = np.zeros(len(data), dtype=str)
 
-    if pie_labels!=[]:
+    if pie_labels is not None:
         pie_labels_map = {}
         for pl, val in zip(pie_labels, data):
             pie_labels_map[str(np.round(100.*val,2))] = pl
@@ -82,5 +84,6 @@ if __name__=='__main__':
                      ext_labels_distance=1.2,
                      explodes=[.05,.05,.05],
                      center_circle=0.2,
+                     COLORS = [mg.tab20(x) for x in np.linspace(0,1,len(data))],
                      legend={})
     mg.show()
