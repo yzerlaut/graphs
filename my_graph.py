@@ -20,7 +20,8 @@ from graphs.bar_plots import bar
 from graphs.pie_plots import pie
 
 # CUSTOM colors
-from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary, bone, tab10, tab20
+from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary, bone, Pastel1, Pastel2, Paired, Accent, Dark2, Set1, Set2, Set3, tab10, tab20, tab20b, tab20c
+
 Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
@@ -81,7 +82,11 @@ class graphs:
         self.viridis, self.viridis_r, self.copper, self.copper_r, self.cool, self.jet,\
          self.PiYG, self.binary, self.bone = viridis, viridis_r, copper, copper_r,\
                                              cool, jet, PiYG, binary, bone
-        self.tab10, self.tab20 = tab10, tab20
+        self.Pastel1, self.Pastel2, self.Paired, self.Accent, self.Dark2,\
+            self.Set1, self.Set2, self.Set3, self.tab10, self.tab20,\
+            self.tab20b, self.tab20c = Pastel1, Pastel2, Paired,\
+            Accent, Dark2, Set1, Set2, Set3, tab10, tab20, tab20b, tab20c
+        
         
         self.cmaps = [viridis, viridis_r, copper, copper_r, cool, jet, PiYG]
         self.blue_to_red = get_linear_colormap(Blue, Red)

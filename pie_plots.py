@@ -40,9 +40,10 @@ def pie(graph, data,
     if pie_labels is not None:
         pie_labels_map = {}
         for pl, val in zip(pie_labels, data):
-            pie_labels_map[str(np.round(100.*val,2))] = pl
+            pie_labels_map[str(np.round(100.*val/data.sum(),2))] = pl
         def func(pct):
             return pie_labels_map[str(np.round(pct,2))]
+        print(pie_labels_map)
     else:
         def func(pct):
             return ''
@@ -77,7 +78,7 @@ if __name__=='__main__':
     from my_graph import graphs
     import matplotlib.pylab as plt
     mg = graphs()
-    data = [0.3, 0.3, 0.4]
+    data = .5+np.random.randn(3)*.4
     fig, ax = mg.pie(data,
                      ext_labels = ['Data1', 'Data2', 'Data3'],
                      pie_labels = ['%.1f%%' % (100*d) for d in data],
