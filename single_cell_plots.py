@@ -1,6 +1,7 @@
 """
 standard functiosn to plot single neuron properties/responses
 """
+import numpy as np
 
 def response_to_current_pulse(graph, t, Vm, I, spikes,
                               Tbar=50.,
@@ -37,12 +38,15 @@ def response_to_multiple_current_pulse(graph,
                                        Vm_scale=10.,
                                        loc=(150,-30),
                                        Vpeak=-10,
-                                       colormap=copper,
+                                       colormap=None,
                                        with_artificial_spikes=True):
 
     fig, ax = graph.figure(figsize=(1.2,.8),
                            bottom=0.01, left=0.01, right=0.01, top=0.01)
 
+    if colormap is None:
+        colormap = graph.copper
+        
     Vm_min = np.min([np.min(Vm) for Vm in VMS])
     DI_max = np.max([np.max(I)-np.min(I) for I in II])
     for i, Vm, I, spikes in zip(range(len(VMS)), VMS, II, SPIKES):
@@ -58,7 +62,7 @@ def response_to_multiple_current_pulse(graph,
                           Vm_scale, "%imV" % Vm_scale,
                           orientation='right-top',
                           Ybar_label2="%ipA" % DI_max)
-    set_plot(ax, [])
+    graph.set_plot(ax, [])
     return fig, ax
 
     
