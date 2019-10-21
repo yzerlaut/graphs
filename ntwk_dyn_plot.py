@@ -1,14 +1,16 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from graphs.my_graph import set_plot
 import matplotlib.pylab as plt
 import numpy as np
 
-def RASTER_PLOT(SPK_LIST, ID_LIST, tlim=None, ID_ZOOM_LIST=None,
-                COLORS=None, with_fig=None, MS=1):
+def raster_plot(graph, SPK_LIST, ID_LIST,
+                tlim=None,
+                ID_ZOOM_LIST=None,
+                COLORS=None,
+                with_fig=None, MS=1):
     
     if with_fig is not None:
-        fig, ax = plt.gcf(), plt.gca()
+        fig, ax = graph.figure()
     else:
         fig, ax = plt.subplots(1, figsize=(5, 3))
         plt.subplots_adjust(left=.25, bottom=.25)
@@ -51,7 +53,7 @@ def RASTER_PLOT(SPK_LIST, ID_LIST, tlim=None, ID_ZOOM_LIST=None,
         ii+=id_zoom[1]-id_zoom[0]
     tot_neurons_num = int(round(np.sum([(I[1]-I[0]) for I in ID_ZOOM_LIST])/100.,0)*100)
     ax.set_title(str(tot_neurons_num)+' neurons sample', fontsize=14)
-    set_plot(ax, xlabel='time (ms)', yticks=[], ylabel='neuron index')
+    graph.set_plot(ax, xlabel='time (ms)', yticks=[], ylabel='neuron index')
     return fig, ax
 
 def POP_ACT_PLOT(t, POP_ACT_LIST, tlim=None, pop_act_zoom=None,
@@ -91,8 +93,11 @@ def POP_ACT_PLOT(t, POP_ACT_LIST, tlim=None, pop_act_zoom=None,
 
 if __name__=='__main__':
 
-    RASTER_PLOT(
+    from my_graph import graphs
+    mg = graphs()
+
+    raster_plot(mg,
         [np.random.randn(3000),np.random.randn(1000)],
         [np.random.randint(3000, size=3000),np.random.randint(1000, size=1000)])
     
-    plt.show()
+    mg.show()
