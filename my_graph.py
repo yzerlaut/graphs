@@ -18,6 +18,7 @@ from graphs.cross_correl_plot import cross_correl_plot
 from graphs.surface_plots import twoD_plot
 from graphs.bar_plots import bar
 from graphs.pie_plots import pie
+import graphs.single_cell_plots as scp
 
 # CUSTOM colors
 from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary, bone, Pastel1, Pastel2, Paired, Accent, Dark2, Set1, Set2, Set3, tab10, tab20, tab20b, tab20c
@@ -315,6 +316,18 @@ class graphs:
             fontsize=self.FONTSIZE+1
         self.annotate(ax, s, xy, bold=bold, fontsize=fontsize)
 
+    def draw_bar_scales(self, ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label, **args):
+        return annotations.draw_bar_scales(ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label, **args)
+
+    def int_to_roman(self, input, capitals=False):
+        return annotations.int_to_roman(input, capitals=capitals)
+
+    def sci_str(self, x, **args):
+        return annotations.sci_str(x, **args)
+    
+    def from_pval_to_star(self, x, **args):
+        return annotations.from_pval_to_star(x, **args)
+    
     ################################################
     ###### legend function #######################
     ################################################
@@ -385,6 +398,15 @@ class graphs:
                     xlim, ylim, grid, xcolor, ycolor, fontsize)
 
         
+    ################################################
+    ###### electrophy plots ########################
+    ################################################
+    def response_to_current_pulse(self, t, Vm, I, spikes, **args):
+        return scp.response_to_current_pulse(self, t, Vm, I, spikes, **args)
+
+    def response_to_multiple_current_pulse(self, t, VMS, II, SPIKES, **args):
+        return scp.response_to_multiple_current_pulse(self, t, VMS, II, SPIKES, **args)
+    
     ##################################################
     ######  FIG OUTPUT  ##############################
     ##################################################

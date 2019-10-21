@@ -1,10 +1,6 @@
-import sys, os, platform
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-# from graphs.draw_figure import figure, figure_with_bar_legend
-# from graphs.annotations import draw_bar_scales
-from graphs.my_graph import *
-
-
+"""
+standard functiosn to plot single neuron properties/responses
+"""
 
 def response_to_current_pulse(graph, t, Vm, I, spikes,
                               Tbar=50.,
