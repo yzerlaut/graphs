@@ -329,7 +329,10 @@ class graphs:
             ycolor = self.default_color
         ap.adjust_spines(ax, spines, tck_outward=3, tck_length=4.,
                              xcolor=xcolor, ycolor=ycolor)
-        
+
+    def build_bar_legend(self, X, ax, mymap, **args):
+        return build_bar_legend(X, ax, mymap, **args)
+    
     def set_plot(self, ax,
                  spines=['left', 'bottom'],
                  num_xticks=3, num_yticks=3,

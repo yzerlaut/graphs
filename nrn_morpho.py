@@ -2,8 +2,9 @@ import brian2
 import sys, pathlib, os, json
 # specific modules
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
-from graphs.my_graph import *
-from matplotlib.cm import viridis, copper, plasma, gray, binary
+import numpy as np
+
+from matplotlib.cm import viridis, viridis_r, copper, plasma, gray, binary
 import matplotlib.animation as animation
 
 def get_compartment_list(morpho, without_axon=False):
@@ -47,7 +48,7 @@ def get_segment_list(morpho,
     
     return SEGMENT_LIST
 
-def plot_nrn_shape(COMP_LIST,
+def plot_nrn_shape(graph, COMP_LIST,
                    ax=None,
                    spatial_scale=100,
                    polar_angle=0, azimuth_angle=np.pi/2., 
@@ -56,7 +57,7 @@ def plot_nrn_shape(COMP_LIST,
                    ms=2, lw=1):
 
     if ax is None:
-        fig, ax = plt.subplots(1, figsize=(4,6))
+        fig, ax = graph.figure()
     else:
         fig = None
         
@@ -88,7 +89,7 @@ def dist_to_soma(comp, soma):
 
 
 def show_animated_time_varying_trace(t, Quant0, SEGMENT_LIST,
-                                     fig, ax,
+                                     fig, ax, graph,
                                      picked_locations = None,
                                      polar_angle=0, azimuth_angle=np.pi/2.,
                                      quant_label='$V_m$ (mV)',
@@ -107,9 +108,9 @@ def show_animated_time_varying_trace(t, Quant0, SEGMENT_LIST,
     Quant = (Quant0[segment_condition]-Quant0[segment_condition].min())/(Quant0[segment_condition].max()-Quant0[segment_condition].min())
         
     # adding inset of time plots and bar legends
-    ax2 = add_inset(ax, [0.1,-0.05,.9,.1])
-    ax3 = add_inset(ax, [0.83,0.8,.03,.2])
-    build_bar_legend(np.linspace(Quant0[segment_condition].min(), Quant0[segment_condition].max(), 5), ax3, colormap,
+    ax2 = graph.inset(ax, rect=[0.1,-0.05,.9,.1])
+    ax3 = graph.inset(ax, rect=[0.83,0.8,.03,.2])
+    graph.build_bar_legend(np.linspace(Quant0[segment_condition].min(), Quant0[segment_condition].max(), 5), ax3, colormap,
                      color_discretization=30, label=quant_label)
     
     # picking up locations
@@ -120,8 +121,8 @@ def show_animated_time_varying_trace(t, Quant0, SEGMENT_LIST,
         ax.scatter([1e6*SEGMENT_LIST['xcoords'][segment_condition][p]],
                    [1e6*SEGMENT_LIST['ycoords'][segment_condition][p]], 
                    s=25+30*(1-np.sign(pp)),
-                   c=list(['k']+Color_List)[pp])
-    set_plot(ax2, xlabel=time_label, ylabel=quant_label, num_yticks=2)
+                   c=list(['k']+graph.colors)[pp])
+    graph.set_plot(ax2, xlabel=time_label, ylabel=quant_label, num_yticks=2)
 
     LINES = []
     # plotting each segment
@@ -132,7 +133,7 @@ def show_animated_time_varying_trace(t, Quant0, SEGMENT_LIST,
     for pp, p in enumerate(picked_locations):
         line, = ax2.plot([t[0]], [Quant0[segment_condition,:][p,0]], 'o',
                          ms=4+4*(1-np.sign(pp)),
-                         color=list(['k']+Color_List)[pp])
+                         color=list(['k']+graph.colors)[pp])
         LINES.append(line)
     
     # Init only required for blitting to give a clean slate.
@@ -181,7 +182,7 @@ if __name__=='__main__':
     COMP_LIST = get_compartment_list(morpho, without_axon=args.without_axon)
     SEGMENT_LIST = get_segment_list(morpho, without_axon=args.without_axon)
 
-    fig, ax = plot_nrn_shape(COMP_LIST,
+    fig, ax = plot_nrn_shape(graph, COMP_LIST,
                              lw=args.linewidth,
                              polar_angle=args.polar_angle, azimuth_angle=args.azimuth_angle,
                              axon_color=args.axon_color)
@@ -194,4 +195,4 @@ if __name__=='__main__':
                                                fig, ax,
                                                polar_angle=args.polar_angle, azimuth_angle=args.azimuth_angle)
         
-    show()
+    graph.show()
