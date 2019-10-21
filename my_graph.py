@@ -12,7 +12,7 @@ import graphs.line_plots as line_plots
 import graphs.scatter_plots as scatter_plots
 from graphs.hist_plots import hist
 from graphs.inset import add_inset, inset
-from graphs.legend import *
+import graphs.legend as legend
 from graphs.features_plot import features_plot
 from graphs.cross_correl_plot import cross_correl_plot
 from graphs.surface_plots import twoD_plot
@@ -26,9 +26,6 @@ Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
     Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
 Color_List = [Blue, Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan]
-
-def save_on_desktop(fig, figname='temp.svg'):
-    fig.savefig(desktop+figname)
 
 def update_rcParams(FONTSIZE):
     mpl.rcParams.update({'axes.labelsize': FONTSIZE,
@@ -89,13 +86,13 @@ class graphs:
         
         
         self.cmaps = [viridis, viridis_r, copper, copper_r, cool, jet, PiYG]
-        self.blue_to_red = get_linear_colormap(Blue, Red)
-        self.red_to_blue = get_linear_colormap(Red, Blue)
-        self.blue_to_orange = get_linear_colormap(Blue, Orange)
-        self.green_to_red = get_linear_colormap(Green, Red)
-        self.red_to_green = get_linear_colormap(Red, Green)
-        self.green_to_orange = get_linear_colormap(Green, Orange)
-        self.orange_to_green = get_linear_colormap(Orange, Green)
+        self.blue_to_red = legend.get_linear_colormap(Blue, Red)
+        self.red_to_blue = legend.get_linear_colormap(Red, Blue)
+        self.blue_to_orange = legend.get_linear_colormap(Blue, Orange)
+        self.green_to_red = legend.get_linear_colormap(Green, Red)
+        self.red_to_green = legend.get_linear_colormap(Red, Green)
+        self.green_to_orange = legend.get_linear_colormap(Green, Orange)
+        self.orange_to_green = legend.get_linear_colormap,(Orange, Green)
         self.b, self.o, self.g, self.r = self.blue, self.orange, self.green, self.red
         
     def set_style(self, style='default'):
@@ -176,11 +173,11 @@ class graphs:
 
         if bar_legend_args is not None:
             cb = add_inset(ax, **bar_legend_args)
-            build_bar_legend(np.arange(len(LABELS)+1),
-                             cb,
-                             colormap,
-                             label=bar_label,
-                             ticks_labels=LABELS)
+            legend.build_bar_legend(np.arange(len(LABELS)+1),
+                                    cb,
+                                    colormap,
+                                    label=bar_label,
+                                    ticks_labels=LABELS)
 
         if legend_args is not None:
             ax.legend(**legend_args)
@@ -318,6 +315,29 @@ class graphs:
             fontsize=self.FONTSIZE+1
         self.annotate(ax, s, xy, bold=bold, fontsize=fontsize)
 
+    ################################################
+    ###### legend function #######################
+    ################################################
+
+    def legend(self, list_of_lines, list_of_labels, **args):
+        return legend.legend(list_of_lines, list_of_labels, **args)
+
+    def bar_legend(self, X, ax, **args):
+        return legend.bar_legend(X, ax, **args)
+
+    def build_bar_legend(self, X, ax, mymap, **args):
+        return legend.build_bar_legend(X, ax, mymap, **args)
+
+    def build_bar_legend_continuous(self, ax, mymap, **args):
+        return legend.build_bar_legend_continuous(ax, mymap, **args)
+    
+    def get_linear_colormap(self, **args):
+        return legend.get_linear_colormap(**args)
+    
+    ################################################
+    ###### Axes function #######################
+    ################################################
+    
     def inset(self, ax, **args):
         return inset(self, ax, **args)
     
@@ -330,9 +350,6 @@ class graphs:
         ap.adjust_spines(ax, spines, tck_outward=3, tck_length=4.,
                              xcolor=xcolor, ycolor=ycolor)
 
-    def build_bar_legend(self, X, ax, mymap, **args):
-        return build_bar_legend(X, ax, mymap, **args)
-    
     def set_plot(self, ax,
                  spines=['left', 'bottom'],
                  num_xticks=3, num_yticks=3,
@@ -366,7 +383,12 @@ class graphs:
                     xscale, yscale,
                     xlim_enhancment, ylim_enhancment,
                     xlim, ylim, grid, xcolor, ycolor, fontsize)
+
         
+    ##################################################
+    ######  FIG OUTPUT  ##############################
+    ##################################################
+    
     def show(self, block=False):
         if platform.system()=='Windows':
             plt.show()
@@ -374,39 +396,14 @@ class graphs:
             plt.show(block=block)
             input('Hit Enter To Close')
             plt.close()
+            
+    def save_on_desktop(self, fig, figname='temp.svg'):
+        fig.savefig(desktop+figname)
+
 
     def gcf(self):
         return plt.gcf()
 
-
-
-def set_subplot_safe_for_labels(fig, FIGSIZE=None, FONTSIZE=16,
-                                    hspace=0.1, vspace=0.1):
-    if FIGSIZE is None:
-        FIGSIZE = [fig.get_figwidth(), fig.get_figheight()]
-    x0, y0 = .15*FONTSIZE/FIGSIZE[0], .15*FONTSIZE/FIGSIZE[0]
-    fig.subplots_adjust(\
-                bottom=x0, left=y0,\
-                right=max([1.-0.02*FONTSIZE/FIGSIZE[0],x0*1.1]),
-                top=max([1.-0.02*FONTSIZE/FIGSIZE[1],y0*1.1]),
-                hspace=hspace)
-
-    
-def replace_axis_by_legend(ax, text, x0=0.1, y0=0.1, on_fig=False):
-    ax.axis('off')
-    if on_fig:
-        ax.annotate(text, (x0, y0), xycoords='figure fraction')
-    else:
-        ax.annotate(text, (x0, y0), xycoords='axes fraction')
-
-
-def show(module=None):
-    if platform.system()=='Windows':
-        plt.show()
-    else:
-        plt.show(block=False)
-        input('Hit Enter To Close')
-        plt.close()
 
 
 if __name__=='__main__':

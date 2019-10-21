@@ -6,15 +6,16 @@ from graphs.my_graph import *
 
 
 
-def response_to_current_pulse(t, Vm, I, spikes,
+def response_to_current_pulse(graph, t, Vm, I, spikes,
                               Tbar=50.,
                               Vm_scale=10.,
                               loc=(150,-30),
                               Vpeak=-10,
                               with_artificial_spikes=True):
 
-    fig, ax = figure(figsize=(1.2,.8), bottom=0.01, left=0.01, right=0.01, top=0.01)
-
+    fig, ax = graph.figure(figsize=(1.2,.8),
+                           bottom=0.01, left=0.01, right=0.01, top=0.01)
+    
     ax.plot(t, Vm, 'k-', lw=1)
     try:
         DI = I.max()-I.min()
@@ -26,15 +27,16 @@ def response_to_current_pulse(t, Vm, I, spikes,
         for tt in spikes:
             ax.plot([tt,tt], [Vm.max(), Vpeak], 'k:', lw=1)
         
-    draw_bar_scales(ax, loc,
-                    Tbar, "%ims" % Tbar,
-                    Vm_scale, "%imV" % Vm_scale,
-                    orientation='right-top',
-                    Ybar_label2="%ipA" % DI, ycolor2='grey')
-    set_plot(ax, [])
+    graph.draw_bar_scales(ax, loc,
+                          Tbar, "%ims" % Tbar,
+                          Vm_scale, "%imV" % Vm_scale,
+                          orientation='right-top',
+                          Ybar_label2="%ipA" % DI, ycolor2='grey')
+    graph.set_plot(ax, [])
     return fig, ax
 
-def response_to_multiple_current_pulse(t, VMS, II, SPIKES,
+def response_to_multiple_current_pulse(graph,
+                                       t, VMS, II, SPIKES,
                                        Tbar=50.,
                                        Vm_scale=10.,
                                        loc=(150,-30),
@@ -42,7 +44,8 @@ def response_to_multiple_current_pulse(t, VMS, II, SPIKES,
                                        colormap=copper,
                                        with_artificial_spikes=True):
 
-    fig, ax = figure(figsize=(1.2,.8), bottom=0.01, left=0.01, right=0.01, top=0.01)
+    fig, ax = graph.figure(figsize=(1.2,.8),
+                           bottom=0.01, left=0.01, right=0.01, top=0.01)
 
     Vm_min = np.min([np.min(Vm) for Vm in VMS])
     DI_max = np.max([np.max(I)-np.min(I) for I in II])
@@ -54,11 +57,11 @@ def response_to_multiple_current_pulse(t, VMS, II, SPIKES,
             for tt in spikes:
                 ax.plot([tt,tt], [Vm.max(), Vpeak], ':', lw=1, color=colormap(i/(len(VMS)+2)))
         
-    draw_bar_scales(ax, loc,
-                    Tbar, "%ims" % Tbar,
-                    Vm_scale, "%imV" % Vm_scale,
-                    orientation='right-top',
-                    Ybar_label2="%ipA" % DI_max)
+    graph.draw_bar_scales(ax, loc,
+                          Tbar, "%ims" % Tbar,
+                          Vm_scale, "%imV" % Vm_scale,
+                          orientation='right-top',
+                          Ybar_label2="%ipA" % DI_max)
     set_plot(ax, [])
     return fig, ax
 

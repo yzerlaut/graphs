@@ -159,13 +159,14 @@ def legend(list_of_lines,
 
 if __name__=='__main__':
 
-    from my_graph import *
+    from my_graph import graphs
+    mg = graphs()
     
     Y = [np.exp(np.random.randn(100)) for i in range(4)]
-    fig, ax, acb = figure_with_bar_legend()
-    plot(Y=Y,
+    fig, ax, acb = mg.figure(figsize=(2,2), with_space_for_bar_legend=True)
+    mg.plot(Y=Y,
          xlabel='time', ylabel='y-value',
-         colormap=copper,
+         colormap=mg.copper,
          lw=1., ax=ax)
     LINES, LABELS = [], []
     for i in range(2):
@@ -177,13 +178,13 @@ if __name__=='__main__':
         LINES.append(line)
         LABELS.append('line'+str(i+1))
 
-    legend(LINES, LABELS, ncol=2, loc=(.2,.6))
+    mg.legend(LINES, LABELS, ncol=2, loc=(.2,.6))
     
-    bar_legend(np.arange(5), ax,
-               colormap=copper,
+    mg.bar_legend(np.arange(5), ax,
+               colormap=mg.copper,
                # orientation='horizontal',
                label='Trial ID', no_ticks=True)
-    build_bar_legend_continuous(acb, copper)
-    # set_plot(acb, [])
+    mg.build_bar_legend_continuous(acb, mg.copper)
+    mg.set_plot(acb, [])
     
-    show()
+    mg.show()
