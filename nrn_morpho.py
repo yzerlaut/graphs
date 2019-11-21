@@ -53,11 +53,13 @@ def plot_nrn_shape(graph, COMP_LIST,
                    spatial_scale=100,
                    polar_angle=0, azimuth_angle=np.pi/2., 
                    density_quantity=None,
-                   dend_color='k', axon_color='r',
+                   dend_color='k',
+                   apic_color='k',
+                   axon_color='r',
                    ms=2, lw=1):
 
     if ax is None:
-        fig, ax = graph.figure()
+        fig, ax = graph.figure(left=0., top=1., bottom=0., right=1.)
     else:
         fig = None
         
@@ -68,9 +70,11 @@ def plot_nrn_shape(graph, COMP_LIST,
     ax.plot(0, 0, 'o', ms=ms, color=dend_color)
     for c in COMP_LIST[1:]:
         x, y, _ = coordinate_projection(c, x0 ,y0, z0, polar_angle, azimuth_angle)
-        if (len(c.type.split('dend'))>1) or (len(c.type.split('apic'))>1):
+        if (len(c.type.split('dend'))>1):
             ax.plot(1e6*x, 1e6*y, '-', lw=lw, color=dend_color)
-        if (len(c.type.split('axon'))>1) and (axon_color!='None'):
+        elif (len(c.type.split('apic'))>1):
+            ax.plot(1e6*x, 1e6*y, '-', lw=lw, color=apic_color)
+        elif (len(c.type.split('axon'))>1) and (axon_color!='None'):
             ax.plot(1e6*x, 1e6*y, '-', lw=lw, color=axon_color)
 
     # adding a bar for the spatial scale
