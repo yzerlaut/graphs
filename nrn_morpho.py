@@ -48,44 +48,68 @@ def get_segment_list(morpho,
     
     return SEGMENT_LIST
 
-def plot_nrn_shape(graph, COMP_LIST,
+def plot_nrn_shape(graph,
+                   COMP_LIST,
+                   soma_comp=None,
                    ax=None,
-                   spatial_scale=100,
+                   scale_bar=100,
                    polar_angle=0, azimuth_angle=np.pi/2., 
                    density_quantity=None,
-                   dend_color='k',
-                   apic_color='k',
-                   axon_color='r',
-                   ms=2, lw=1):
+                   color=None,
+                   annotation_color=None,
+                   lw=1):
+    """
+    by default: soma_comp = COMP_LIST[0]
+    """
 
     if ax is None:
         fig, ax = graph.figure(left=0., top=1., bottom=0., right=1.)
     else:
         fig = None
-        
-    ax.set_aspect('equal')
+    if color is None:
+        color = graph.default_color
 
-    [x0, y0, z0] = COMP_LIST[0].x, COMP_LIST[0].y, COMP_LIST[0].z
-    # plotting each segment
-    ax.plot(0, 0, 'o', ms=ms, color=dend_color)
-    for c in COMP_LIST[1:]:
+    if soma_comp is None: # 0 element by default
+        [x0, y0, z0] = COMP_LIST[0].x, COMP_LIST[0].y, COMP_LIST[0].z
+    else:
+        [x0, y0, z0] = soma_comp[0].x, soma_comp[0].y, soma_comp[0].z
+        
+        
+    for c in COMP_LIST:
         x, y, _ = coordinate_projection(c, x0 ,y0, z0, polar_angle, azimuth_angle)
-        if (len(c.type.split('dend'))>1):
-            ax.plot(1e6*x, 1e6*y, '-', lw=lw, color=dend_color)
-        elif (len(c.type.split('apic'))>1):
-            ax.plot(1e6*x, 1e6*y, '-', lw=lw, color=apic_color)
-        elif (len(c.type.split('axon'))>1) and (axon_color!='None'):
-            ax.plot(1e6*x, 1e6*y, '-', lw=lw, color=axon_color)
+        ax.plot(1e6*x, 1e6*y, '-', lw=lw, color=color)
 
     # adding a bar for the spatial scale
-    if spatial_scale>0:
+    if scale_bar is not None and scale_bar>0:
+        ax.set_aspect('equal')
         xlim, ylim = ax.get_xlim(), ax.get_ylim()
-        ax.plot(xlim[0]*np.ones(2), ylim[1]-np.array([0,spatial_scale]), 'k-', lw=1)
-        ax.annotate(str(spatial_scale)+'$\mu$m', (xlim[0]+1, ylim[1]-1))
-
-    ax.axis('off')
+        if annotation_color is None:
+            annotation_color = graph.default_color
+            ax.plot(xlim[0]*np.ones(2), ylim[1]-np.array([0,scale_bar]),
+                    lw=1, color=annotation_color)
+            ax.annotate(str(scale_bar)+'$\mu$m', (xlim[0]+1, ylim[1]-1),
+                        color=annotation_color)
+        ax.axis('off')
     return fig, ax
 
+def add_dot_on_morpho(graph, ax,
+                      comp,
+                      index=0,
+                      soma_comp=None,
+                      polar_angle=0, azimuth_angle=np.pi/2., 
+                      color=None,
+                      lw=3, s=100):
+    """
+    """
+    if color is None:
+        color = graph.default_color
+    [x0, y0, z0] = soma_comp[0].x, soma_comp[0].y, soma_comp[0].z
+    x, y, _ = coordinate_projection(comp, x0 ,y0, z0, polar_angle, azimuth_angle)
+    ax.scatter(1e6*x[index], 1e6*y[index],
+            s=s, edgecolors=color, marker='o', facecolors='none', lw=lw)
+        
+
+    
 def dist_to_soma(comp, soma):
     return np.sqrt((comp.x-soma.x)**2+\
                    (comp.y-soma.y)**2+\

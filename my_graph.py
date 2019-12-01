@@ -51,7 +51,11 @@ class graphs:
         """
         accepts styles such as : manuscript, dark_notebook, ggplot_notebook, ...
         """
-        if output_display=='manuscript':
+        if 'manuscript' in output_display:
+            self.FONTSIZE = 8
+            self.size_factor = 1.
+            self.default_color = 'k'
+        elif 'emacs_png' in output_display:
             self.FONTSIZE = 8
             self.size_factor = 1.
             self.default_color = 'k'
@@ -62,13 +66,13 @@ class graphs:
         self.default_color = color
 
         self.override_style=True
-        if len(output_display.split('dark'))>1:
+        if 'dark' in output_display:
             self.set_style('dark_background')
-        elif len(output_display.split('ggplot'))>1:
+        elif 'ggplot' in output_display:
             self.default_color = 'dimgrey'
             self.set_style('ggplot')
             self.override_style = False
-        elif len(output_display.split('seaborn'))>1:
+        elif 'seaborn' in output_display:
             self.set_style('seaborn')
             self.override_style = False
         
@@ -104,6 +108,7 @@ class graphs:
     def figure(self,
                axes = (1,1),
                axes_extents=None,
+               grid=None,
                figsize=(1.,1.),
                left=1., right=1.,
                bottom=1., top=1.,
@@ -113,20 +118,20 @@ class graphs:
                shift_up=0., shrink=1.):
         
         if with_legend_space:
-            fig, ax = df.figure(axes, axes_extents,
+            fig, ax = df.figure(axes, axes_extents, grid,
                                 figsize=self.size_factor*np.array((1.5,1.)),
                                 right=self.size_factor*5.5,
                                 fontsize=self.FONTSIZE)
             return fig, ax
         if with_space_for_bar_legend:
-            fig, ax = df.figure(axes, axes_extents,
+            fig, ax = df.figure(axes, axes_extents, grid,
                                 figsize=self.size_factor*np.array((1.5,1.)),
                                 right=self.size_factor*5.5,
                                 fontsize=self.FONTSIZE)
             acb = df.add_inset(ax, [1.17, -.08+shift_up, .08, shrink*1.])
             return fig, ax, acb
         else:
-            fig, AX = df.figure(axes, axes_extents,
+            fig, AX = df.figure(axes, axes_extents, grid,
                                 self.size_factor*np.array(figsize),
                                 left, right, bottom, top, wspace, hspace)
             return fig, AX
