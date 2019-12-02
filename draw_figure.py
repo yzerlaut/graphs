@@ -50,7 +50,6 @@ def figure(axes = (1,1),
 
     """
 
-    fig = plt.figure()
     AX = []
     
     if grid is not None:

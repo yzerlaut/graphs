@@ -123,7 +123,7 @@ class graphs:
                                 right=self.size_factor*5.5,
                                 fontsize=self.FONTSIZE)
             return fig, ax
-        if with_space_for_bar_legend:
+        elif with_space_for_bar_legend:
             fig, ax = df.figure(axes, axes_extents, grid,
                                 figsize=self.size_factor*np.array((1.5,1.)),
                                 right=self.size_factor*5.5,

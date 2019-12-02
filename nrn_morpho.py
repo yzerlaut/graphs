@@ -3,6 +3,7 @@ import numpy as np
 
 from matplotlib.cm import viridis, viridis_r, copper, plasma, gray, binary
 import matplotlib.animation as animation
+from matplotlib.collections import LineCollection
 
 # specific modules
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
@@ -37,11 +38,14 @@ def plot_nrn_shape(graph,
         fig, ax = graph.figure(left=0., top=1., bottom=0., right=1.)
     else:
         fig = None
+
     if color is None:
         color = graph.default_color
 
     x0, y0, z0 = center['x0'], center['y0'], center['z0'] # possibility to control the center of the rotation 
-        
+
+    segments, seg_diameters, circles, circle_diameter = [], [], [], []
+    
     for iseg in range(len(SEGMENTS['x'])):
 
         if (SEGMENTS['start_x'][iseg]==SEGMENTS['end_x'][iseg]) and\
@@ -58,7 +62,13 @@ def plot_nrn_shape(graph,
                                               SEGMENTS['end_y'][iseg],
                                               SEGMENTS['end_z'][iseg],
                                               x0 ,y0, z0, polar_angle, azimuth_angle)
-            ax.plot([1e6*sx+xshift,1e6*ex+xshift], [1e6*sy,1e6*ey], '-', lw=lw, color=color) # switched to um here
+            segments.append([(1e6*(sx+xshift), 1e6*sy),(1e6*(ex+xshift), 1e6*ey)])
+            seg_diameters.append(SEGMENTS['diameter'][iseg])
+
+    line_segments = LineCollection(segments, linestyles='solid')
+    ax.add_collection(line_segments)
+    ax.autoscale()
+
 
     # adding a bar for the spatial scale
     if scale_bar is not None and scale_bar>0:
@@ -195,7 +205,7 @@ if __name__=='__main__':
     mg = graphs()
     fig, ax = mg.figure(figsize=(8.,1.), top=.99, bottom=.01, left=.01, right=.99)
     n = 0
-    for fn in os.listdir(args.directory)[:4]:
+    for fn in os.listdir(args.directory):
         if fn.endswith('swc'):
             print(fn, '[...]')
             morpho = ntwk.Morphology.from_swc_file(os.path.join(args.directory, fn))
