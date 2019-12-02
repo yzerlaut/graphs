@@ -1,58 +1,29 @@
-import brian2
 import sys, pathlib, os, json
-# specific modules
-sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
 import numpy as np
 
 from matplotlib.cm import viridis, viridis_r, copper, plasma, gray, binary
 import matplotlib.animation as animation
 
-def get_compartment_list(morpho, without_axon=False):
+# specific modules
+sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
+from neural_network_dynamics import main as ntwk # based on Brian2
 
-    COMP_LIST = [morpho]
-    TOPOL = str(morpho.topology())
-    TT = TOPOL.split('\n')
-    for t in TT[1:-1]:
-        if without_axon and (len(t.split('axon'))>1):
-            pass
-        else:
-            exec("COMP_LIST.append(morpho."+t.split(' .')[-1]+")")
-    return COMP_LIST
-
-def coordinate_projection(c, x0 ,y0, z0, polar_angle, azimuth_angle):
+def coordinate_projection(x, y, z, x0 ,y0, z0, polar_angle, azimuth_angle):
     """
     /!\
     need to do this propertly, not working yet !!
     """
-    x = np.cos(polar_angle)*(c.x-x0)+np.sin(polar_angle)*(c.y-y0)
-    y = np.sin(polar_angle)*(c.x-x0)+np.cos(polar_angle)*(c.y-y0)
-    z = c.z
+    x = np.cos(polar_angle)*(x-x0)+np.sin(polar_angle)*(y-y0)
+    y = np.sin(polar_angle)*(x-x0)+np.cos(polar_angle)*(y-y0)
+    z = z
     return x, y, z
 
-def get_segment_list(morpho,
-                     polar_angle=0, azimuth_angle=np.pi/2., 
-                     without_axon=False):
-
-    COMP_LIST = get_compartment_list(morpho, without_axon=without_axon)
-
-    # the first one should be the 
-    [x0, y0, z0] = COMP_LIST[0].x, COMP_LIST[0].y, COMP_LIST[0].z
-    xcoords = np.concatenate([coordinate_projection(c, x0 ,y0, z0, polar_angle, azimuth_angle)[0] for c in COMP_LIST])
-    ycoords = np.concatenate([coordinate_projection(c, x0 ,y0, z0, polar_angle, azimuth_angle)[1] for c in COMP_LIST])
-    zcoords = np.concatenate([coordinate_projection(c, x0 ,y0, z0, polar_angle, azimuth_angle)[2] for c in COMP_LIST])
-    area = np.concatenate([c.area for c in COMP_LIST])
-    comp_type = np.concatenate([[c.type for i in range(len(c.x))] for c in COMP_LIST])
-
-    SEGMENT_LIST = {'xcoords':xcoords, 'ycoords':ycoords, 'zcoords':zcoords,
-                    'area':area, 'comp_type':comp_type, 'N':len(area)}
-    
-    return SEGMENT_LIST
 
 def plot_nrn_shape(graph,
-                   COMP_LIST,
-                   soma_comp=None,
+                   SEGMENTS,
                    ax=None,
-                   scale_bar=100,
+                   center = {'x0':0, 'y0':0., 'z0':0.},
+                   scale_bar=100, xshift=0.,
                    polar_angle=0, azimuth_angle=np.pi/2., 
                    density_quantity=None,
                    color=None,
@@ -69,15 +40,25 @@ def plot_nrn_shape(graph,
     if color is None:
         color = graph.default_color
 
-    if soma_comp is None: # 0 element by default
-        [x0, y0, z0] = COMP_LIST[0].x, COMP_LIST[0].y, COMP_LIST[0].z
-    else:
-        [x0, y0, z0] = soma_comp[0].x, soma_comp[0].y, soma_comp[0].z
+    x0, y0, z0 = center['x0'], center['y0'], center['z0'] # possibility to control the center of the rotation 
         
-        
-    for c in COMP_LIST:
-        x, y, _ = coordinate_projection(c, x0 ,y0, z0, polar_angle, azimuth_angle)
-        ax.plot(1e6*x, 1e6*y, '-', lw=lw, color=color)
+    for iseg in range(len(SEGMENTS['x'])):
+
+        if (SEGMENTS['start_x'][iseg]==SEGMENTS['end_x'][iseg]) and\
+           (SEGMENTS['start_y'][iseg]==SEGMENTS['end_y'][iseg]) and\
+           (SEGMENTS['start_z'][iseg]==SEGMENTS['end_z'][iseg]):
+            # circle of diameter
+            pass
+        else:
+            sx, sy, _ = coordinate_projection(SEGMENTS['start_x'][iseg],
+                                              SEGMENTS['start_y'][iseg],
+                                              SEGMENTS['start_z'][iseg],
+                                              x0 ,y0, z0, polar_angle, azimuth_angle)
+            ex, ey, _ = coordinate_projection(SEGMENTS['end_x'][iseg],
+                                              SEGMENTS['end_y'][iseg],
+                                              SEGMENTS['end_z'][iseg],
+                                              x0 ,y0, z0, polar_angle, azimuth_angle)
+            ax.plot([1e6*sx+xshift,1e6*ex+xshift], [1e6*sy,1e6*ey], '-', lw=lw, color=color) # switched to um here
 
     # adding a bar for the spatial scale
     if scale_bar is not None and scale_bar>0:
@@ -90,6 +71,7 @@ def plot_nrn_shape(graph,
             ax.annotate(str(scale_bar)+'$\mu$m', (xlim[0]+1, ylim[1]-1),
                         color=annotation_color)
         ax.axis('off')
+        
     return fig, ax
 
 def add_dot_on_morpho(graph, ax,
@@ -109,7 +91,6 @@ def add_dot_on_morpho(graph, ax,
             s=s, edgecolors=color, marker='o', facecolors='none', lw=lw)
         
 
-    
 def dist_to_soma(comp, soma):
     return np.sqrt((comp.x-soma.x)**2+\
                    (comp.y-soma.y)**2+\
@@ -185,7 +166,6 @@ def show_animated_time_varying_trace(t, Quant0, SEGMENT_LIST,
 
 if __name__=='__main__':
 
-    from my_graph import *
     import argparse
     # First a nice documentation 
     parser=argparse.ArgumentParser(description=
@@ -200,27 +180,42 @@ if __name__=='__main__':
     parser.add_argument("-wa", "--without_axon",help="", action="store_true")
     parser.add_argument("-m", "--movie_demo",help="", action="store_true")
     parser.add_argument("--filename", '-f', help="filename", type=str,
-        default=home+'work/neural_network_dynamics/single_cell_integration/morphologies/Jiang_et_al_2015/L5pyr-j140408b.CNG.swc')
+        default='../neural_network_dynamics/single_cell_integration/morphologies/Jiang_et_al_2015/L5pyr-j140408b.CNG.swc')
+    parser.add_argument("--directory", '-d', help="directory", type=str,
+        default='../neural_network_dynamics/single_cell_integration/morphologies/Jiang_et_al_2015')
     # filename = home+'work/neural_network_dynamics/single_cell_integration/morphologies/Jiang_et_al_2015/L23pyr-j150123a.CNG.swc'
     args = parser.parse_args()
-    
+
     print('[...] loading morphology')
-    morpho = brian2.Morphology.from_swc_file(args.filename)
+    morpho = ntwk.Morphology.from_swc_file(args.filename)
     print('[...] creating list of compartments')
-    COMP_LIST = get_compartment_list(morpho, without_axon=args.without_axon)
-    SEGMENT_LIST = get_segment_list(morpho, without_axon=args.without_axon)
+    SEGMENTS = ntwk.morpho_analysis.compute_segments(morpho)
+    
+    from my_graph import graphs
+    mg = graphs()
+    fig, ax = mg.figure(figsize=(8.,1.), top=.99, bottom=.01, left=.01, right=.99)
+    n = 0
+    for fn in os.listdir(args.directory)[:4]:
+        if fn.endswith('swc'):
+            print(fn, '[...]')
+            morpho = ntwk.Morphology.from_swc_file(os.path.join(args.directory, fn))
+            SEGMENTS = ntwk.morpho_analysis.compute_segments(morpho)
+            plot_nrn_shape(mg, SEGMENTS, ax=ax, scale_bar=None, xshift=200.*n)
+            n+=1
+    ax.set_aspect('equal')
+    ax.axis('off')
+    
+    # fig, ax = plot_nrn_shape(mg,
+    #                          SEGMENTS,
+    #                          lw=args.linewidth,
+    #                          polar_angle=args.polar_angle, azimuth_angle=args.azimuth_angle)
 
-    fig, ax = plot_nrn_shape(graph, COMP_LIST,
-                             lw=args.linewidth,
-                             polar_angle=args.polar_angle, azimuth_angle=args.azimuth_angle,
-                             axon_color=args.axon_color)
-
-    if args.movie_demo:
-        t = np.arange(100)*0.001
-        Quant = np.array([.5*(1-np.cos(20*np.pi*t))*i/len(SEGMENT_LIST['xcoords']) \
-                          for i in np.arange(len(SEGMENT_LIST['xcoords']))])*20-70
-        ani = show_animated_time_varying_trace(1e3*t, Quant, SEGMENT_LIST,
-                                               fig, ax,
-                                               polar_angle=args.polar_angle, azimuth_angle=args.azimuth_angle)
+    # if args.movie_demo:
+    #     t = np.arange(100)*0.001
+    #     Quant = np.array([.5*(1-np.cos(20*np.pi*t))*i/len(SEGMENT_LIST['xcoords']) \
+    #                       for i in np.arange(len(SEGMENT_LIST['xcoords']))])*20-70
+    #     ani = show_animated_time_varying_trace(1e3*t, Quant, SEGMENT_LIST,
+    #                                            fig, ax,
+    #                                            polar_angle=args.polar_angle, azimuth_angle=args.azimuth_angle)
         
-    graph.show()
+    mg.show()
