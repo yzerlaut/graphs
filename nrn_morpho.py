@@ -3,8 +3,8 @@ import numpy as np
 
 from matplotlib.cm import viridis, viridis_r, copper, plasma, gray, binary
 import matplotlib.animation as animation
-from matplotlib.collections import LineCollection
-
+from matplotlib.collections import LineCollection, PatchCollection
+import matplotlib.patches as mpatches
 # specific modules
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
 from neural_network_dynamics import main as ntwk # based on Brian2
@@ -27,24 +27,22 @@ def plot_nrn_shape(graph,
                    scale_bar=100, xshift=0.,
                    polar_angle=0, azimuth_angle=np.pi/2., 
                    density_quantity=None,
-                   color=None,
+                   colors=None,
                    annotation_color=None,
+                   diameter_magnification=2.,
                    lw=1):
     """
     by default: soma_comp = COMP_LIST[0]
     """
 
     if ax is None:
-        fig, ax = graph.figure(left=0., top=1., bottom=0., right=1.)
+        fig, ax = graph.figure(figsize=(1.,1.2), left=0., top=2., bottom=0., right=0.)
     else:
         fig = None
 
-    if color is None:
-        color = graph.default_color
-
     x0, y0, z0 = center['x0'], center['y0'], center['z0'] # possibility to control the center of the rotation 
 
-    segments, seg_diameters, circles, circle_diameter = [], [], [], []
+    segments, seg_diameters, circles, circle_colors = [], [], [], []
     
     for iseg in range(len(SEGMENTS['x'])):
 
@@ -52,7 +50,15 @@ def plot_nrn_shape(graph,
            (SEGMENTS['start_y'][iseg]==SEGMENTS['end_y'][iseg]) and\
            (SEGMENTS['start_z'][iseg]==SEGMENTS['end_z'][iseg]):
             # circle of diameter
-            pass
+            sx, sy, _ = coordinate_projection(SEGMENTS['start_x'][iseg],
+                                              SEGMENTS['start_y'][iseg],
+                                              SEGMENTS['start_z'][iseg],
+                                              x0 ,y0, z0, polar_angle, azimuth_angle)
+            if colors is None:
+                circles.append(mpatches.Circle((1e6*sx, 1e6*sy), 1e6*SEGMENTS['diameter'][iseg]/2., color=graph.default_color))
+            else:
+                circles.append(mpatches.Circle((1e6*sx, 1e6*sy), 1e6*SEGMENTS['diameter'][iseg]/2.,
+                                               color=colors[iseg]))
         else:
             sx, sy, _ = coordinate_projection(SEGMENTS['start_x'][iseg],
                                               SEGMENTS['start_y'][iseg],
@@ -63,10 +69,15 @@ def plot_nrn_shape(graph,
                                               SEGMENTS['end_z'][iseg],
                                               x0 ,y0, z0, polar_angle, azimuth_angle)
             segments.append([(1e6*(sx+xshift), 1e6*sy),(1e6*(ex+xshift), 1e6*ey)])
-            seg_diameters.append(SEGMENTS['diameter'][iseg])
+            seg_diameters.append(1e6*SEGMENTS['diameter'][iseg])
 
-    line_segments = LineCollection(segments, linestyles='solid')
+    if colors is None:
+        colors = [graph.default_color for i in range(len(segments))]
+
+    line_segments = LineCollection(segments, linewidths=seg_diameters, colors=colors, linestyles='solid')
     ax.add_collection(line_segments)
+    collection = PatchCollection(circles)
+    ax.add_collection(collection)
     ax.autoscale()
 
 
@@ -203,17 +214,19 @@ if __name__=='__main__':
     
     from my_graph import graphs
     mg = graphs()
-    fig, ax = mg.figure(figsize=(8.,1.), top=.99, bottom=.01, left=.01, right=.99)
+    
+    # fig, ax = mg.figure(figsize=(3.,1.), top=.99, bottom=.01, left=.01, right=.99)
     n = 0
+    AX = []
     for fn in os.listdir(args.directory):
         if fn.endswith('swc'):
-            print(fn, '[...]')
             morpho = ntwk.Morphology.from_swc_file(os.path.join(args.directory, fn))
             SEGMENTS = ntwk.morpho_analysis.compute_segments(morpho)
-            plot_nrn_shape(mg, SEGMENTS, ax=ax, scale_bar=None, xshift=200.*n)
+            colors = [mg.green if comp_type=='axon' else mg.red for comp_type in SEGMENTS['comp_type']]
+            fig, ax = plot_nrn_shape(mg, SEGMENTS, colors=colors)
+            ax.set_title(fn.split('-')[0], weight='bold', style='italic')
+            AX.append(ax)
             n+=1
-    ax.set_aspect('equal')
-    ax.axis('off')
     
     # fig, ax = plot_nrn_shape(mg,
     #                          SEGMENTS,
