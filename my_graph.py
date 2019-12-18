@@ -140,7 +140,7 @@ class graphs:
              x=None, y=None, sy=None, color='k',
              X=None, Y=None, sY=None,
              COLORS=None, colormap=viridis,
-             ax=None,
+             fig = None, ax=None,
              lw=1, alpha_std=0.3, ms=0, m='', ls='-',
              xlabel='', ylabel='', bar_label='', title='',
              label=None,
@@ -199,13 +199,13 @@ class graphs:
         if title!='':
             self.title(ax, title)
             
-        return ax
+        return fig, ax
 
     def scatter(self,
                 x=None, y=None, sx=None, sy=None, color='k',
                 X=None, Y=None, sX=None, sY=None,
                 COLORS=None, colormap=viridis,
-                ax=None,
+                ax=None, fig=None,
                 lw=0, alpha_std=0.3, ms=3, m='', ls='-',
                 xlabel='', ylabel='', bar_label='', title='',
                 label=None,
@@ -263,7 +263,7 @@ class graphs:
         if title!='':
             self.title(ax, title)
 
-        return ax
+        return fig, ax
 
     ################################################
     ###### Classical plot functions ################

@@ -12,7 +12,9 @@ from tempfile import gettempdir
 import svgutils.compose as sg # SVG
 # import fpdf # PDF
 from PIL import Image # BITMAP (png, jpg, ...)
-INKSCAPE_PATH = '/Applications/Inkscape.app/Contents/Resources/bin/inkscape'
+### /!\ need to have the inkscape 
+
+
 
 def put_list_of_figs_to_svg_fig(FIGS,
                                 fig_name="fig.svg",
@@ -110,9 +112,13 @@ def put_list_of_figs_to_svg_fig(FIGS,
         #     show()
 
 def export_as_png(fig_name, dpi=300):
-    instruction = INKSCAPE_PATH+' '+fig_name+' --export-area-drawing --export-png='+\
+    instruction = 'inkscape '+fig_name+' --export-area-drawing --export-png='+\
                     fig_name.replace('.svg', '.png')+' --export-dpi='+str(dpi)
     os.system(instruction)
+    if os.path.isfile(fig_name.replace('.svg', '.png')):
+        print('[ok] figure successfully exported as: %s' % fig_name.replace('.svg', '.png'))
+    else:
+        print('[!!] %s not exported as png' % fig_name)
         
 def put_list_of_figs_to_multipage_pdf(FIGS,
                                       pdf_name='figures.pdf',
@@ -159,14 +165,16 @@ def concatenate_pngs(PNG_LIST, ordering='vertically', figname='fig.png'):
 
 if __name__=='__main__':
 
-    from my_graph import *
+    from my_graph import graphs
+    mg = graphs()
 
-    fig1, ax1 = plot(Y=np.random.randn(10,4),\
-                     sY=np.random.randn(10,4), axes_args={'xlabel':'x-label', 'ylabel':'y-label'})
+    fig1, ax1 = mg.plot(Y=np.random.randn(10,4),\
+                        sY=np.random.randn(10,4),
+                        axes_args={'xlabel':'x-label', 'ylabel':'y-label'})
     fig1.savefig('output/fig1.svg')
-    fig2, ax2 = scatter(X=np.arange(4)+0.1*np.random.randn(10,4),\
-                        Y=np.random.randn(10,4),\
-                        sY=np.random.randn(10,4), axes_args={'xlabel':'x-label', 'ylabel':'y-label'})
+    fig2, ax2 = mg.scatter(X=np.arange(4)+0.1*np.random.randn(10,4),\
+                           Y=np.random.randn(10,4),\
+                           sY=np.random.randn(10,4), axes_args={'xlabel':'x-label', 'ylabel':'y-label'})
     curdir=os.path.abspath(__file__).replace(os.path.basename(__file__),'')
 
     # put_list_of_figs_to_multipage_pdf([fig1, fig2])
@@ -179,5 +187,4 @@ if __name__=='__main__':
                                        'LABELS':['a','b','c']})
     
     export_as_png(curdir+'output/fig.svg')
-    os.system('open output/fig.png') # works well with 'Gapplin' on OS-X
 
