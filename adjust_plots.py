@@ -258,14 +258,17 @@ def scale_figure(height_to_width, A0_ratio, x_plots, y_plots,
 
 
 if __name__=='__main__':
-    from my_graph import *
-    fig, ax = figure(axes_extents=[[[2,1]]], left=2., right=3.)
+
+    from graphs.my_graph import graphs
+    mg = graphs('screen')
+
+    fig, ax = mg.figure(figsize=(1.2,1), left=1., right=4.)
     ax2 = ax.twinx()
-    ax.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=2, color=Blue)
-    ax2.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=1, color=Red)
-    set_plot(ax2, ['right'], yscale='log', ylabel='blabal',
-             tck_outward=2, ycolor=Red)
-    set_plot(ax, ycolor=Blue, xcolor='k',
+    ax.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=2, color=mg.blue)
+    ax2.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=1, color=mg.red)
+    mg.set_plot(ax2, ['right'], yscale='log', ylabel='blabal',
+             tck_outward=2, ycolor=mg.red)
+    mg.set_plot(ax, ycolor=mg.blue, xcolor='k',
              yscale='log', ylabel='blabal', xscale='already-log10',
              tck_outward=2, xlabel='trying', ylabelpad=-5)
-    show()
+    mg.show()
