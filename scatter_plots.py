@@ -90,11 +90,13 @@ def multiple_curves(ax, X, Y, sX, sY, COLORS, LABELS,
 
 
 if __name__=='__main__':
-    from my_graph import *
+    from my_graph import graphs
+    mg = graphs('screen')
+    
     two_variable_analysis(np.random.randn(10), np.random.randn(10),
                           colormap=viridis)
     # fig, ax = scatter(np.random.randn(10), np.random.randn(10),
     #                   np.random.randn(10), np.random.randn(10))
     # ax.plot([-2,2], [-2,2], 'k:')
-    show()
+    mg.show()
         
