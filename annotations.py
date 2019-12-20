@@ -93,11 +93,16 @@ def int_to_roman(input, capitals=False):
    return result
 
 
-def draw_bar_scales(ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label,
-                    orientation='left-bottom',
+def draw_bar_scales(graph,
+                    ax,
+                    Xbar=1., Xbar_label='1unit',
+                    Ybar=1., Ybar_label='1unit',
+                    loc='left-bottom',
+                    orientation=None,
+                    xyLoc=None, 
                     Xbar_label2='',Ybar_label2='',
                     xcolor='k', ycolor='k', ycolor2='k',
-                    fontsize=10,
+                    fontsize=None,
                     shift_factor=20., color='k', lw=1):
     """
     USE:
@@ -108,53 +113,71 @@ def draw_bar_scales(ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label,
     set_plot(ax)    
     """
 
-    if orientation=='left-bottom':
+    if fontsize is None:
+        fontsize = graph.FONTSIZE
+
+    if type(loc) is tuple:
+        xyLoc = loc
         
+    if (loc in ['top-right', 'right-top']) or (orientation in ['left-bottom','bottom-left']):
+
+        if xyLoc is None:
+            xyLoc = (ax.get_xlim()[1]-0.05*(ax.get_xlim()[1]-ax.get_xlim()[0]), ax.get_ylim()[1]-0.05*(ax.get_ylim()[1]-ax.get_ylim()[0]))
+            
         ax.plot(xyLoc[0]-np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
         ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]-np.arange(2)*Ybar, lw=lw, color=color)
-        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=xcolor, va='bottom', ha='right',fontsize=fontsize)
-        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=ycolor, va='top', ha='left',fontsize=fontsize)
+        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=xcolor, va='bottom', ha='right',fontsize=fontsize, annotation_clip=False)
+        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=ycolor, va='top', ha='left',fontsize=fontsize, annotation_clip=False)
         if Ybar_label2!='':
             ax.annotate('\n'+Ybar_label2, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor),
-                        color=ycolor2, va='top', ha='left',fontsize=fontsize)
+                        color=ycolor2, va='top', ha='left',fontsize=fontsize, annotation_clip=False)
             
-    elif orientation=='right-bottom':
+    elif (loc in ['top-left', 'left-top']) or (orientation in ['right-bottom','bottom-right']):
         
+        if xyLoc is None:
+            xyLoc = (ax.get_xlim()[0]+0.05*(ax.get_xlim()[1]-ax.get_xlim()[0]), ax.get_ylim()[1]-0.05*(ax.get_ylim()[1]-ax.get_ylim()[0]))
+            
         ax.plot(xyLoc[0]+np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
         ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]-np.arange(2)*Ybar, lw=lw, color=color)
-        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=xcolor, va='bottom', ha='left',fontsize=fontsize)
-        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=ycolor, va='top', ha='right',fontsize=fontsize)
+        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=xcolor, va='bottom', ha='left',fontsize=fontsize, annotation_clip=False)
+        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=ycolor, va='top', ha='right',fontsize=fontsize, annotation_clip=False)
         if Ybar_label2!='':
             ax.annotate('\n'+Ybar_label2, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor),
-                        color=ycolor2, va='top', ha='right',fontsize=fontsize)
+                        color=ycolor2, va='top', ha='right',fontsize=fontsize, annotation_clip=False)
 
-    elif orientation=='left-top':
+    elif (loc in ['bottom-right', 'right-bottom']) or (orientation in ['left-top','top-left']):
         
+        if xyLoc is None:
+            xyLoc = (ax.get_xlim()[1]-0.05*(ax.get_xlim()[1]-ax.get_xlim()[0]), ax.get_ylim()[0]+0.05*(ax.get_ylim()[1]-ax.get_ylim()[0]))
+            
         ax.plot(xyLoc[0]-np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
         ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]+np.arange(2)*Ybar, lw=lw, color=color)
-        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=xcolor, va='top', ha='right',fontsize=fontsize)
-        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=ycolor, va='bottom', ha='left',fontsize=fontsize)
+        ax.annotate(Xbar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=xcolor, va='top', ha='right',fontsize=fontsize, annotation_clip=False)
+        ax.annotate(Ybar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=ycolor, va='bottom', ha='left',fontsize=fontsize, annotation_clip=False)
         if Ybar_label2!='':
             ax.annotate(Ybar_label2+'\n',
                         (xyLoc[0]+Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor),
-                        color=ycolor2, va='bottom', ha='left',fontsize=fontsize)
+                        color=ycolor2, va='bottom', ha='left',fontsize=fontsize, annotation_clip=False)
 
-    elif orientation=='right-top':
+    elif (loc in ['bottom-left', 'left-bottom']) or (orientation in ['right-top','top-right']):
         
+        if xyLoc is None:
+            xyLoc = (ax.get_xlim()[0]+0.05*(ax.get_xlim()[1]-ax.get_xlim()[0]), ax.get_ylim()[0]+0.05*(ax.get_ylim()[1]-ax.get_ylim()[0]))
+            
         ax.plot(xyLoc[0]+np.arange(2)*Xbar,xyLoc[1]+np.zeros(2), lw=lw, color=color)
         ax.plot(xyLoc[0]+np.zeros(2),xyLoc[1]+np.arange(2)*Ybar, lw=lw, color=color)
-        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=xcolor, va='top', ha='left',fontsize=fontsize)
-        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=ycolor, va='bottom', ha='right',fontsize=fontsize)
+        ax.annotate(Xbar_label, (xyLoc[0]+Xbar/shift_factor,xyLoc[1]-Ybar/shift_factor), color=xcolor, va='top', ha='left',fontsize=fontsize, annotation_clip=False)
+        ax.annotate(Ybar_label, (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor), color=ycolor, va='bottom', ha='right',fontsize=fontsize, annotation_clip=False)
         if Ybar_label2!='':
             ax.annotate(Ybar_label2+'\n', (xyLoc[0]-Xbar/shift_factor,xyLoc[1]+Ybar/shift_factor),
-                        color=ycolor2, va='bottom', ha='right',fontsize=fontsize)
+                        color=ycolor2, va='bottom', ha='right',fontsize=fontsize, annotation_clip=False)
     else:
         print("""
         orientation not recognized, it should be one of
-        - right-top
-        - left-top
-        - right-bottom
-        - left-bottom
+        - right-top, top-right
+        - left-top, top-left
+        - right-bottom, bottom-right
+        - left-bottom, bottom-left
         """)
         
 

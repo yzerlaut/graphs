@@ -53,6 +53,9 @@ if __name__=='__main__':
         x[np.argmin(np.abs(tt-t))] = 10.
 
     
-    fig, ax = mg.plot(t, x, fig_args=dict(figsize=(3,1)))
-    mg.draw_bar_scales(ax, 'top-left', 10, '10mV', 1, '1s')
+    fig, ax = mg.plot(t, x,
+                      fig_args=dict(figsize=(3,1), left=.4, bottom=.5),
+                      bar_scale_args = dict(Xbar=.2,Xbar_label='0.2s',
+                                            Ybar=10,Ybar_label='10mV',
+                                            loc='left-bottom'))
     mg.show()

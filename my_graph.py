@@ -147,6 +147,7 @@ class graphs:
              LABELS=None,
              fig_args={},
              axes_args={},
+             bar_scale_args=None,
              bar_legend_args=None,
              legend_args=None, no_set=False):
         
@@ -188,13 +189,16 @@ class graphs:
         if legend_args is not None:
             ax.legend(**legend_args)
 
-        if 'xlabel' not in axes_args:
-            axes_args['xlabel'] = xlabel
-        if 'ylabel' not in axes_args:
-            axes_args['ylabel'] = ylabel
-            
-        if not no_set:
-            self.set_plot(ax, **axes_args)
+        if bar_scale_args is not None:
+            self.draw_bar_scales(ax, **bar_scale_args)
+            self.set_plot(ax, [], **axes_args)
+        else:
+            if 'xlabel' not in axes_args:
+                axes_args['xlabel'] = xlabel
+            if 'ylabel' not in axes_args:
+                axes_args['ylabel'] = ylabel
+            if not no_set:
+                self.set_plot(ax, **axes_args)
 
         if title!='':
             self.title(ax, title)
@@ -322,9 +326,9 @@ class graphs:
         args = dict(bold=bold, fontsize=fontsize)
         annotations.annotate(self, stuff, s, xy, **args)
 
-
-    def draw_bar_scales(self, ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label, **args):
-        return annotations.draw_bar_scales(ax, xyLoc, Xbar, Xbar_label, Ybar, Ybar_label, **args)
+    def draw_bar_scales(self, ax, Xbar, Xbar_label, Ybar, Ybar_label, **args):
+        return annotations.draw_bar_scales(self,
+                                           ax, Xbar, Xbar_label, Ybar, Ybar_label, **args)
 
     def int_to_roman(self, input, capitals=False):
         return annotations.int_to_roman(input, capitals=capitals)
