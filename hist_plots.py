@@ -53,7 +53,7 @@ def hist(graph,
 if __name__=='__main__':
 
     from graphs.my_graph import graphs
-    mg = graphs()
+    mg = graphs('screen')
     fig, ax = hist(mg, np.random.randn(100), xlabel='some value')
     mg.show()
 

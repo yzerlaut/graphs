@@ -36,8 +36,23 @@ def multiple_curves(ax, X, Y, sY, COLORS, LABELS,
                             color=c, lw=0, alpha=alpha_std)
 
 if __name__=='__main__':
-    from my_graph import *
-    plot(Y=3*np.random.randn(4,10),
-         sY=np.random.randn(4,10),
-         ls=':', m='o', ms=0.1, lw=0.4)
-    show()
+    
+    from my_graph import graphs
+    import numpy as np
+    
+    mg = graphs('screen')
+    # mg.plot(Y=3*np.random.randn(4,10),
+    #         sY=np.random.randn(4,10),
+    #         ls=':', m='o', ms=0.1, lw=0.4,
+    #         xlabel='x-label (X)', ylabel='y-label (Y)')
+
+    tstop, dt = 10, 1e-2
+    t = np.arange(int(tstop/dt))*dt
+    x = np.random.randn(len(t))*10.-70.
+    for tt in np.cumsum(np.random.exponential(tstop/10., 10)):
+        x[np.argmin(np.abs(tt-t))] = 10.
+
+    
+    fig, ax = mg.plot(t, x, fig_args=dict(figsize=(3,1)))
+    mg.draw_bar_scales(ax, 'top-left', 10, '10mV', 1, '1s')
+    mg.show()

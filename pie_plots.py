@@ -77,7 +77,7 @@ if __name__=='__main__':
     
     from my_graph import graphs
     import matplotlib.pylab as plt
-    mg = graphs()
+    mg = graphs('screen')
     data = .5+np.random.randn(3)*.4
     fig, ax = mg.pie(data,
                      ext_labels = ['Data1', 'Data2', 'Data3'],
@@ -86,5 +86,6 @@ if __name__=='__main__':
                      explodes=[.05,.05,.05],
                      center_circle=0.2,
                      COLORS = [mg.tab20(x) for x in np.linspace(0,1,len(data))],
-                     legend={}, pie_args=dict(rotate=90))
+                     # pie_args=dict(rotate=90),
+                     legend={})
     mg.show()

@@ -1,4 +1,6 @@
-from .dependencies import *
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
 
 def set_fontsize(graph, size):
     """ set the fontsize given a size and the props of the graph class"""

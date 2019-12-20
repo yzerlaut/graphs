@@ -9,6 +9,7 @@ def features_plot(graph, data,
                   features=None,
                   nrow_fig=5,
                   shrink_fig=0.3,
+                  fig_args = {},
                   wspace=.5, hspace=.5, right=0.8, left=0.1,\
                   ms=3, many_data=False):
     """
@@ -18,7 +19,8 @@ def features_plot(graph, data,
     if features is None:
         features = list(data.keys())
         
-    fig, AX = graph.figure(axes=(int(np.ceil(len(features)/nrow_fig)), nrow_fig), hspace=2.)
+    fig, AX = graph.figure(axes=(int(np.ceil(len(features)/nrow_fig)), nrow_fig),
+                           **fig_args)
 
     LIMS = [[np.inf, -np.inf] for f in features]
     for i, key_i in enumerate(features):
@@ -33,7 +35,7 @@ def features_plot(graph, data,
 if __name__=='__main__':
 
     from graphs.my_graph import graphs
-    mg = graphs()
+    mg = graphs('screen')
 
     # breast cancer dataset from sklearn
     from sklearn.datasets import load_breast_cancer
@@ -41,6 +43,8 @@ if __name__=='__main__':
     data = {}
     for feature, values in zip(raw['feature_names'], raw['data']):
         data[feature+'\n(log)'] = np.log(values)
-    features_plot(mg, data, ms=3)
+    features_plot(mg, data, ms=3,
+                  fig_args={'left':.1, 'right':.1, 'bottom':.5, 'top':.1,
+                            'hspace':1., 'wspace':.5})
     mg.show()
 

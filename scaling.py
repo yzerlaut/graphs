@@ -43,22 +43,29 @@ if __name__=='__main__':
         if 'facecolor' in key:
             print(key)
 
-    from my_graph import *
+    from my_graph import graphs
+    mg = graphs('screen')
     
     import sys
-    FONTSIZE = 8 #int(sys.argv[-1])
-    
+
+    try:
+        FONTSIZE = int(sys.argv[-1])
+    except ValueError:
+        FONTSIZE = mg.FONTSIZE
+        
     # mpl.rcParams.update({'axes.labelsize': FONTSIZE,
     #                      'font.size': FONTSIZE,
     #                      'xtick.labelsize': FONTSIZE,
     #                      'ytick.labelsize': FONTSIZE})
     
 
-    fig, ax = figure(with_top_left_letter='a')
-    annotate('The fontsize is \n now set to '+str(FONTSIZE),
-             fig, fontsize=FONTSIZE)
-    set_plot(ax, xlabel='my xlabel (Unit)', ylabel='my ylabel (Unit)',
-             fontsize=FONTSIZE, num_xticks=3, num_yticks=3)
+    fig, ax = mg.figure()
+    mg.top_left_letter(ax, 'a')
+    mg.annotate(ax, 'The fontsize is \n now set to '+str(FONTSIZE), (.5,.97),
+                va='top', ha='center', fontsize=FONTSIZE)
+    mg.set_plot(ax,
+                xlabel='my xlabel (Unit)', ylabel='my ylabel (Unit)',
+                fontsize=FONTSIZE, num_xticks=3, num_yticks=3)
     # fig.savefig('fig.png')
-    show()
+    mg.show()
 

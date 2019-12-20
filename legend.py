@@ -160,7 +160,8 @@ def legend(list_of_lines,
 if __name__=='__main__':
 
     from my_graph import graphs
-    mg = graphs()
+    mg = graphs('screen')
+
     
     Y = [np.exp(np.random.randn(100)) for i in range(4)]
     fig, ax, acb = mg.figure(figsize=(2,2), with_space_for_bar_legend=True)

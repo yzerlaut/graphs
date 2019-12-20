@@ -134,14 +134,14 @@ def unrelated_samples_two_conditions_comparison(graph,
 if __name__=='__main__':
 
     from graphs.my_graph import graphs
-    mg = graphs()
-    # unrelated_samples_two_conditions_comparison(mg,
-    #                                             np.random.randn(10)+1.4, np.random.randn(12)+1.4,
-    #                                             xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
-    #                                             xticks_rotation=75)
-    # related_samples_two_conditions_comparison(mg,
-    #                                           np.random.randn(10)+1.4, np.random.randn(10)+1.4,
-    #                                           xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
-    #                                           xticks_rotation=75)
+    mg = graphs('screen')
+    unrelated_samples_two_conditions_comparison(mg,
+                                                np.random.randn(10)+1.4, np.random.randn(12)+1.4,
+                                                xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
+                                                xticks_rotation=75)
+    related_samples_two_conditions_comparison(mg,
+                                              np.random.randn(10)+1.4, np.random.randn(10)+1.4,
+                                              xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
+                                              xticks_rotation=75)
     mg.bar(np.random.randn(5), yerr=.3*np.random.randn(5), bottom=-3, COLORS=mg.colors[:5])
     mg.show()

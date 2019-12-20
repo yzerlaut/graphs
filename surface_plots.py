@@ -7,8 +7,7 @@ from graphs.legend import build_bar_legend_continuous
     
 def twoD_plot(graph,
               x, y, z,
-              ax=None,
-              acb=None,
+              ax=None, acb=None, fig=None,
               diverging=False,
               colormap=cm.viridis,
               alpha=1.,
@@ -82,7 +81,7 @@ def twoD_plot(graph,
                                     label=bar_legend['label'],
                                     labelpad=bar_legend['labelpad'])
         
-    return ax, acb
+    return fig, ax, acb
     
 
 if __name__=='__main__':
@@ -100,10 +99,10 @@ if __name__=='__main__':
     np.random.shuffle(index)
     x, y, z = x[index], y[index], z[index]
 
-    ax, acb = twoD_plot(mg, x, y, z,
-                        vmin=-7, vmax=7,
-                        bar_legend={'label':'color',
-                                    'color_discretization':20})
+    fig, ax, acb = mg.twoD_plot(x, y, z,
+                           vmin=-7, vmax=7,
+                           bar_legend={'label':'color',
+                                       'color_discretization':20})
     mg.set_plot(ax, xlabel='x-label (X)', ylabel='y-label (Y)')
 
     mg.show()
