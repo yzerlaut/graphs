@@ -1,11 +1,12 @@
 import sys, os, platform
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 home = os.path.expanduser('~')+os.path.sep
-from graphs.dependencies import *
+
+from dependencies import *
 # module that construct the plot settings
-import graphs.draw_figure as df
-import graphs.adjust_plots as ap
+import draw_figure as df
+import adjust_plots as ap
 
 import graphs.annotations as annotations
 import graphs.line_plots as line_plots
@@ -20,13 +21,7 @@ from graphs.bar_plots import bar
 from graphs.pie_plots import pie
 import graphs.single_cell_plots as scp
 
-# CUSTOM colors
-from matplotlib.cm import viridis, viridis_r, copper, copper_r, cool, jet, PiYG, binary, bone, Pastel1, Pastel2, Paired, Accent, Dark2, Set1, Set2, Set3, tab10, tab20, tab20b, tab20c
-
-Blue, Orange, Green, Red, Purple, Brown, Pink, Grey,\
-    Kaki, Cyan = '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',\
-    '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
-Color_List = [Blue, Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan]
+from colors import *
 
 def update_rcParams(FONTSIZE):
     mpl.rcParams.update({'axes.labelsize': FONTSIZE,
@@ -77,28 +72,8 @@ class graphs:
             self.override_style = False
         
         update_rcParams(self.FONTSIZE)
-        self.colors = [Blue, Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan]
-        self.blue, self.orange, self.green, self.red, self.purple, self.brown,\
-            self.pink, self.grey, self.kaki, self.cyan = Blue,\
-                Orange, Green, Red, Purple, Brown, Pink, Grey, Kaki, Cyan
-        self.viridis, self.viridis_r, self.copper, self.copper_r, self.cool, self.jet,\
-         self.PiYG, self.binary, self.bone = viridis, viridis_r, copper, copper_r,\
-                                             cool, jet, PiYG, binary, bone
-        self.Pastel1, self.Pastel2, self.Paired, self.Accent, self.Dark2,\
-            self.Set1, self.Set2, self.Set3, self.tab10, self.tab20,\
-            self.tab20b, self.tab20c = Pastel1, Pastel2, Paired,\
-            Accent, Dark2, Set1, Set2, Set3, tab10, tab20, tab20b, tab20c
-        
-        
-        self.cmaps = [viridis, viridis_r, copper, copper_r, cool, jet, PiYG]
-        self.blue_to_red = legend.get_linear_colormap(Blue, Red)
-        self.red_to_blue = legend.get_linear_colormap(Red, Blue)
-        self.blue_to_orange = legend.get_linear_colormap(Blue, Orange)
-        self.green_to_red = legend.get_linear_colormap(Green, Red)
-        self.red_to_green = legend.get_linear_colormap(Red, Green)
-        self.green_to_orange = legend.get_linear_colormap(Green, Orange)
-        self.orange_to_green = legend.get_linear_colormap,(Orange, Green)
-        self.b, self.o, self.g, self.r = self.blue, self.orange, self.green, self.red
+
+        give_color_attributes(self)
         
     def set_style(self, style='default'):
         plt.style.use(style)
@@ -538,9 +513,17 @@ if __name__=='__main__':
     # mg.show()
     
     from sklearn.datasets import load_digits
-    mg = graphs('screen')
+    mg = graphs('dark_screen')
     digits = load_digits()
     fig, ax = mg.image(digits['data'][100].reshape(8,8), alpha=0.2)
-    mg.scatter(np.random.randint(8, size=30), np.random.randint(8, size=30), ax=ax)
+    mg.scatter(np.random.randint(8, size=30), np.random.randint(8, size=30), ax=ax, color=mg.blue)
     mg.title(ax, 'title', size='large')
+
+    # fig_location = os.path.join(os.path.dirname(os.path.abspath(__file__)),'docs/cross-correl.png')
+    # fig.savefig(fig_location, dpi=200)
+    # print('Figure saved as: ', fig_location)
+    mg.show()
+    
+
+    
     # mg.show()

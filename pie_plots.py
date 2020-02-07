@@ -74,18 +74,29 @@ def pie(graph, data,
     return fig, ax
 
 if __name__=='__main__':
+
+    import os
     
     from my_graph import graphs
-    import matplotlib.pylab as plt
+
     mg = graphs('screen')
+    
     data = .5+np.random.randn(3)*.4
+
     fig, ax = mg.pie(data,
                      ext_labels = ['Data1', 'Data2', 'Data3'],
-                     pie_labels = ['%.1f%%' % (100*d) for d in data],
+                     pie_labels = ['%.1f%%' % (100*d/data.sum()) for d in data],
                      ext_labels_distance=1.2,
-                     explodes=[.05,.05,.05],
+                     explodes=0.05*np.ones(len(data)),
                      center_circle=0.2,
                      COLORS = [mg.tab20(x) for x in np.linspace(0,1,len(data))],
                      # pie_args=dict(rotate=90),
-                     legend={})
+                     legend=None)
+    
+    fig_location = os.path.join(os.path.dirname(os.path.abspath(__file__)),'docs/pie-plot.png')
+    fig.savefig(fig_location, dpi=200)
+    print('Figure saved as: ', fig_location)
+    
     mg.show()
+    
+
