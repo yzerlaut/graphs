@@ -2,6 +2,8 @@
 
 *Get your plots right, all along your analysis workflow. A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums.*
 
+## Overview: a quick tour of the functionalities
+
 Typically a data science project involves:
 
 ### Data mining in Jupyter Notebooks
@@ -12,14 +14,15 @@ Typically a data science project involves:
 
 
 
-## Installation
+## Installation & settings
 
+### 1) Download
 Using git:
 
 `git clone https://github.com/yzerlaut/graphs.git`
 
 
-## Use: pre-program the output on your different medium
+### 2) Pre-program the output on your different medium
 
 ```
 ENVIRONMENTS = {
@@ -62,7 +65,7 @@ Output:
 ### Features plot
 
 ```
-mg = graphs('manuscript')
+mg = graphs()
 
 # data: breast cancer dataset from sklearn
 from sklearn.datasets import load_breast_cancer
@@ -79,6 +82,26 @@ fig, AX = mg.features_plot(data, ms=3,
 									 'hspace':.4, 'wspace':.4})
 fig.savefig('docs/features-plot.png', dpi=200)
 ```
+![](docs/features-plot.png)
+
+### Cross-correlation plot
+
+Look at the cross-correlation between several joint measurements and estimate the signficance of the correlation:
+```
+# building random data
+data = {}
+for i in range(7):
+	data['feature_%s'%(i+1)] = np.random.randn(30)
+
+# plotting
+fig = mg.cross_correl_plot(data,
+						   features=list(data.keys())[:7])
+
+fig.savefig('./docs/cross-correl-plot.png', dpi=200)
+```
+Output:
+
+![](docs/cross-correl-plot.png)
 
 ### Bar plots
 
@@ -108,20 +131,9 @@ fig.savefig('docs/unrelated-samples.png', dpi=200)
 
 ![](docs/unrelated-samples.png)
 
-### Cross-correlation plot
+### Line plots
 
-Look at the cross-correlation between several joint measurements and estimate the correlation of 
-```
-# building random data
-data = {}
-for i in range(7):
-	data['feature_%s'%(i+1)] = np.random.randn(30)
 
-# plotting
-fig = mg.cross_correl_plot(data,
-						   features=list(data.keys())[:7])
 
-fig.savefig('./docs/cross-correl-plot.png', dpi=200)
-```
-Output:
-![](docs/cross-correl-plot.png)
+### Scatter plots
+### Surface plots

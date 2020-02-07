@@ -6,10 +6,8 @@ from graphs.adjust_plots import find_good_log_ticks, set_ticks_to_log10_axis
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pylab as plt
+from colors import get_linear_colormap
 
-def get_linear_colormap(color1='blue', color2='red'):
-    return mpl.colors.LinearSegmentedColormap.from_list(\
-                        'mycolors',[color1, color2])
 
 def build_bar_legend(X, ax, mymap,
                      label='$\\nu$ (Hz)',\

@@ -39,8 +39,9 @@ if __name__=='__main__':
     
     from my_graph import graphs
     import numpy as np
-    
-    mg = graphs('screen')
+
+        
+    mgS, mgM = graphs('screen'), graphs('manuscript')
     # mg.plot(Y=3*np.random.randn(4,10),
     #         sY=np.random.randn(4,10),
     #         ls=':', m='o', ms=0.1, lw=0.4,
@@ -52,10 +53,10 @@ if __name__=='__main__':
     for tt in np.cumsum(np.random.exponential(tstop/10., 10)):
         x[np.argmin(np.abs(tt-t))] = 10.
 
-    
-    fig, ax = mg.plot(t, x,
-                      fig_args=dict(figsize=(3,1), left=.4, bottom=.5),
-                      bar_scale_args = dict(Xbar=.2,Xbar_label='0.2s',
-                                            Ybar=10,Ybar_label='10mV',
-                                            loc='left-bottom'))
-    mg.show()
+    for mg in [mgS, mgM]:
+        fig, ax = mg.plot(t, x,
+                          fig_args=dict(figsize=(3,1), left=.4, bottom=.5),
+                          bar_scale_args = dict(Xbar=.2,Xbar_label='0.2s',
+                                                Ybar=10,Ybar_label='10mV',
+                                                loc='left-bottom'))
+    mgS.show()
