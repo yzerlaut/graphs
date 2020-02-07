@@ -1,6 +1,5 @@
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from graphs.scaling import FONTSIZE, A0_format, inch2cm, cm2inch
+from scaling import FONTSIZE, A0_format, inch2cm, cm2inch
 
 import matplotlib.pylab as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -13,7 +12,6 @@ import svgutils.compose as sg # SVG
 # import fpdf # PDF
 from PIL import Image # BITMAP (png, jpg, ...)
 ### /!\ need to have the inkscape 
-
 
 
 def put_list_of_figs_to_svg_fig(FIGS,
@@ -108,12 +106,13 @@ def put_list_of_figs_to_svg_fig(FIGS,
         # #                         fig.get_size_inches()[1]*3,
         # #                         forward=True)
         # if not no_show:
-        #     from graphs.my_graph import show
+        #     from my_graph import show
         #     show()
 
 def export_as_png(fig_name, dpi=300):
     instruction = 'inkscape '+fig_name+' --export-area-drawing --export-png='+\
                     fig_name.replace('.svg', '.png')+' --export-dpi='+str(dpi)
+    print('RUNNING:', instruction)
     os.system(instruction)
     if os.path.isfile(fig_name.replace('.svg', '.png')):
         print('[ok] figure successfully exported as: %s' % fig_name.replace('.svg', '.png'))
@@ -172,6 +171,7 @@ if __name__=='__main__':
                         sY=np.random.randn(10,4),
                         axes_args={'xlabel':'x-label', 'ylabel':'y-label'})
     fig1.savefig('output/fig1.svg')
+    
     fig2, ax2 = mg.scatter(X=np.arange(4)+0.1*np.random.randn(10,4),\
                            Y=np.random.randn(10,4),\
                            sY=np.random.randn(10,4), axes_args={'xlabel':'x-label', 'ylabel':'y-label'})

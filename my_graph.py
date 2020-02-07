@@ -4,22 +4,18 @@ desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path
 home = os.path.expanduser('~')+os.path.sep
 
 from dependencies import *
+
 # module that construct the plot settings
 import draw_figure as df
 import adjust_plots as ap
 
-import graphs.annotations as annotations
-import graphs.line_plots as line_plots
-import graphs.scatter_plots as scatter_plots
-from graphs.hist_plots import hist
-from graphs.inset import add_inset, inset
-import graphs.legend as legend
-from graphs.features_plot import features_plot
-from graphs.cross_correl_plot import cross_correl_plot
-from graphs.surface_plots import twoD_plot
-from graphs.bar_plots import bar
-from graphs.pie_plots import pie
-import graphs.single_cell_plots as scp
+import annotations, line_plots, scatter_plots, legend, features_plot, cross_correl_plot
+from hist_plots import hist
+from inset import add_inset, inset
+from surface_plots import twoD_plot
+from bar_plots import bar, related_samples_two_conditions_comparison, unrelated_samples_two_conditions_comparison
+from pie_plots import pie
+import single_cell_plots as scp
 
 from colors import *
 
@@ -262,7 +258,7 @@ class graphs:
     
     # features plot
     def features_plot(self, data, **args):
-        return features_plot(self, data, **args)
+        return features_plot.features_plot(self, data, **args)
 
     # cross_correl_plot
     def cross_correl_plot(self, data, **args):
@@ -272,6 +268,7 @@ class graphs:
     def twoD_plot(self, x, y, z, **args):
         return twoD_plot(self, x, y, z, **args)
 
+    # image plot
     def image(self, X, cmap=binary, alpha=1., ax=None, title=''):
         if ax is None:
             fig, ax = self.figure()
@@ -285,6 +282,14 @@ class graphs:
             self.title(ax, title)
         return fig, ax
 
+    
+    def related_samples_two_conditions_comparison(self, data1, data2,**args):
+        return related_samples_two_conditions_comparison(self, data1, data2,**args)
+    
+    def unrelated_samples_two_conditions_comparison(self, data1, data2,**args):
+        return unrelated_samples_two_conditions_comparison(self, data1, data2,**args)
+        
+    
         
     ################################################
     ###### Annotate function #######################

@@ -70,6 +70,7 @@ def related_samples_two_conditions_comparison(graph,
                                               ylabel='value',
                                               xticks=[0, 1],
                                               xticks_labels=['cond1', 'cond2'],
+                                              fig_args=dict(right=6.),
                                               colormap=None):
 
     if len(first_observations)!=len(second_observations):
@@ -80,7 +81,7 @@ def related_samples_two_conditions_comparison(graph,
     if colormap is None:
         def colormap(x):return 'k'
         
-    fig, ax = graph.figure(figsize=(1.,1.), right=6.)
+    fig, ax = graph.figure(**fig_args)
     
     for i in range(len(first_observations)):
         ax.plot([0, 1], [first_observations[i], second_observations[i]], '-', lw=lw, color=colormap(i/(len(first_observations)-1)))
@@ -107,12 +108,12 @@ def unrelated_samples_two_conditions_comparison(graph,
                                                 color1='#1f77b4', color2='#ff7f0e',
                                                 ylabel='value',
                                                 xticks=[0, 1],
+                                                fig_args=dict(right=6.),
                                                 xticks_labels=['cond1', 'cond2']):
 
     pval = ttest_ind(first_observations, second_observations)[1]
 
-    fig, ax = graph.figure(figsize=(1.,1.), right=6.)
-
+    fig, ax = graph.figure(**fig_args)
     
     for i in range(len(first_observations)):
         ax.plot([0+np.random.randn()*.1], [first_observations[i]], 'o', ms=2, color=color1)
@@ -140,9 +141,19 @@ if __name__=='__main__':
     #     xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
     #     xticks_rotation=75)
     
-    # related_samples_two_conditions_comparison(mg,
-    #                                           np.random.randn(10)+1.4, np.random.randn(10)+1.4,
-    #                                           xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
-    #                                           xticks_rotation=75)
-    mg.bar(np.random.randn(5), yerr=.3*np.random.randn(5), bottom=-3, COLORS=mg.colors[:5])
+    fig, ax, pval = mg.related_samples_two_conditions_comparison(np.random.randn(10)+2., np.random.randn(10)+2.,
+                                                                 xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
+                                                                 xticks_rotation=45, fig_args={'bottom':1.5, 'right':8.})
+    fig_location = os.path.join(os.path.dirname(os.path.abspath(__file__)),'docs/related-samples.png')
+    fig.savefig(fig_location, dpi=200)
+    print('Figure saved as: ', fig_location)
+
+    fig, ax, pval = mg.unrelated_samples_two_conditions_comparison(np.random.randn(10)+2., np.random.randn(10)+2.,
+                                                                   xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
+                                                                   xticks_rotation=45, fig_args={'bottom':1.5, 'right':8.})
+    fig_location = os.path.join(os.path.dirname(os.path.abspath(__file__)),'docs/unrelated-samples.png')
+    fig.savefig(fig_location, dpi=200)
+    print('Figure saved as: ', fig_location)
+    
+    # # mg.bar(np.random.randn(5), yerr=.3*np.random.randn(5), bottom=-3, COLORS=mg.colors[:5])
     mg.show()

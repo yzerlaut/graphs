@@ -10,6 +10,8 @@ Typically a data science project involves:
 
 ### Exports to carefully-designed multi-panel figures for final reports
 
+
+
 ## Installation
 
 Using git:
@@ -57,6 +59,54 @@ fig.savefig('./docs/pie-plot.png', dpi=200)
 Output:
 ![](docs/pie-plot.png)
 
+### Features plot
+
+```
+mg = graphs('manuscript')
+
+# data: breast cancer dataset from sklearn
+from sklearn.datasets import load_breast_cancer
+raw = load_breast_cancer()
+
+# re-arange for plotting
+data = {}
+for feature, values in zip(raw['feature_names'], raw['data']):
+	data[feature+'\n(log)'] = np.log(values)
+
+# plotting
+fig, AX = mg.features_plot(data, ms=3,
+						   fig_args={'left':.1, 'right':.3, 'bottom':.1, 'top':.1,
+									 'hspace':.4, 'wspace':.4})
+fig.savefig('docs/features-plot.png', dpi=200)
+```
+
+### Bar plots
+
+#### Classical bar plot
+
+```
+mg.bar(np.random.randn(5), yerr=.3*np.random.randn(5), bottom=-3, COLORS=mg.colors[:5])
+```
+
+#### Related sample measurements
+```
+fig, ax, pval = mg.related_samples_two_conditions_comparison(np.random.randn(10)+2., np.random.randn(10)+2.,
+															 xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
+															 xticks_rotation=45, fig_args={'bottom':1.5, 'right':8.})
+fig.savefig('docs/related-samples.png', dpi=200)
+```
+
+![](docs/related-samples.png)
+
+#### Unrelated sample measurements
+```
+fig, ax, pval = mg.unrelated_samples_two_conditions_comparison(np.random.randn(10)+2., np.random.randn(10)+2.,
+															   xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
+															   xticks_rotation=45, fig_args={'bottom':1.5, 'right':8.})
+fig.savefig('docs/unrelated-samples.png', dpi=200)
+```
+
+![](docs/unrelated-samples.png)
 
 ### Cross-correlation plot
 

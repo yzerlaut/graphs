@@ -30,21 +30,27 @@ def features_plot(graph, data,
     for i in range(len(features), len(np.ravel(AX))):
         np.ravel(AX)[i].axis('off')
         
-    return fig
+    return fig, AX
 
 if __name__=='__main__':
 
     from graphs.my_graph import graphs
-    mg = graphs('screen')
+    mg = graphs('manuscript')
 
     # breast cancer dataset from sklearn
     from sklearn.datasets import load_breast_cancer
     raw = load_breast_cancer()
+    
     data = {}
     for feature, values in zip(raw['feature_names'], raw['data']):
         data[feature+'\n(log)'] = np.log(values)
-    features_plot(mg, data, ms=3,
-                  fig_args={'left':.1, 'right':.1, 'bottom':.5, 'top':.1,
-                            'hspace':1., 'wspace':.5})
+        
+    fig, AX = mg.features_plot(data, ms=3,
+                               fig_args={'left':.1, 'right':.3, 'bottom':.1, 'top':.1,
+                                         'hspace':.4, 'wspace':.4})
+    fig_location = os.path.join(os.path.dirname(os.path.abspath(__file__)),'docs/features-plot.png')
+    fig.savefig(fig_location, dpi=200)
+    print('Figure saved as: ', fig_location)
     mg.show()
+
 
