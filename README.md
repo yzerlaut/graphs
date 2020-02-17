@@ -19,7 +19,11 @@ Typically a data science project involves:
 ### 1) Download
 Using git:
 
-`git clone https://github.com/yzerlaut/graphs.git`
+```
+git clone https://github.com/yzerlaut/.git
+cd .
+pip install -r requirements.txt
+```
 
 
 ### 2) Pre-program the output on your different medium
@@ -40,7 +44,7 @@ We document here the different plotting features covered by the library:
 
 ### Pie plots
 
-mg = graphs('screen')
+mg = .'screen')
 
 ```
 # building data
@@ -65,7 +69,7 @@ Output:
 ### Features plot
 
 ```
-mg = graphs()
+mg = .)
 
 # data: breast cancer dataset from sklearn
 from sklearn.datasets import load_breast_cancer
