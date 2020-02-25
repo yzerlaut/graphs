@@ -32,6 +32,7 @@ setup(
         "matplotlib",
         "svgutils",
         "numpy",
-        "scipy"
+        "scipy",
+        "argparse"
     ]
 )

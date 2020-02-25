@@ -14,20 +14,35 @@ Typically a data science project involves:
 
 
 
-## Installation & settings
+## Installation
 
-### 1) Download
-Using git:
+Using =git= to clone the repository and "pip" to install the package in your python environment:
 
 ```
-git clone https://github.com/yzerlaut/.git
-cd .
+git clone https://github.com/yzerlaut/graphs.git
 pip install -r requirements.txt
+pip install graphs/
 ```
 
 
-### 2) Pre-program the output on your different medium
+## Use
 
+After installation, import the module and create a specific graph environment with:
+
+```
+from graphs import graph_env
+ge = graph_env('manuscript') # for a figure export to A4 manuscript size
+```
+
+```
+sge = graph_env('screen') # env to scale the figure display on screen monitor
+sge.hist(np.random.randn(100))
+sge.show()
+```
+
+## Settings
+
+You can specifiy different environments corresponding to different visualization settings. 
 ```
 ENVIRONMENTS = {
     'manuscript': {
@@ -44,7 +59,6 @@ We document here the different plotting features covered by the library:
 
 ### Pie plots
 
-mg = .'screen')
 
 ```
 # building data
