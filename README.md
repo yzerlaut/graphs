@@ -1,6 +1,6 @@
-<div><img src="https://github.com/yzerlaut/graphs/raw/master/docs/logo.png" alt="datavyz logo" width="30%" align="right" style="margin-left: 10px"></div>
+<div><img src="https://github.com/yzerlaut/datavyz/raw/master/docs/logo.png" alt="datavyz logo" width="45%" align="right" style="margin-left: 10px"></div>
 
-# Graphs
+# datavyz
 
 *Get your plots right, all along your analysis workflow. A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums.*
 
@@ -21,9 +21,9 @@ Typically a data science project involves:
 Using =git= to clone the repository and "pip" to install the package in your python environment:
 
 ```
-git clone https://github.com/yzerlaut/graphs.git
-pip install -r requirements.txt
-pip install graphs/
+git clone https://github.com/yzerlaut/datavyz.git
+pip install -r datavyz/requirements.txt
+pip install datavyz/
 ```
 
 
@@ -32,7 +32,7 @@ pip install graphs/
 After installation, import the module and create a specific graph environment with:
 
 ```
-from graphs import graph_env
+from datavyz import graph_env
 ge = graph_env('manuscript') # for a figure export to A4 manuscript size
 ```
 
