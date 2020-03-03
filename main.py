@@ -3,21 +3,21 @@ import sys, os, platform
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 home = os.path.expanduser('~')+os.path.sep
 
-from dependencies import *
+from graphs.dependencies import *
 
 # module that construct the plot settings
-import draw_figure as df
-import adjust_plots as ap
+from graphs import draw_figure as df
+from graphs import adjust_plots as ap
 
-import annotations, line_plots, scatter_plots, legend, features_plot, cross_correl_plot
-from hist_plots import hist
-from inset import add_inset, inset
-from surface_plots import twoD_plot
-from bar_plots import bar, related_samples_two_conditions_comparison, unrelated_samples_two_conditions_comparison
-from pie_plots import pie
-import single_cell_plots as scp
+from graphs import annotations, line_plots, scatter_plots, legend, features_plot, cross_correl_plot
+from graphs.hist_plots import hist
+from graphs.inset import add_inset, inset
+from graphs.surface_plots import twoD_plot
+from graphs.bar_plots import bar, related_samples_two_conditions_comparison, unrelated_samples_two_conditions_comparison
+from graphs.pie_plots import pie
+from graphs import single_cell_plots as scp
 
-from colors import *
+from graphs.colors import *
 
 def update_rcParams(FONTSIZE):
     mpl.rcParams.update({'axes.labelsize': FONTSIZE,
@@ -519,18 +519,15 @@ if __name__=='__main__':
     
     from sklearn.datasets import load_digits
 
-    from graphs import graph_env
-    mg = graphs('dark_screen')
+    from main import graph_env
+    ge = graph_env('dark_screen')
     digits = load_digits()
-    fig, ax = mg.image(digits['data'][100].reshape(8,8), alpha=0.2)
-    mg.scatter(np.random.randint(8, size=30), np.random.randint(8, size=30), ax=ax, color=mg.blue)
-    mg.title(ax, 'title', size='large')
+    fig, ax = ge.image(digits['data'][100].reshape(8,8), alpha=0.2)
+    ge.scatter(np.random.randint(8, size=30), np.random.randint(8, size=30), ax=ax, color=ge.blue)
+    ge.title(ax, 'title', size='large')
 
     # fig_location = os.path.join(os.path.dirname(os.path.abspath(__file__)),'docs/cross-correl.png')
     # fig.savefig(fig_location, dpi=200)
     # print('Figure saved as: ', fig_location)
-    mg.show()
-    
+    ge.show()
 
-    
-    # mg.show()
