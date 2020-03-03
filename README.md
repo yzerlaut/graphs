@@ -1,3 +1,5 @@
+<div><img src="https://github.com/yzerlaut/graphs/raw/master/docs/logo.png" alt="datavyz logo" width="30%" align="right" style="margin-left: 10px"></div>
+
 # Graphs
 
 *Get your plots right, all along your analysis workflow. A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums.*
