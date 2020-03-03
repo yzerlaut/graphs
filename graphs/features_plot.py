@@ -1,9 +1,9 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from .dependencies import *
+from graphs.dependencies import *
 from scipy.stats.stats import pearsonr
-from .legend import get_linear_colormap, build_bar_legend
-from .hist_plots import hist
+from graphs.legend import get_linear_colormap, build_bar_legend
+from graphs.hist_plots import hist
 
 def features_plot(graph, data,
                   features=None,
@@ -34,8 +34,8 @@ def features_plot(graph, data,
 
 if __name__=='__main__':
 
-    from .my_graph import graphs
-    mg = graphs('manuscript')
+    from main import graph_env
+    ge = graph_env('manuscript')
 
     # breast cancer dataset from sklearn
     from sklearn.datasets import load_breast_cancer
@@ -45,12 +45,13 @@ if __name__=='__main__':
     for feature, values in zip(raw['feature_names'], raw['data']):
         data[feature+'\n(log)'] = np.log(values)
         
-    fig, AX = mg.features_plot(data, ms=3,
+    fig, AX = ge.features_plot(data, ms=3,
                                fig_args={'left':.1, 'right':.3, 'bottom':.1, 'top':.1,
                                          'hspace':.4, 'wspace':.4})
-    fig_location = os.path.join(os.path.dirname(os.path.abspath(__file__)),'docs/features-plot.png')
+    fig_location = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                os.path.pardir, 'docs', 'features-plot.png')
     fig.savefig(fig_location, dpi=200)
     print('Figure saved as: ', fig_location)
-    mg.show()
+    ge.show()
 
 
