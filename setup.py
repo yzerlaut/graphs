@@ -8,12 +8,12 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='graphs',
+    name='datavyz',
     version='0.1',
     description='A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/yzerlaut/graphs',
+    url='https://github.com/yzerlaut/datavyz',
     author='Yann Zerlaut',
     author_email='yann.zerlaut@cnrs.fr',
     classifiers=[
