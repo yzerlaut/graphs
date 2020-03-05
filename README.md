@@ -5,6 +5,16 @@
 *Get your plots right, all along your analysis workflow. A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums.*
 
 
+## Installation
+
+Using *git* to clone the repository and "pip" to install the package in your python environment:
+
+```
+git clone https://github.com/yzerlaut/datavyz.git
+pip install -r datavyz/requirements.txt
+pip install datavyz/
+```
+
 ## Overview: a quick tour of the functionalities
 
 ```
@@ -71,16 +81,6 @@ put_list_of_figs_to_svg_fig(['docs/schematic.svg', fig],
 
 ![calibration](docs/calibration.svg)
 
-
-## Installation
-
-Using =git= to clone the repository and "pip" to install the package in your python environment:
-
-```
-git clone https://github.com/yzerlaut/datavyz.git
-pip install -r datavyz/requirements.txt
-pip install datavyz/
-```
 
 
 ## Use
