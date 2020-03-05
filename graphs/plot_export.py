@@ -1,11 +1,9 @@
-import sys, os
-from scaling import inch2cm, cm2inch
+import sys, pathlib, os
+sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
 
-import matplotlib.pylab as plt
-from matplotlib.backends.backend_pdf import PdfPages
-import numpy as np
 import string, datetime
 from tempfile import gettempdir
+from matplotlib.backends.backend_pdf import PdfPages
 
 # SPECIAL PYTHON PACKAGES FOR:
 import svgutils.compose as sg # SVG
@@ -13,6 +11,8 @@ import svgutils.compose as sg # SVG
 from PIL import Image # BITMAP (png, jpg, ...)
 ### /!\ need to have the inkscape 
 
+from graphs.scaling import inch2cm, cm2inch
+from graphs.dependencies import *
 
 def put_list_of_figs_to_svg_fig(FIGS,
                                 fig_name="fig.svg",
