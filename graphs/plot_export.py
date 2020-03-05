@@ -1,5 +1,5 @@
 import sys, os
-from scaling import FONTSIZE, A0_format, inch2cm, cm2inch
+from scaling import inch2cm, cm2inch
 
 import matplotlib.pylab as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -21,8 +21,8 @@ def put_list_of_figs_to_svg_fig(FIGS,
                                 export_as_png=False,
                                 Props = None,
                                 figsize = None,
-                                fontsize=FONTSIZE+1,
-                                SCALING_FACTOR=1.25, # needed to get the right cm size ...
+                                fontsize=9,
+                                SCALING_FACTOR=1.34, # needed to get the right cm size ...
                                 with_top_left_letter=False,
                                 transparent=True):
     """ take a list of figures and make a multi panel plot"""
@@ -86,12 +86,13 @@ def put_list_of_figs_to_svg_fig(FIGS,
                                                        XCOORD_LABELS[i],YCOORD_LABELS[i]))\
         )
 
-    if figsize is None:
-        sg.Figure("21cm", "29.7cm", *PANELS).save(fig_name)
-    else:
-        sg.Figure(str(inch2cm(figsize[0]*A0_format['width'])[0])+"cm",\
-                  str(inch2cm(figsize[1]*A0_format['height'])[0])+"cm",\
-                  *PANELS).scale(SCALING_FACTOR).save(fig_name)
+    sg.Figure("21cm", "29.7cm", *PANELS).scale(SCALING_FACTOR).save(fig_name)
+    # if figsize is None:
+    #     sg.Figure("21cm", "29.7cm", *PANELS).save(fig_name)
+    # else:
+    #     sg.Figure(str(inch2cm(figsize[0]*A0_format['width'])[0])+"cm",\
+    #               str(inch2cm(figsize[1]*A0_format['height'])[0])+"cm",\
+    #               *PANELS).scale(SCALING_FACTOR).save(fig_name)
 
     if visualize:
         os.system('open '+fig_name) # works well with 'Gapplin' on OS-X

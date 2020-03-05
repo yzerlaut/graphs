@@ -19,22 +19,22 @@ def dimension_calculus(cls,
     dimension = {}
     
     # horizontal 
-    dimension['full_width'] = left*cls.left_size+\
-        right*cls.right_size+\
-        x_plots*figsize[0]*cls.single_plot_size[0]+\
-        wspace*(x_plots-1)*cls.wspace_size
-    dimension['left'] = left*cls.left_size/dimension['full_width']
-    dimension['right'] = right*cls.right_size/dimension['full_width']
-    dimension['wspace'] = wspace*cls.wspace_size/figsize[0]/cls.single_plot_size[0]
+    dimension['full_width'] = left*figsize[0]*cls.left_size+\
+        right*figsize[0]*cls.right_size+\
+        x_plots*figsize[0]*figsize[0]*cls.single_plot_size[0]+\
+        wspace*(x_plots-1)*figsize[0]*cls.wspace_size
+    dimension['left'] = left*figsize[0]*cls.left_size/dimension['full_width']
+    dimension['right'] = right*figsize[0]*cls.right_size/dimension['full_width']
+    dimension['wspace'] = wspace*figsize[0]*cls.wspace_size/figsize[0]/cls.single_plot_size[0]
 
     # vertical
-    dimension['full_height'] = bottom*cls.bottom_size+\
-        top*cls.top_size+\
+    dimension['full_height'] = bottom*figsize[1]*cls.bottom_size+\
+        top*figsize[1]*cls.top_size+\
         y_plots*figsize[1]*cls.single_plot_size[1]+\
-        hspace*(y_plots-1)*cls.hspace_size
-    dimension['bottom'] = bottom*cls.bottom_size/dimension['full_height']
-    dimension['top'] = top*cls.top_size/dimension['full_height']
-    dimension['hspace'] = hspace*cls.hspace_size/figsize[1]/cls.single_plot_size[1]
+        hspace*figsize[1]*(y_plots-1)*cls.hspace_size
+    dimension['bottom'] = bottom*figsize[1]*cls.bottom_size/dimension['full_height']
+    dimension['top'] = top*figsize[1]*cls.top_size/dimension['full_height']
+    dimension['hspace'] = hspace*figsize[1]*cls.hspace_size/figsize[1]/cls.single_plot_size[1]
 
     return dimension
 
@@ -196,19 +196,20 @@ if __name__=='__main__':
     #                                     [[1,1], [1,1], [1,1]],
     #                                     [[2,2], [1,2]]])
     fig2, AX2 = ge.figure(axes_extents=[\
-                                        [[3,1], [1,1]],
+                                        [[1,1], [3,1]],
                                         [[4,1]],
                                         [[1,1], [2,1], [1,1] ] ],
                           figsize=[.95,.95])
 
     t = np.linspace(0, 10, 1e3)
     y = np.cos(5*t)+np.random.randn(len(t))
-    # time series plot
-    AX2[0][0].plot(t, y)
-    ge.set_plot(AX2[0][0], xlabel='xlabel (xunit)', ylabel='ylabel (yunit)')
 
-    # pie plot
-    ge.pie([0.25,0.4,0.35], ax=AX2[0][1], ext_labels=['Set 1', 'Set 2', 'Set 3'])
+    # leave first axis empty for drawing
+    AX2[0][0].axis('off') # space for docs/schematic.svg
+    
+    # time series plot
+    AX2[0][1].plot(t, y)
+    ge.set_plot(AX2[0][1], xlabel='xlabel (xunit)', ylabel='ylabel (yunit)')
 
     # more time series plot
     AX2[1][0].plot(t[t>9], y[t>9], label='raw')
@@ -222,17 +223,27 @@ if __name__=='__main__':
 
 
     # histogram
-    ge.bar(np.random.randn(4),
-            ax=AX2[2][2], xlabel='ylabel (yunit)')
+    ge.bar(np.random.randn(8),
+           COLORS=[ge.viridis(i/7) for i in range(8)],
+            ax=AX2[2][1], xlabel='ylabel (yunit)')
     
+    # pie plot
+    ge.pie([0.25,0.4,0.35], ax=AX2[2][2], ext_labels=['Set 1', 'Set 2', 'Set 3'])
+
     
     # looping on all plots to add the top left letter:
     for i, fig, AX in zip(range(3), [fig1, fig2], [AX1, AX2]):
         for l, ax in zip(list(string.ascii_lowercase), itertools.chain(*AX)):
             ge.top_left_letter(ax, l+'     ')
 
-        # and saving as svg
-        fig.savefig('fig%i.svg' % int(i+1))
+    # saving the figure with all plots
+    fig2.savefig('fig2.svg')
+
+    # generating the figure with the addition of the drawing
+    from datavyz import put_list_of_figs_to_svg_fig
+    put_list_of_figs_to_svg_fig(['docs/schematic.svg', fig],
+                                fig_name='fig.svg',
+                                Props={'XCOORD':[0,0], 'YCOORD':[0,0]})
         
     ge.show()
 

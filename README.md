@@ -12,6 +12,7 @@ import datavyz
 
 ge = datavyz.graph_env('manuscript')
 
+# a first figure, just a grid of axes to illustrate the dimension setting, see figure below
 fig1, AX1 = ge.figure(axes=(2,2)) # just a 2x2 grid of axes
 
 # a more complex grid of axes:
@@ -22,13 +23,50 @@ fig2, AX2 = ge.figure(axes_extents=[\
                       figsize=[.95,.95])
 AX2[0].plot(np.random.randn(20))
 
-# now 
-for i, fig, AX in zip(range(2), [fig1, fig2], [AX1, AX2]):
-   for l, ax in zip(list(string.ascii_lowercase), itertools.chain(*AX)):
-       ge.top_left_letter(ax, l+'     ')
-       ge.set_plot(ax, xlabel='xlabel (xunit)', ylabel='ylabel (yunit)', grid=True)
+t = np.linspace(0, 10, 1e3)
+y = np.cos(5*t)+np.random.randn(len(t))
 
-   fig.savefig('fig%i.svg' % int(i+1))
+# leave first axis empty for drawing
+AX2[0][0].axis('off') # space for docs/schematic.svg
+
+# time series plot
+AX2[0][1].plot(t, y)
+ge.set_plot(AX2[0][1], xlabel='xlabel (xunit)', ylabel='ylabel (yunit)')
+
+# more time series plot
+AX2[1][0].plot(t[t>9], y[t>9], label='raw')
+AX2[1][0].plot(t[t>9][1:], np.diff(y[t>9]), label='deriv.')
+AX2[1][0].plot(t[t>9][1:-1], np.diff(np.diff(y[t>9])), label='2nd deriv.')
+ge.set_plot(AX2[1][0], xlabel='xlabel (xunit)', ylabel='ylabel (yunit)')
+
+# histogram
+ge.scatter(t[::10], t[::10]+np.random.randn(100),
+           ax=AX2[2][0], xlabel='ylabel (yunit)')
+
+
+# histogram
+ge.bar(np.random.randn(8),
+       COLORS=[ge.viridis(i/7) for i in range(8)],
+        ax=AX2[2][1], xlabel='ylabel (yunit)')
+
+# pie plot
+ge.pie([0.25,0.4,0.35], ax=AX2[2][2], ext_labels=['Set 1', 'Set 2', 'Set 3'])
+
+
+# looping on all plots to add the top left letter:
+for i, fig, AX in zip(range(3), [fig1, fig2], [AX1, AX2]):
+    for l, ax in zip(list(string.ascii_lowercase), itertools.chain(*AX)):
+        ge.top_left_letter(ax, l+'     ')
+
+# saving the figure with all plots
+fig2.savefig('fig2.svg')
+
+# generating the figure with the addition of the drawing and saving it "fig.svg"
+from datavyz import put_list_of_figs_to_svg_fig
+put_list_of_figs_to_svg_fig(['docs/schematic.svg', fig],
+                            fig_name='fig.svg',
+                            Props={'XCOORD':[0,0], 'YCOORD':[0,0]})
+
 ```
 
 ![calibration](docs/calibration.svg)

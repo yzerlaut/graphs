@@ -17,6 +17,7 @@ from graphs.bar_plots import bar, related_samples_two_conditions_comparison, unr
 from graphs.pie_plots import pie
 from graphs import single_cell_plots as scp
 from graphs.scaling import update_rcParams
+from graphs.plot_export import put_list_of_figs_to_svg_fig
 
 from graphs.colors import *
 
