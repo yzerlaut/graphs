@@ -16,54 +16,31 @@ from graphs.surface_plots import twoD_plot
 from graphs.bar_plots import bar, related_samples_two_conditions_comparison, unrelated_samples_two_conditions_comparison
 from graphs.pie_plots import pie
 from graphs import single_cell_plots as scp
+from graphs.scaling import update_rcParams
 
 from graphs.colors import *
 
-def update_rcParams(FONTSIZE):
-    mpl.rcParams.update({'axes.labelsize': FONTSIZE,
-                         'axes.titlesize': FONTSIZE,
-                         'figure.titlesize': FONTSIZE,
-                         'font.size': FONTSIZE,
-                         'legend.fontsize': FONTSIZE,
-                         'xtick.labelsize': FONTSIZE,
-                         'ytick.labelsize': FONTSIZE,
-                         'figure.facecolor': 'none',
-                         'legend.facecolor': 'none',
-                         'axes.facecolor': 'none',
-                         'savefig.transparent':True,
-                         'savefig.dpi':150,
-                         'savefig.facecolor': 'none'})
+from settings import set_env_variables
     
 class graph_env:
     
     def __init__(self,
-                 output_display='manuscript',
-                 color='k'):
+                 env='manuscript'):
         """
         accepts styles such as : manuscript, dark_notebook, ggplot_notebook, ...
         """
-        if 'manuscript' in output_display:
-            self.FONTSIZE = 8
-            self.size_factor = 1.
-            self.default_color = 'k'
-        elif 'emacs_png' in output_display:
-            self.FONTSIZE = 8
-            self.size_factor = 1.
-            self.default_color = 'k'
-        else:
-            self.FONTSIZE = 12
-            self.size_factor = 2.
-            
-        self.default_color = color
 
+        set_env_variables(self, env)
+        
         self.override_style=True
-        if 'dark' in output_display:
+        
+        if 'dark' in env:
             self.set_style('dark_background')
-        elif 'ggplot' in output_display:
+        elif 'ggplot' in env:
             self.default_color = 'dimgrey'
             self.set_style('ggplot')
             self.override_style = False
-        elif 'seaborn' in output_display:
+        elif 'seaborn' in env:
             self.set_style('seaborn')
             self.override_style = False
         
@@ -87,22 +64,25 @@ class graph_env:
                with_legend_space=False,
                with_space_for_bar_legend=False,
                shift_up=0., shrink=1.):
-        
+
         if with_legend_space:
-            fig, ax = df.figure(axes, axes_extents, grid,
+            fig, ax = df.figure(self,
+                                axes, axes_extents, grid,
                                 figsize=self.size_factor*np.array((1.5,1.)),
                                 right=self.size_factor*5.5,
                                 fontsize=self.FONTSIZE)
             return fig, ax
         elif with_space_for_bar_legend:
-            fig, ax = df.figure(axes, axes_extents, grid,
+            fig, ax = df.figure(self,
+                                axes, axes_extents, grid,
                                 figsize=self.size_factor*np.array((1.4,1.)),
                                 right=self.size_factor*3.5,
                                 fontsize=self.FONTSIZE)
             acb = df.add_inset(ax, [1.17, -.08+shift_up, .08, shrink*1.])
             return fig, ax, acb
         else:
-            fig, AX = df.figure(axes, axes_extents, grid,
+            fig, AX = df.figure(self,
+                                axes, axes_extents, grid,
                                 self.size_factor*np.array(figsize),
                                 left, right, bottom, top, wspace, hspace)
             return fig, AX
@@ -519,8 +499,8 @@ if __name__=='__main__':
     
     from sklearn.datasets import load_digits
 
-    from main import graph_env
-    ge = graph_env('dark_screen')
+    # ge = graph_env('dark_screen')
+    ge = graph_env()
     digits = load_digits()
     fig, ax = ge.image(digits['data'][100].reshape(8,8), alpha=0.2)
     ge.scatter(np.random.randint(8, size=30), np.random.randint(8, size=30), ax=ax, color=ge.blue)

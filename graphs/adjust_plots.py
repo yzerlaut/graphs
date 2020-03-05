@@ -1,8 +1,8 @@
-import matplotlib.pylab as plt
-import numpy as np
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from .scaling import FONTSIZE, A0_format, Single_Plot_Size
+import sys, pathlib
+sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
+
+from graphs.dependencies import *
+
 from matplotlib.ticker import MaxNLocator, NullFormatter
 
 def set_plot(ax, spines=['left', 'bottom'],
@@ -18,7 +18,7 @@ def set_plot(ax, spines=['left', 'bottom'],
              xlim=None, ylim=None,
              grid=False,
              xcolor='k', ycolor='k',
-             fontsize=FONTSIZE):
+             fontsize=9):
 
     # no ticks if no axis bar
     if not (('top' in spines) or ('bottom' in spines)):
@@ -259,16 +259,16 @@ def scale_figure(height_to_width, A0_ratio, x_plots, y_plots,
 
 if __name__=='__main__':
 
-    from .my_graph import graphs
-    mg = graphs('screen')
+    import datavyz
+    ge = datavyz.graph_env('manuscript')
 
-    fig, ax = mg.figure(figsize=(1.2,1), left=1., right=4.)
+    fig, ax = ge.figure(figsize=(1.2,1), left=1., right=4.)
     ax2 = ax.twinx()
-    ax.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=2, color=mg.blue)
-    ax2.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=1, color=mg.red)
-    mg.set_plot(ax2, ['right'], yscale='log', ylabel='blabal',
-             tck_outward=2, ycolor=mg.red)
-    mg.set_plot(ax, ycolor=mg.blue, xcolor='k',
+    ax.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=2, color=ge.blue)
+    ax2.plot(np.log10(np.logspace(-2,3,100)), np.exp(np.random.randn(100)), 'o', ms=1, color=ge.red)
+    ge.set_plot(ax2, ['right'], yscale='log', ylabel='blabal',
+             tck_outward=2, ycolor=ge.red)
+    ge.set_plot(ax, ycolor=ge.blue, xcolor='k',
              yscale='log', ylabel='blabal', xscale='already-log10',
              tck_outward=2, xlabel='trying', ylabelpad=-5)
-    mg.show()
+    ge.show()
