@@ -4,6 +4,8 @@
 
 *Get your plots right, all along your analysis workflow. A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums.*
 
+
+
 ## Overview: a quick tour of the functionalities
 
 Typically a data science project involves:
@@ -14,6 +16,25 @@ Typically a data science project involves:
 
 ### Exports to carefully-designed multi-panel figures for final reports
 
+```
+import datavyz
+ge = datavyz.graph_env('manuscript')
+
+fig1, AX1 = ge.figure(axes=(2,2))
+fig2, AX2 = ge.figure(axes_extents=[\
+                                   [[3,1], [1,1]],
+                                   [[4,1]],
+                                   [[1,1], [2,1], [1,1] ] ],
+                      figsize=[.95,.95])
+for i, fig, AX in zip(range(3), [fig1, fig2, fig3], [AX1, AX2, AX3]):
+   for l, ax in zip(list(string.ascii_lowercase), itertools.chain(*AX)):
+       ge.top_left_letter(ax, l+'     ')
+       ge.set_plot(ax, xlabel='xlabel (xunit)', ylabel='ylabel (yunit)', grid=True)
+
+   fig.savefig('fig%i.svg' % int(i+1))
+```
+
+![calibration](docs/calibration.svg)
 
 
 ## Installation

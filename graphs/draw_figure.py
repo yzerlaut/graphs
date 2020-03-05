@@ -174,7 +174,7 @@ def figure(cls,
         return fig, AX
 
 def figure_with_legend_space():
-    fig, ax = figure(figsize=(1.5,1.), right=5.5)
+    fig, ax = figure(right=5.5)
     
 def figure_with_bar_legend(shift_up=0., shrink=1.):
 
@@ -185,19 +185,26 @@ def figure_with_bar_legend(shift_up=0., shrink=1.):
     
 if __name__=='__main__':
     
+    import itertools, string
+    
     import datavyz
     ge = datavyz.graph_env('manuscript')
 
-    # mg.figure()
-    fig, ax = ge.figure()
-    # ge.set_plot(ax, xlabel='xlabel (xunit)', ylabel='ylabel (yunit)', grid=True)
-    fig2, _ = ge.figure(axes=(2,1))
-    fig3, _ = ge.figure(axes=(1,2))
-    fig4, _ = ge.figure(axes=(3,2))
-    # ge.figure(axes_extents=[\
-    #                      [[3,2], [1,2] ],
-    #                      [[1,1], [2,1], [1,1] ] ] )
-    # fig, ax, acb = figure_with_bar_legend()
-    fig.savefig('fig.svg')
+    # fig, ax = ge.figure()
+    fig1, AX1 = ge.figure(axes=(2,2))
+    fig2, AX2 = ge.figure(axes_extents=[\
+                                        [[1,1], [1,1], [1,1]],
+                                        [[2,2], [1,2]]])
+    fig3, AX3 = ge.figure(axes_extents=[\
+                                        [[3,1], [1,1]],
+                                        [[4,1]],
+                                        [[1,1], [2,1], [1,1] ] ],
+                          figsize=[.95,.95])
+    for i, fig, AX in zip(range(3), [fig1, fig2, fig3], [AX1, AX2, AX3]):
+        for l, ax in zip(list(string.ascii_lowercase), itertools.chain(*AX)):
+            ge.top_left_letter(ax, l+'     ')
+            ge.set_plot(ax, xlabel='xlabel (xunit)', ylabel='ylabel (yunit)', grid=True)
+
+        fig.savefig('fig%i.svg' % int(i+1))
     ge.show()
 

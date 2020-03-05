@@ -68,22 +68,20 @@ class graph_env:
         if with_legend_space:
             fig, ax = df.figure(self,
                                 axes, axes_extents, grid,
-                                figsize=self.size_factor*np.array((1.5,1.)),
-                                right=self.size_factor*5.5,
+                                right=5.5,
                                 fontsize=self.FONTSIZE)
             return fig, ax
         elif with_space_for_bar_legend:
             fig, ax = df.figure(self,
                                 axes, axes_extents, grid,
-                                figsize=self.size_factor*np.array((1.4,1.)),
-                                right=self.size_factor*3.5,
+                                right=3.5,
                                 fontsize=self.FONTSIZE)
             acb = df.add_inset(ax, [1.17, -.08+shift_up, .08, shrink*1.])
             return fig, ax, acb
         else:
             fig, AX = df.figure(self,
                                 axes, axes_extents, grid,
-                                self.size_factor*np.array(figsize),
+                                np.array(figsize),
                                 left, right, bottom, top, wspace, hspace)
             return fig, AX
 
@@ -280,11 +278,12 @@ class graph_env:
     def annotate(self, stuff, s, xy, **args):
         annotations.annotate(self, stuff, s, xy, **args)
 
-    def top_left_letter(self, stuff, s, xy=(-0.3,1.02), bold=True, fontsize=None):
+    def top_left_letter(self, stuff, s,
+                        xy=(0,1.), bold=True, fontsize=None):
         if fontsize is None:
             fontsize=self.FONTSIZE+1
-        args = dict(bold=bold, fontsize=fontsize)
-        annotations.annotate(self, stuff, s, xy, **args)
+        args = dict(bold=bold, fontsize=fontsize, xycoords='axes fraction')
+        annotations.annotate(self, stuff, s, xy, **args, ha='right')
 
     def draw_bar_scales(self, ax, Xbar, Xbar_label, Ybar, Ybar_label, **args):
         return annotations.draw_bar_scales(self,
