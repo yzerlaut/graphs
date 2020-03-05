@@ -211,9 +211,9 @@ if __name__=='__main__':
     ge.pie([0.25,0.4,0.35], ax=AX2[0][1], ext_labels=['Set 1', 'Set 2', 'Set 3'])
 
     # more time series plot
-    AX2[1][0].plot(t[t>9], y[t>9])
-    AX2[1][0].plot(t[t>9][1:], np.diff(y[t>9]))
-    AX2[1][0].plot(t[t>9][1:-1], np.diff(np.diff(y[t>9])))
+    AX2[1][0].plot(t[t>9], y[t>9], label='raw')
+    AX2[1][0].plot(t[t>9][1:], np.diff(y[t>9]), label='deriv.')
+    AX2[1][0].plot(t[t>9][1:-1], np.diff(np.diff(y[t>9])), label='2nd deriv.')
     ge.set_plot(AX2[1][0], xlabel='xlabel (xunit)', ylabel='ylabel (yunit)')
 
     # histogram
