@@ -192,19 +192,47 @@ if __name__=='__main__':
 
     # fig, ax = ge.figure()
     fig1, AX1 = ge.figure(axes=(2,2))
+    # fig2, AX2 = ge.figure(axes_extents=[\
+    #                                     [[1,1], [1,1], [1,1]],
+    #                                     [[2,2], [1,2]]])
     fig2, AX2 = ge.figure(axes_extents=[\
-                                        [[1,1], [1,1], [1,1]],
-                                        [[2,2], [1,2]]])
-    fig3, AX3 = ge.figure(axes_extents=[\
                                         [[3,1], [1,1]],
                                         [[4,1]],
                                         [[1,1], [2,1], [1,1] ] ],
                           figsize=[.95,.95])
-    for i, fig, AX in zip(range(3), [fig1, fig2, fig3], [AX1, AX2, AX3]):
+
+    t = np.linspace(0, 10, 1e3)
+    y = np.cos(5*t)+np.random.randn(len(t))
+    # time series plot
+    AX2[0][0].plot(t, y)
+    ge.set_plot(AX2[0][0], xlabel='xlabel (xunit)', ylabel='ylabel (yunit)')
+
+    # pie plot
+    ge.pie([0.25,0.4,0.35], ax=AX2[0][1], ext_labels=['Set 1', 'Set 2', 'Set 3'])
+
+    # more time series plot
+    AX2[1][0].plot(t[t>9], y[t>9])
+    AX2[1][0].plot(t[t>9][1:], np.diff(y[t>9]))
+    AX2[1][0].plot(t[t>9][1:-1], np.diff(np.diff(y[t>9])))
+    ge.set_plot(AX2[1][0], xlabel='xlabel (xunit)', ylabel='ylabel (yunit)')
+
+    # histogram
+    ge.scatter(t[::10], t[::10]+np.random.randn(100),
+               ax=AX2[2][0], xlabel='ylabel (yunit)')
+
+
+    # histogram
+    ge.bar(np.random.randn(4),
+            ax=AX2[2][2], xlabel='ylabel (yunit)')
+    
+    
+    # looping on all plots to add the top left letter:
+    for i, fig, AX in zip(range(3), [fig1, fig2], [AX1, AX2]):
         for l, ax in zip(list(string.ascii_lowercase), itertools.chain(*AX)):
             ge.top_left_letter(ax, l+'     ')
-            ge.set_plot(ax, xlabel='xlabel (xunit)', ylabel='ylabel (yunit)', grid=True)
 
+        # and saving as svg
         fig.savefig('fig%i.svg' % int(i+1))
+        
     ge.show()
 

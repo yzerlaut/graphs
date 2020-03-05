@@ -5,28 +5,25 @@
 *Get your plots right, all along your analysis workflow. A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums.*
 
 
-
 ## Overview: a quick tour of the functionalities
-
-Typically a data science project involves:
-
-### Data mining in Jupyter Notebooks
-
-### Analysis automation (on full dataset) using scripts
-
-### Exports to carefully-designed multi-panel figures for final reports
 
 ```
 import datavyz
+
 ge = datavyz.graph_env('manuscript')
 
-fig1, AX1 = ge.figure(axes=(2,2))
+fig1, AX1 = ge.figure(axes=(2,2)) # just a 2x2 grid of axes
+
+# a more complex grid of axes:
 fig2, AX2 = ge.figure(axes_extents=[\
                                    [[3,1], [1,1]],
                                    [[4,1]],
                                    [[1,1], [2,1], [1,1] ] ],
                       figsize=[.95,.95])
-for i, fig, AX in zip(range(3), [fig1, fig2, fig3], [AX1, AX2, AX3]):
+AX2[0].plot(np.random.randn(20))
+
+# now 
+for i, fig, AX in zip(range(2), [fig1, fig2], [AX1, AX2]):
    for l, ax in zip(list(string.ascii_lowercase), itertools.chain(*AX)):
        ge.top_left_letter(ax, l+'     ')
        ge.set_plot(ax, xlabel='xlabel (xunit)', ylabel='ylabel (yunit)', grid=True)
@@ -65,16 +62,29 @@ sge.show()
 
 ## Settings
 
-You can specifiy different environments corresponding to different visualization settings. 
+You can specifiy different environments corresponding to different visualization settings.
+
+For example the setting to produce the above is the when `graph_env` is called with the `"manuscript"` argument is the following:
 ```
 ENVIRONMENTS = {
     'manuscript': {
-	'fontsize':10,
+	'fontsize':9,
+	'default_color':'k',
+        'single_plot_size':(28., 20.), # mm
+        'hspace_size':12., # mm
+        'wspace_size':16., # mm
+        'left_size':16., # mm
+        'right_size':4., # mm
+        'top_size':4., # mm
+        'bottom_size':20., # mm
     },
-    'dark_notebook': {
+    'screen': {
+        'size_factor': 1.5,
     }
 }
 ```
+
+An additional setting `"screen"` has only a "size_factor" key, so it takes the settings of the "manuscript" and expands everything by a factor 1.5 for the display on the screen.
 
 ## Features
 
@@ -177,4 +187,6 @@ fig.savefig('docs/unrelated-samples.png', dpi=200)
 
 
 ### Scatter plots
+
 ### Surface plots
+Typically a data science project involves:
