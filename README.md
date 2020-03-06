@@ -4,18 +4,29 @@
 
 *Get your plots right, all along your analysis workflow. A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums.*
 
+## Idea
+
+Create a graph environment associated to a specific visualization setting, below "manuscript",  :
+
+```
+import datavyz
+ge = datavyz.graph_env('manuscript') # for a figure export to A4 manuscript size
+
+```
+
+then all of the plotting functions
 
 ## Installation
 
 Using *git* to clone the repository and "pip" to install the package in your python environment:
 
 ```
-git clone https://github.com/yzerlaut/datavyz.git
-pip install -r datavyz/requirements.txt
-pip install datavyz/
+pip install git+https://github.com/yzerlaut/datavyz.git
 ```
 
-## Overview: a quick tour of the functionalities
+## A quick demo of the functionalities
+
+Building a complex multipanel figure with the module.
 
 ```
 import datavyz
@@ -49,12 +60,12 @@ AX2[1][0].plot(t[t>9][1:], np.diff(y[t>9]), label='deriv.')
 AX2[1][0].plot(t[t>9][1:-1], np.diff(np.diff(y[t>9])), label='2nd deriv.')
 ge.set_plot(AX2[1][0], xlabel='xlabel (xunit)', ylabel='ylabel (yunit)')
 
-# histogram
+# scatter plot
 ge.scatter(t[::10], t[::10]+np.random.randn(100),
            ax=AX2[2][0], xlabel='ylabel (yunit)')
 
 
-# histogram
+# bar plot
 ge.bar(np.random.randn(8),
        COLORS=[ge.viridis(i/7) for i in range(8)],
         ax=AX2[2][1], xlabel='ylabel (yunit)')
@@ -79,18 +90,9 @@ put_list_of_figs_to_svg_fig(['docs/schematic.svg', fig],
 
 ```
 
-![calibration](docs/calibration.svg)
+![multipanel](docs/multipanel.svg)
 
 
-
-## Use
-
-After installation, import the module and create a specific graph environment with:
-
-```
-from datavyz import graph_env
-ge = graph_env('manuscript') # for a figure export to A4 manuscript size
-```
 
 ```
 sge = graph_env('screen') # env to scale the figure display on screen monitor
@@ -119,10 +121,16 @@ ENVIRONMENTS = {
     'screen': {
         'size_factor': 1.5,
     }
+    'darkbg': { # dark background
+        'size_factor': 1.5,
+        'default_color': 'lightgray',
+    }
 }
 ```
 
-An additional setting `"screen"` has only a "size_factor" key, so it takes the settings of the "manuscript" and expands everything by a factor 1.5 for the display on the screen.
+An additional setting `"screen"` has only a "size_factor" key, so it takes the settings of the "manuscript" and expands everything by a factor 1.5 for the display on the screen. An additional setting `"darkbg"` is a display setting for displays with dark bakgrounds.
+
+![calibration](docs/calibration.svg)
 
 ## Features
 
@@ -136,13 +144,13 @@ We document here the different plotting features covered by the library:
 data = .5+np.random.randn(3)*.4
 
 #plotting
-fig, ax = mg.pie(data,
+fig, ax = ge.pie(data,
 				 ext_labels = ['Data1', 'Data2', 'Data3'],
 				 pie_labels = ['%.1f%%' % (100*d/data.sum()) for d in data],
 				 ext_labels_distance=1.2,
 				 explodes=0.05*np.ones(len(data)),
 				 center_circle=0.2,
-				 COLORS = [mg.tab20(x) for x in np.linspace(0,1,len(data))],
+				 COLORS = [ge.tab20(x) for x in np.linspace(0,1,len(data))],
 				 # pie_args=dict(rotate=90), # e.g. for rotation
 				 legend=None) 
 				 # set legend={} to have it appearing
@@ -166,7 +174,7 @@ for feature, values in zip(raw['feature_names'], raw['data']):
 	data[feature+'\n(log)'] = np.log(values)
 
 # plotting
-fig, AX = mg.features_plot(data, ms=3,
+fig, AX = ge.features_plot(data, ms=3,
 						   fig_args={'left':.1, 'right':.3, 'bottom':.1, 'top':.1,
 									 'hspace':.4, 'wspace':.4})
 fig.savefig('docs/features-plot.png', dpi=200)
@@ -183,7 +191,7 @@ for i in range(7):
 	data['feature_%s'%(i+1)] = np.random.randn(30)
 
 # plotting
-fig = mg.cross_correl_plot(data,
+fig = ge.cross_correl_plot(data,
 						   features=list(data.keys())[:7])
 
 fig.savefig('./docs/cross-correl-plot.png', dpi=200)
@@ -197,12 +205,12 @@ Output:
 #### Classical bar plot
 
 ```
-mg.bar(np.random.randn(5), yerr=.3*np.random.randn(5), bottom=-3, COLORS=mg.colors[:5])
+ge.bar(np.random.randn(5), yerr=.3*np.random.randn(5), bottom=-3, COLORS=ge.colors[:5])
 ```
 
 #### Related sample measurements
 ```
-fig, ax, pval = mg.related_samples_two_conditions_comparison(np.random.randn(10)+2., np.random.randn(10)+2.,
+fig, ax, pval = ge.related_samples_two_conditions_comparison(np.random.randn(10)+2., np.random.randn(10)+2.,
 															 xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
 															 xticks_rotation=45, fig_args={'bottom':1.5, 'right':8.})
 fig.savefig('docs/related-samples.png', dpi=200)
@@ -212,7 +220,7 @@ fig.savefig('docs/related-samples.png', dpi=200)
 
 #### Unrelated sample measurements
 ```
-fig, ax, pval = mg.unrelated_samples_two_conditions_comparison(np.random.randn(10)+2., np.random.randn(10)+2.,
+fig, ax, pval = ge.unrelated_samples_two_conditions_comparison(np.random.randn(10)+2., np.random.randn(10)+2.,
 															   xticks_labels=['$\||$cc($V_m$,$V_{ext}$)$\||$', '$cc(V_m,pLFP)$'],
 															   xticks_rotation=45, fig_args={'bottom':1.5, 'right':8.})
 fig.savefig('docs/unrelated-samples.png', dpi=200)
