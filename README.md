@@ -6,15 +6,18 @@
 
 ## Idea
 
-Create a graph environment associated to a specific visualization setting, below "manuscript",  :
+Create a graph environment associated to a specific visualization setting, below "manuscript":
 
 ```
 import datavyz
 ge = datavyz.graph_env('manuscript') # for a figure export to A4 manuscript size
-
 ```
 
-then all of the plotting functions
+And call all of your plotting functions relative to this environment, e.g.:
+
+```
+ge.scatter(numpy.random.randn(10), numpy.random.randn(10), color=ge.Blue)
+```
 
 ## Installation
 
