@@ -1,9 +1,13 @@
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+
+
 from scipy.stats.stats import pearsonr
 
-from .dependencies import *
+from graphs.dependencies import *
 
-from .legend import get_linear_colormap, build_bar_legend
-from .hist_plots import hist
+from graphs.legend import get_linear_colormap, build_bar_legend
+from graphs.hist_plots import hist
 
 def cross_correl_plot(graph, data, features=None,
                       figsize=(.8,.7),
@@ -92,8 +96,9 @@ if __name__=='__main__':
 
     import os
     
-    from ..graphs import graphs
-    mg = graphs()
+    import datavyz
+    ge = datavyz.graph_env('manuscript')
+
 
     # building random data
     data = {}
