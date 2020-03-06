@@ -1,5 +1,6 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
+
 from graphs.dependencies import *
 from scipy.stats.stats import pearsonr
 from graphs.legend import get_linear_colormap, build_bar_legend
@@ -34,9 +35,10 @@ def features_plot(graph, data,
 
 if __name__=='__main__':
 
-    from main import graph_env
-    ge = graph_env('manuscript')
-
+    
+    import datavyz
+    ge = datavyz.graph_env('manuscript')
+    
     # breast cancer dataset from sklearn
     from sklearn.datasets import load_breast_cancer
     raw = load_breast_cancer()
@@ -45,9 +47,7 @@ if __name__=='__main__':
     for feature, values in zip(raw['feature_names'], raw['data']):
         data[feature+'\n(log)'] = np.log(values)
         
-    fig, AX = ge.features_plot(data, ms=3,
-                               fig_args={'left':.1, 'right':.3, 'bottom':.1, 'top':.1,
-                                         'hspace':.4, 'wspace':.4})
+    fig, AX = ge.features_plot(data, ms=3)
     fig_location = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                 os.path.pardir, 'docs', 'features-plot.png')
     fig.savefig(fig_location, dpi=200)

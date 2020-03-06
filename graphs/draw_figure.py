@@ -192,9 +192,15 @@ if __name__=='__main__':
 
     # fig, ax = ge.figure()
     fig1, AX1 = ge.figure(axes=(2,2))
+    for l, ax in zip(list(string.ascii_lowercase), itertools.chain(*AX1)):
+        ge.top_left_letter(ax, l+'     ')
+        ge.set_plot(ax, xlabel='xlabel (xunit)', ylabel='ylabel (yunit)', grid=True)
+    fig1.savefig('fig1.svg')
+
     # fig2, AX2 = ge.figure(axes_extents=[\
     #                                     [[1,1], [1,1], [1,1]],
     #                                     [[2,2], [1,2]]])
+    
     fig2, AX2 = ge.figure(axes_extents=[\
                                         [[1,1], [3,1]],
                                         [[4,1]],
