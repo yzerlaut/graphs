@@ -25,6 +25,7 @@ ge.show()
 ```
 pops up:
 
+<div style="text-align:center"><img src="docs/demo.svg" /></div>
 
 ## Installation
 
