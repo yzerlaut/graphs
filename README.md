@@ -10,14 +10,21 @@ Create a graph environment associated to a specific visualization setting, below
 
 ```
 import datavyz
-ge = datavyz.graph_env('manuscript') # for a figure export to A4 manuscript size
+ge = datavyz.graph_env('manuscript')
 ```
 
 And call all of your plotting functions relative to this environment, e.g.:
 
 ```
-ge.scatter(numpy.random.randn(10), numpy.random.randn(10), color=ge.Blue)
+ge.plot(Y=np.random.randn(4, 10),
+	sY=np.random.randn(4, 10),
+        xlabel='xlabel (xunit)',
+        ylabel='ylabel (yunit)',
+        title='datavyz demo plot')
+ge.show()
 ```
+pops up:
+
 
 ## Installation
 
@@ -93,8 +100,7 @@ put_list_of_figs_to_svg_fig(['docs/schematic.svg', fig],
 
 ```
 
-![multipanel](docs/multipanel.svg)
-
+<div style="text-align:center"><img src="docs/multipanel.svg" /></div>
 
 
 ```
@@ -133,7 +139,7 @@ ENVIRONMENTS = {
 
 An additional setting `"screen"` has only a "size_factor" key, so it takes the settings of the "manuscript" and expands everything by a factor 1.5 for the display on the screen. An additional setting `"darkbg"` is a display setting for displays with dark bakgrounds.
 
-![calibration](docs/calibration.svg)
+![calibration](https://github.com/yzerlaut/datavyz/raw/master/docs/calibration.svg)
 
 ## Features
 

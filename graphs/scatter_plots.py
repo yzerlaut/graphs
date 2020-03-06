@@ -2,8 +2,8 @@ from matplotlib.cm import viridis
 from scipy.stats import pearsonr
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
-from .draw_figure import figure
-from .adjust_plots import *
+from graphs.draw_figure import figure
+from graphs.adjust_plots import *
 
 def two_variable_analysis(first_observations,
                           second_observations,
@@ -90,13 +90,17 @@ def multiple_curves(ax, X, Y, sX, sY, COLORS, LABELS,
 
 
 if __name__=='__main__':
-    from ..graphs import graphs
-    mg = graphs('screen')
     
-    two_variable_analysis(np.random.randn(10), np.random.randn(10),
-                          colormap=viridis)
-    # fig, ax = scatter(np.random.randn(10), np.random.randn(10),
-    #                   np.random.randn(10), np.random.randn(10))
-    # ax.plot([-2,2], [-2,2], 'k:')
-    mg.show()
+    import datavyz
+    ge = datavyz.graph_env('manuscript')
+    
+    # two_variable_analysis(np.random.randn(10), np.random.randn(10),
+    #                       colormap=viridis)
+    fig, ax = ge.plot(Y=np.random.randn(4, 10),
+                      sY=np.random.randn(4, 10),
+                      xlabel='xlabel (xunit)',
+                      ylabel='ylabel (yunit)',
+                      title='datavyz demo plot')
+    fig.savefig('fig.svg')
+    ge.show()
         
