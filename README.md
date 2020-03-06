@@ -13,7 +13,7 @@ import datavyz
 ge = datavyz.graph_env('manuscript')
 ```
 
-And call all of your plotting functions relative to this environment, e.g.:
+You then call all of your plotting functions relative to this environment, e.g.:
 
 ```
 ge.plot(Y=np.random.randn(4, 10),
