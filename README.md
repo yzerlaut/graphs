@@ -135,7 +135,10 @@ ENVIRONMENTS = {
 
 An additional setting `"screen"` has only a "size_factor" key, so it takes the settings of the "manuscript" and expands everything by a factor 1.5 for the display on the screen. An additional setting `"darkbg"` is a display setting for displays with dark bakgrounds.
 
-![calibration](https://github.com/yzerlaut/datavyz/raw/master/docs/calibration.svg)
+<p align="center">
+  <img src="docs/calibration.svg"/>
+</p>
+
 
 ## Features
 
