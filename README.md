@@ -25,7 +25,9 @@ ge.show()
 ```
 pops up:
 
-<div style="text-align:center"><img src="docs/demo.svg" /></div>
+<p align="center">
+  <img src="docs/demo.svg"/>
+</p>
 
 ## Installation
 
@@ -44,15 +46,12 @@ import datavyz
 
 ge = datavyz.graph_env('manuscript')
 
-# a first figure, just a grid of axes to illustrate the dimension setting, see figure below
-fig1, AX1 = ge.figure(axes=(2,2)) # just a 2x2 grid of axes
-
 # a more complex grid of axes:
-fig2, AX2 = ge.figure(axes_extents=[\
-                                   [[3,1], [1,1]],
-                                   [[4,1]],
-                                   [[1,1], [2,1], [1,1] ] ],
-                      figsize=[.95,.95])
+fig, AX = ge.figure(axes_extents=[\
+                                  [[3,1], [1,1]],
+                                  [[4,1]],
+                                  [[1,1], [2,1], [1,1] ] ],
+                     figsize=[.95,.95])
 AX2[0].plot(np.random.randn(20))
 
 t = np.linspace(0, 10, 1e3)
@@ -101,14 +100,10 @@ put_list_of_figs_to_svg_fig(['docs/schematic.svg', fig],
 
 ```
 
-<div style="text-align:center"><img src="docs/multipanel.svg" /></div>
+<p align="center">
+  <img src="docs/multipanel.svg"/>
+</p>
 
-
-```
-sge = graph_env('screen') # env to scale the figure display on screen monitor
-sge.hist(np.random.randn(100))
-sge.show()
-```
 
 ## Settings
 
