@@ -4,7 +4,7 @@
 
 *Get your plots right, all along your analysis workflow. A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums.*
 
-## Principle
+## Principle / Use
 
 Create a graph environment associated to a specific visualization setting, below "manuscript":
 
@@ -37,7 +37,7 @@ Using *git* to clone the repository and "pip" to install the package in your pyt
 pip install git+https://github.com/yzerlaut/datavyz.git
 ```
 
-## A quick demo of the functionalities
+## Quick demo
 
 Building a complex multipanel figure with the module.
 
