@@ -4,7 +4,7 @@
 
 *Get your plots right, all along your analysis workflow. A layer on top of `matplotlib` to achieve flexible & high-standard data visualization across different mediums.*
 
-## Idea
+## Principle
 
 Create a graph environment associated to a specific visualization setting, below "manuscript":
 
@@ -121,7 +121,7 @@ ENVIRONMENTS = {
         'left_size':16., # mm
         'right_size':4., # mm
         'top_size':4., # mm
-        'bottom_size':20., # mm
+        'bottom_size':17., # mm
     },
     'screen': {
         'size_factor': 1.5,

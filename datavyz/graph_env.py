@@ -1,4 +1,5 @@
 import sys, os, platform
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.path.pardir))
 
 desktop = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+os.path.sep
 home = os.path.expanduser('~')+os.path.sep
